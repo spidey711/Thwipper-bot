@@ -394,7 +394,7 @@ async def play_music(ctx, *, char):
                 embed = discord.Embed(description="Now playing `{}` [🎸]".format(name_of_the_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(0, 255, 255))
                 embed.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
                 await ctx.send(embed=embed)
-                voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
+                voice.play(discord.FFmpegOpusAudio(URL, bitrate=96, codec=None, executable=FFMPEG_OPTS))
         except Exception as e:
             embed = discord.Embed(description=str(e), color=discord.Color.from_rgb(0, 255, 255))
             embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
@@ -408,7 +408,7 @@ async def play_music(ctx, *, char):
                 embed = discord.Embed(description="Now playing `{}` [🎸]".format(queue[int(char)][0].replace(" - YouTube", " ")), color=discord.Color.from_rgb(0, 255, 255))
                 embed.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
                 await ctx.send(embed=embed)
-                voice.play(discord.FFmpegPCMAudio(URL))
+                voice.play(discord.FFmpegOpusAudio(URL, bitrate=96, codec=None, executable=FFMPEG_OPTS))
             else:
                 embed = discord.Embed(description="Now playing `{}` [🎸]".format(queue[int(char)][0].replace(" - YouTube", " ")), color=discord.Color.from_rgb(0, 255, 255))
                 embed.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)

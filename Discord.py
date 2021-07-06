@@ -14,6 +14,7 @@ import youtube_dl
 import urllib.request
 from googlesearch import search
 import mysql.connector as ms
+import sys
 
 # SETUP
 bot = commands.Bot(command_prefix="t!")
@@ -30,14 +31,14 @@ facts_list = []
 # Utility
 num_req = 0
 # SQL
-file = open("../env.txt","r")
-txt_from_file = str(file.read())
+file=open("../env.txt","r")
+txt_from_file=str(file.read())
 print(txt_from_file)
-start_password = txt_from_file.find("MySQL=") + len("MySQL=")
+start_password=txt_from_file.find("MySQL=")+len("MySQL=")
 print(start_password)
-end_password = txt_from_file.find('"',start_password + 3) + 1
+end_password=txt_from_file.find('"',start_password+3)+1
 print(end_password)
-mysql_password = str(eval(txt_from_file[start_password:end_password]))
+mysql_password=str(eval(txt_from_file[start_password:end_password]))
 print()
 conn = ms.connect(host="localhost", user="root", passwd=mysql_password, database="discord")
 cursor = conn.cursor()
@@ -207,21 +208,21 @@ async def greet_bot(ctx):
     await ctx.send(random.choice(greetings))
 
 
-@bot.command(aliases=['h'])
+@bot.command(aliases=['use'])
 async def embed_help(ctx):
     total_requests()
     global url_thumbnails
     embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
-                        description="Prefix => `t!`",
+                        description="This is bot made by Spider-Man to manage his discord while he is out protecting the innocent from harm!",
                         color=discord.Color.from_rgb(0, 255, 255))
-    embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nh to get this embed", inline=False)
-    embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="ping to get user latency\nreq to get number of requests made to the bot", inline=False)
-    embed.add_field(name="𝗗𝗮𝘁𝗲 & 𝗧𝗶𝗺𝗲", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
-    embed.add_field(name="𝗠𝘆𝗦𝗤𝗟", value="; <query> to use SQL Shell", inline=False)
-    embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="g <topic> to google\nfact to get an interesting fact\nmeme to get a meme",inline=False)
-    embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="j to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
-    embed.add_field(name="𝗣𝗹𝗮𝘆𝗲𝗿",value="p <name> or <index> to play songs\nres to resume a song\npause to pause a song\nst to stop a song", inline=False)
-    embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nv to view the queue\nrem <index> to remove a song\ncq to clear queue", inline=False)
+    embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="_hello to greet bot\n_use to get this embed", inline=False)
+    embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="_ping to get user latency\n_req to get number of requests made to the bot\n_use.dev to get special access menu", inline=False)
+    embed.add_field(name="𝗗𝗮𝘁𝗲 & 𝗧𝗶𝗺𝗲", value="_dt to get IST date and time\n_cal.m <year, month(in number)> to get calendar", inline=False)
+    embed.add_field(name="𝗠𝘆𝗦𝗤𝗟", value="_; <query> to use SQL Shell", inline=False)
+    embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="_g <topic> to google\n_fact to get an interesting fact\n_meme to get a meme",inline=False)
+    embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="_j to get the bot to join voice channel\n_dc to remove bot from voice channel",inline=False)
+    embed.add_field(name="𝗣𝗹𝗮𝘆𝗲𝗿",value="_p <name> or <index> to play songs\n_res to resume a song\n_pause to pause a song\n_st to stop a song", inline=False)
+    embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="_q <name> to add a song to the queue\n_v to view the queue\n_rem <index> to remove a song\n_cq to clear queue", inline=False)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text="New Features Coming Soon! [🛠]\n1)Autoplay  2)Next  3)Previous  4)Loop Queue  5)Repeat Song")
     await ctx.send(embed=embed)
@@ -257,6 +258,17 @@ async def get_meme(ctx):
 async def get_ping(ctx):
     total_requests()
     await ctx.send(embed=discord.Embed(description="𝙇𝙖𝙩𝙚𝙣𝙘𝙮 : {} ms".format(round(bot.latency * 1000)), color=discord.Color.from_rgb(0, 255, 255)))
+
+
+@bot.command(aliases=["use.dev"])
+async def special_access(ctx):
+    global url_thumbnails
+    embed = discord.Embed(title="🕸𝙎𝙥𝙚𝙘𝙞𝙖𝙡 𝘼𝙘𝙘𝙚𝙨𝙨🕸",
+                        description="_use.dev to get this menu\n_allow <mention> to allow access to special feeatures\n_restrict <mention> to restrict someone from using special features\n_t <expression> for python shell\n_clear <number of messages> to purge messages\n_exit to Thwipper's program\n\nOnly the maker of the bot can use _stop command.",
+                        color=discord.Color.from_rgb(0, 255, 255))
+    embed.set_footer(text="Commands only work if you are a dev.")
+    embed.set_thumbnail(url=random.choice(url_thumbnails))
+    await ctx.send(embed=embed)
 
 
 @bot.command(aliases=["req"])
@@ -315,12 +327,16 @@ async def join_vc(ctx):
     total_requests()
     try:
         if not ctx.message.author.voice:
-            await ctx.send("{}, connect to a voice channel first")
+            pass
+            embed_join = discord.Embed(description="{} is not connected to a voice channel [❌]".format(ctx.message.author.name), color=discord.Color.from_rgb(0, 255, 255))
+            embed_join.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
+            await ctx.send(embed=embed_join)
         else:    
             channel = ctx.message.author.voice.channel
             await channel.connect()
-            message = await ctx.send("Connected") 
-            await message.add_reaction("✅")
+            embed_joined = discord.Embed(description="Connected to voice channel [✅]", color=discord.Color.from_rgb(0, 255, 255))
+            embed_joined.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
+            await ctx.send(embed=embed_joined)
     except Exception as e:
         embed_error = discord.Embed(description=str(e), color=discord.Color.from_rgb(0, 255, 255))
         embed_error.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
@@ -335,8 +351,11 @@ async def leave_vc(ctx):
     try:
         if voice_client.is_connected():
             await voice_client.disconnect()
-            message = await ctx.send("Disconnected")
-            await message.add_reaction("⭕")
+
+            embed = discord.Embed(description="Disconnected from voice channel [⭕]", color=discord.Color.from_rgb(0, 255, 255))
+            embed.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
+
+            await ctx.send(embed=embed)
     except:        
         embed = discord.Embed(description="Not in a voice channel to disconnect from [❌]", color=discord.Color.from_rgb(0, 255, 255))
         embed.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
@@ -382,16 +401,16 @@ async def play_music(ctx, *, char):
     if char.isnumeric() == False:
         try:
             if playing != True:
+                voice.play(discord.FFmpegPCMAudio(URL))
                 embed = discord.Embed(description="Now playing `{}` [🎸]".format(name_of_the_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(0, 255, 255))
                 embed.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
                 await ctx.send(embed=embed)
-                voice.play(discord.FFmpegPCMAudio(URL))
             else:
                 voice_client.stop()
+                voice.play(discord.FFmpegPCMAudio(URL))
                 embed = discord.Embed(description="Now playing `{}` [🎸]".format(name_of_the_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(0, 255, 255))
                 embed.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
                 await ctx.send(embed=embed)
-                voice.play(discord.FFmpegPCMAudio(URL))
         except Exception as e:
             embed = discord.Embed(description=str(e), color=discord.Color.from_rgb(0, 255, 255))
             embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
@@ -400,15 +419,15 @@ async def play_music(ctx, *, char):
         URL = youtube_download(ctx, queue[int(char)][1])
         try:
             if playing != True:
+                voice.play(discord.FFmpegPCMAudio(URL))
                 embed = discord.Embed(description="Now playing `{}` [🎸]".format(queue[int(char)][0].replace(" - YouTube", " ")), color=discord.Color.from_rgb(0, 255, 255))
                 embed.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
                 await ctx.send(embed=embed)
-                voice.play(discord.FFmpegPCMAudio(URL))
             else:
+                voice.play(discord.FFmpegPCMAudio(URL))
                 embed = discord.Embed(description="Now playing `{}` [🎸]".format(queue[int(char)][0].replace(" - YouTube", " ")), color=discord.Color.from_rgb(0, 255, 255))
                 embed.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
                 await ctx.send(embed=embed)
-                voice.play(discord.FFmpegPCMAudio(URL))
         except Exception as e:
             embed = discord.Embed(description=str(e), color=discord.Color.from_rgb(0, 255, 255))
             embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
@@ -432,7 +451,13 @@ async def view_queue(ctx):
         embed = discord.Embed(description="No songs in queue [⭕]", color=discord.Color.from_rgb(0, 255, 255))
         embed.set_author(name="𝗤𝘂𝗲𝘂𝗲", icon_url=url_author_music)
         await ctx.send(embed=embed)
-
+@bot.command()
+async def restart_program():
+    if sys.platform=="linux":
+        os.system("nohup "+os.getcwd()+"/Discord.py")
+    else:
+        os.startfile(__file__)
+    sys.exit()
 
 @bot.command(aliases=["pause"])
 async def pause_song(ctx):
@@ -502,13 +527,11 @@ async def remove_song(ctx, index):
     total_requests()
     global queue
     global cursor
-    try:
-        operation_remove = "DELETE FROM music_queue WHERE (song_name={first}) AND (song_url={last})".format(first=queue[index][0], last=queue[index][1])
-        await ctx.send(embed=discord.Embed(description="`{}` removed from queue [✅]".format(queue[index][0]), color=discord.Color.from_rgb(0, 255, 255)))
-        cursor.execute(operation_remove)
-    except Exception as e:
-        await ctx.send(embed=discord.Embed(description=str(e), color=discord.Color.from_rgb(0, 255, 255)))
-
+    Queue = list(queue)
+    operation_remove = "DELETE FROM music_queue WHERE (song_name={first}) AND (song_url={last})".format(first=Queue[index][0], last=Queue[index][1])
+    await ctx.send(embed=discord.Embed(description="`{}` removed from queue [✅]".format(queue[index][0]), color=discord.Color.from_rgb(0, 255, 255)))
+    cursor.execute(operation_remove)
+    
 
 @bot.command(aliases=["clear_queue","cq"])
 async def clear_song_queue(ctx):
@@ -527,4 +550,8 @@ async def clear_song_queue(ctx):
         embed.set_author(name="𝗛𝗺𝗺...", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
-bot.run(os.environ('token_thwipper'))
+
+start_token=txt_from_file.find("token=")+len("token=")
+end_token=txt_from_file.find('"',start_token+3)+1
+print(txt_from_file[start_token:end_token])
+bot.run(eval(txt_from_file[start_token:end_token]))

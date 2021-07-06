@@ -98,7 +98,7 @@ async def on_ready():
             continue
         meme_links += [link]
     # UPDATION
-    @tasks.loop(minutes=5.0)
+    @tasks.loop(seconds=5.0)
     async def updation():
         # music queue updation
         global queue
@@ -388,13 +388,13 @@ async def play_music(ctx, *, char):
                 embed = discord.Embed(description="Now playing `{}` [🎸]".format(name_of_the_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(0, 255, 255))
                 embed.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
                 await ctx.send(embed=embed)
-                voice.play(discord.FFmpegPCMAudio(URL))
+                voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
             else:
                 voice_client.stop()
                 embed = discord.Embed(description="Now playing `{}` [🎸]".format(name_of_the_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(0, 255, 255))
                 embed.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
                 await ctx.send(embed=embed)
-                voice.play(discord.FFmpegPCMAudio(URL))
+                voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
         except Exception as e:
             embed = discord.Embed(description=str(e), color=discord.Color.from_rgb(0, 255, 255))
             embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)

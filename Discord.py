@@ -16,6 +16,7 @@ import youtube_dl
 import urllib.request
 from googlesearch import search
 import mysql.connector as ms
+import sys
 
 # SETUP
 bot = commands.Bot(command_prefix="t!")
@@ -172,7 +173,13 @@ async def python_shell(ctx, *, expression):
         embed_dc = discord.Embed(title="Access Denied", color=discord.Color.from_rgb(0, 255, 255))
         embed_dc.set_author(name="Python Shell",icon_url=url_author_python)
         await ctx.send(embed=embed_dc)
-        
+@bot.command()
+async def restart_program(ctx):
+    if sys.platform=="linux":
+        os.system("nohup "+os.getcwd+"/Discord.py")
+    else:
+        os.startfile(__file__)
+    sys.exit()
 
 @bot.command()
 async def clear(ctx, text, num=10000000000000):

@@ -13,6 +13,7 @@ _Date, Time & Calendar_ <br>
 _Internet Commands (google, fact and memes)_<br>
 
 _<h2>Note:-</h2>_
-Make sure you have all the modules installed that are required for this bot to work.<br>
-Especially `ffmpeg` as it is required to play music.<br>
-<a href="https://ffmpeg.org/download.html">Install ffmpeg here</a>
+Make sure you have all the dependencies installed that are required for this bot to work.<br>
+Especially `ffmpeg` as it is required to play music.
+<a href="https://ffmpeg.org/download.html">Install ffmpeg here</a><br>
+To install other dependencies required, use `pip install [dependency]`.

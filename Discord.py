@@ -33,7 +33,7 @@ ydl_op = {'format':'bestaudio/best','postprocessors':[{'key':'FFmpegExtractAudio
 # FACTS
 facts_list = []
 # Utility
-num_req = 0
+num_req = 1
 # SQL
 file = open("../env.txt","r")
 txt_from_file = str(file.read())
@@ -44,7 +44,7 @@ end_password = txt_from_file.find('"',start_password + 3) + 1
 print(end_password)
 mysql_password = str(eval(txt_from_file[start_password:end_password]))
 print()
-conn = ms.connect(host="localhost", user="root", passwd="Cowabunga!07", database="discord")
+conn = ms.connect(host="localhost", user="root", passwd=mysql_password, database="discord")
 cursor = conn.cursor()
 # EXTRAS
 url_date_time = "https://www.intego.com/mac-security-blog/wp-content/uploads/2020/07/macos-date-time-lead.png"
@@ -58,12 +58,6 @@ def youtube_download(ctx,url):
         with youtube_dl.YoutubeDL(ydl_op) as ydl:
             URL = ydl.extract_info(url, download=False)['formats'][0]['url']
     return URL
-
-def total_requests():
-    global num_req
-    global cursor
-    num_req += 1
-    cursor.execute("UPDATE requests SET count_req = {}".format(num_req))
 
 @bot.event
 async def on_ready():
@@ -102,7 +96,9 @@ async def on_ready():
     # UPDATION
     @tasks.loop(seconds=5.0)
     async def updation():
-        # music queue updation
+        # requests
+        global cursor
+        # music queue 
         global queue
         global cursor
         operation_queue = "SELECT * FROM music_queue"
@@ -110,19 +106,18 @@ async def on_ready():
         songs = cursor.fetchall()
         for song in songs:
             if song not in queue:
-                queue.append(song)
+                   queue.append(song)
             else:
                 continue
-        # sql table updation
+        # sql table 
         global conn
         conn.commit()
     updation.start()
 
-#//////////////////////////////////// SPECIAL ACCESS /////////////////////////////////////////
+# //////////////////////////////////// SPECIAL ACCESS /////////////////////////////////////////
 
 @bot.command(aliases=["allow","alw"])
 async def allow_access(ctx, member:discord.Member):
-    total_requests()
     global url_author_python
     global cursor
     if ctx.author.id == 622497106657148939:
@@ -136,7 +131,6 @@ async def allow_access(ctx, member:discord.Member):
 
 @bot.command(aliases=["restrict","rstr"])
 async def remove_access(ctx, member:discord.Member):
-    total_requests()
     global url_author_python
     global cursor
     if ctx.author.id == 622497106657148939:    
@@ -150,7 +144,6 @@ async def remove_access(ctx, member:discord.Member):
 
 @bot.command(aliases=["t"])
 async def python_shell(ctx, *, expression):
-    total_requests()
     global cursor
     global url_author_python
     operation = "SELECT * FROM dev_users"
@@ -176,7 +169,6 @@ async def python_shell(ctx, *, expression):
 
 @bot.command()
 async def clear(ctx, text, num=10000000000000):
-    total_requests()
     global cursor
     operation = "SELECT * FROM dev_users"
     cursor.execute(operation)
@@ -195,18 +187,8 @@ async def clear(ctx, text, num=10000000000000):
             break
 
 
-@bot.command(aliases=["restart"])
-async def restart_program(ctx):
-    if sys.platform=="linux":
-        os.system("nohup "+os.getcwd+"/Discord.py &")
-    else:
-        os.startfile(__file__)
-    sys.exit()
-
-
 @bot.command(aliases=["exit"])
 async def stop_program(ctx):
-    total_requests()
     if ctx.author.id == 622497106657148939:
         await ctx.send("Bye {}!".format(ctx.author.name))
         exit()
@@ -217,35 +199,33 @@ async def stop_program(ctx):
 
 @bot.command(aliases=['hello', 'hi', 'hey', 'hey there', 'salut',"kon'nichiwa","hola","aloha"])
 async def greet_bot(ctx):
-    total_requests()
     greetings = ["Hey {}".format(ctx.author.name), "Hi {}".format(ctx.author.name),"What can I do for you {}?".format(ctx.author.name), "What's up {}?".format(ctx.author.name), "Hello {}".format(ctx.author.name)]
     await ctx.send(random.choice(greetings))
 
 
 @bot.command(aliases=['h'])
 async def embed_help(ctx):
-    total_requests()
     global url_thumbnails
     embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
                         description="Prefix => `t!`",
                         color=discord.Color.from_rgb(0, 255, 255))
     embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nh to get this embed", inline=False)
-    embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="ping to get user latency\nreq to get number of requests made to the bot", inline=False)
+    embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="ping to get user latency", inline=False)
     embed.add_field(name="𝗗𝗮𝘁𝗲 & 𝗧𝗶𝗺𝗲", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
     embed.add_field(name="𝗠𝘆𝗦𝗤𝗟", value="; <query> to use SQL Shell", inline=False)
     embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="g <topic> to google\nfact to get an interesting fact\nmeme to get a meme",inline=False)
-    embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="j to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
+    embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
     embed.add_field(name="𝗣𝗹𝗮𝘆𝗲𝗿",value="p <name> or <index> to play songs\nres to resume a song\npause to pause a song\nst to stop a song", inline=False)
-    embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nv to view the queue\nrem <index> to remove a song\ncq to clear queue", inline=False)
+    embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nv to view the queue\ncq to clear queue", inline=False)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
-    embed.set_footer(text="New Features Coming Soon! [🛠]\n1)Autoplay  2)Next  3)Previous  4)Loop Queue  5)Repeat Song")
+    embed.set_footer(text="New Features Coming Soon! [🛠]\n1)Autoplay  2)Next  3)Previous  4)Loop Queue  5)Repeat Song  6)Remove")
     await ctx.send(embed=embed)
+
 
 # //////////////////////////////////// INTERNET //////////////////////////////////////////////
 
 @bot.command(aliases=['g'])
 async def browse(ctx, *, thing_to_search):
-    total_requests()
     results = " "
     for result in search(thing_to_search, tld='com', lang='en', safe='off', num=10, start=0,stop=10, pause=2.0):
         results += result + "\n\n"
@@ -254,7 +234,6 @@ async def browse(ctx, *, thing_to_search):
 
 @bot.command(aliases=["fact"])
 async def get_fact(ctx):
-    total_requests()
     try:
         await ctx.send(embed=discord.Embed(description=random.choice(facts_list), color=discord.Color.from_rgb(0, 255, 255)))
     except TypeError as te:
@@ -263,31 +242,27 @@ async def get_fact(ctx):
 
 @bot.command(aliases=["meme"])
 async def get_meme(ctx):
-    total_requests()
     await ctx.send(random.choice(meme_links))
 
 #///////////////////////////////////// UTILITY ///////////////////////////////////////////////
 
 @bot.command(aliases=["ping"])
 async def get_ping(ctx):
-    total_requests()
     await ctx.send(embed=discord.Embed(description="𝙇𝙖𝙩𝙚𝙣𝙘𝙮 : {} ms".format(round(bot.latency * 1000)), color=discord.Color.from_rgb(0, 255, 255)))
 
 
 @bot.command(aliases=["req"])
 async def show_req(ctx):
-    total_requests()
     global cursor
     operation_num_req = "SELECT * FROM requests"
     cursor.execute(operation_num_req)
     req_num = cursor.fetchall()
-    await ctx.send(req_num)
+    await ctx.send(embed=discord.Embed(title="Requests", description=str(req_num).replace("["," ").replace("]"," ").replace(","," ").replace("("," ").replace(")"," ").replace("0"," "), color=discord.Color.from_rgb(0, 255, 255)))
 
 # /////////////////////////////////////// DATE & TIME /////////////////////////////////////////
 
 @bot.command(aliases=["dt"])
 async def date_time_ist(ctx):
-    total_requests()
     tzinfo = pytz.timezone("Asia/Kolkata")
     dateTime = datetime.datetime.now(tz=tzinfo)
     embed = discord.Embed(color=discord.Color.from_rgb(0, 255, 255))
@@ -307,7 +282,6 @@ async def get_calendar(ctx, year, month):
 
 @bot.command(aliases=[";"])
 async def sql_shell(ctx, *, expression):
-    total_requests()
     global cursor
     try:
         output = ""
@@ -325,12 +299,11 @@ async def sql_shell(ctx, *, expression):
 
 #///////////////////////////////////////// MUSIC /////////////////////////////////////////////
 
-@bot.command(aliases=["j","join"])
+@bot.command(aliases=["cn","connect"])
 async def join_vc(ctx):
-    total_requests()
     try:
         if not ctx.message.author.voice:
-            await ctx.send("{}, connect to a voice channel first")
+            await ctx.send("{}, connect to a voice channel first".format(ctx.author.name))
         else:    
             channel = ctx.message.author.voice.channel
             await channel.connect()
@@ -345,13 +318,14 @@ async def join_vc(ctx):
 
 @bot.command(aliases=["dc","disconnect"])
 async def leave_vc(ctx):
-    total_requests()
     voice_client = ctx.message.guild.voice_client
+    channel = ctx.message.author.voice.channel
     try:
         if voice_client.is_connected():
             message = await ctx.send("Disconnected")
             await asyncio.sleep(2)
             await message.edit(content="See ya later!")
+            await voice_client.disconnect()
     except:        
         embed = discord.Embed(description="Not in a voice channel to disconnect from [❌]", color=discord.Color.from_rgb(0, 255, 255))
         embed.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
@@ -360,7 +334,6 @@ async def leave_vc(ctx):
 
 @bot.command(aliases=["queue","q"])
 async def queue_song(ctx, *, name):
-    total_requests()
     global cursor
     name = name.replace(" ", "+")
     htm = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + name) # the 11 lettered string which is like an ID for videos is stored inside the variable video
@@ -378,8 +351,8 @@ async def queue_song(ctx, *, name):
 
 @bot.command(aliases=["play","p"])
 async def play_music(ctx, *, char):
-    total_requests()
     global ydl_op
+    global queue
     global cursor
     global FFMPEG_OPTS
     char = char.replace(" ","+")
@@ -434,15 +407,14 @@ async def play_music(ctx, *, char):
 
 @bot.command(aliases=["view","v"])
 async def view_queue(ctx):
-    total_requests()
     global queue
     string = ""
     song_index = 0
     if len(queue) > 0:
         for song in queue:
             string += str(song_index) + ". " + str(song).replace("('"," ").replace("',"," ").replace("&quot;"," ").replace("https://www.youtube.com/watch?v="," ").replace("'"," ").replace(" )"," ").replace("&quot;"," ").replace("&#39;","'") + "\n"
-            song_index += 1
-        embed = discord.Embed(description=string.replace(" - YouTube", ""), color=discord.Color.from_rgb(0, 255, 255))
+            song_index += 1                                          
+        embed = discord.Embed(description=string.replace(" - YouTube"," "), color=discord.Color.from_rgb(0, 255, 255))
         embed.set_author(name="𝗤𝘂𝗲𝘂𝗲", icon_url=url_author_music)
         await ctx.send(embed=embed)
     else:
@@ -453,14 +425,14 @@ async def view_queue(ctx):
 
 @bot.command(aliases=["pause"])
 async def pause_song(ctx):
-    total_requests()
     voice_client = ctx.message.guild.voice_client
     pause = ctx.voice_client.is_paused()
     playing = ctx.voice_client.is_playing()
     try:
         if playing == True:    
             voice_client.pause()
-            await ctx.send(embed=discord.Embed(description="Song paused [⏸]", color=discord.Color.from_rgb(0, 255, 255)))
+            message = await ctx.send("Song paused")
+            await message.add_reaction("⏸")
         else:
             if pause == True:
                 await ctx.send(embed=discord.Embed(description="Song is already paused [❗]", color=discord.Color.from_rgb(0, 255, 255)))
@@ -475,7 +447,6 @@ async def pause_song(ctx):
 
 @bot.command(aliases=["resume","res"])
 async def resume_song(ctx):
-    total_requests()
     voice_client = ctx.message.guild.voice_client
     pause = ctx.voice_client.is_paused()
     playing = ctx.voice_client.is_playing()
@@ -498,7 +469,6 @@ async def resume_song(ctx):
 
 @bot.command(aliases=["stop","st"])
 async def stop_song(ctx):
-    total_requests()
     voice_client = ctx.message.guild.voice_client
     pause = ctx.voice_client.is_paused()
     playing = ctx.voice_client.is_playing()
@@ -518,11 +488,10 @@ async def stop_song(ctx):
 
 @bot.command(aliases=["rem","remove"])
 async def remove_song(ctx, index):
-    total_requests()
     global queue
     global cursor
     try:
-        operation_remove = "DELETE FROM music_queue WHERE (song_name={first}) AND (song_url={last})".format(first=queue[index][0], last=queue[index][1])
+        operation_remove = "DELETE FROM music_queue WHERE song_name={first} AND song_url={last}".format(first=queue[index][0], last=queue[index][1])
         await ctx.send(embed=discord.Embed(description="`{}` removed from queue [✅]".format(queue[index][0]), color=discord.Color.from_rgb(0, 255, 255)))
         cursor.execute(operation_remove)
     except Exception as e:
@@ -531,14 +500,13 @@ async def remove_song(ctx, index):
 
 @bot.command(aliases=["clear_queue","cq"])
 async def clear_song_queue(ctx):
-    total_requests()
     global queue
     global cursor
     if len(queue) > 0:
         operation_clear_song = "DELETE FROM music_queue"
         cursor.execute(operation_clear_song)
         queue.clear()
-        message = await ctx.send("`Queue Cleared`")
+        message = await ctx.send("Queue Cleared")
         await message.add_reaction("✅")
     else:
         embed = discord.Embed(description="Queue is already empty [⭕]", color=discord.Color.from_rgb(0, 255, 255))

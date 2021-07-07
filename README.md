@@ -1,7 +1,7 @@
 # Thwipper-bot
 
 _<h2>What is Thwipper?</h2>_
-This is an <strong>all-in-one</strong> discord I made. I took inspiration from Spider-Man, hence the name <strong>Thwipper</strong>.
+A discord bot I made that takes inspiration from Spider-Man, hence the name <strong>Thwipper</strong>.
 
 <img src="https://wallpapercave.com/wp/wp2513595.png"></img>
 
@@ -10,3 +10,7 @@ _Music Player_<br>
 _Python & MySQL Shells_<br> 
 _Date, Time & Calendar_ <br>
 _Internet Commands (google, fact and memes)_<br>
+
+_<h2>Note:-</h2>_
+Make sure you have all the modules installed that are required for this bot to work.<br>
+<a href="https://ffmpeg.org/download.html">Install ffmpeg</a>

@@ -2,9 +2,11 @@ import discord
 from discord.utils import get
 from discord.ext import commands, tasks
 import os
+import sys
 import pytz
 import json
 import random
+import asyncio
 import calendar
 import datetime
 import regex
@@ -199,6 +201,16 @@ async def clear(ctx, text, num=10000000000000):
             await ctx.send("Access Denied")
             break
 
+
+@bot.command(aliases=["restart"])
+async def restart_program(ctx):
+    if sys.platform=="linux":
+        os.system("nohup "+os.getcwd+"/Discord.py &")
+    else:
+        os.startfile(__file__)
+    sys.exit()
+
+
 @bot.command(aliases=["exit"])
 async def stop_program(ctx):
     total_requests()
@@ -213,7 +225,7 @@ async def stop_program(ctx):
 @bot.command(aliases=['hello', 'hi', 'hey', 'hey there', 'salut',"kon'nichiwa","hola","aloha"])
 async def greet_bot(ctx):
     total_requests()
-    greetings = ["Hey {}! How's it going?".format(ctx.author.name), "Hi {}!".format(ctx.author.name),"Kon'nichiwa {} (⌐■_■)".format(ctx.author.name),"What can I do for you {}?".format(ctx.author.name), "What's up {}?".format(ctx.author.name)]
+    greetings = ["Hey {}".format(ctx.author.name), "Hi {}".format(ctx.author.name),"What can I do for you {}?".format(ctx.author.name), "What's up {}?".format(ctx.author.name), "Hello {}".format(ctx.author.name)]
     await ctx.send(random.choice(greetings))
 
 
@@ -329,12 +341,12 @@ async def join_vc(ctx):
         else:    
             channel = ctx.message.author.voice.channel
             await channel.connect()
-            message = await ctx.send("Connected") 
-            await message.add_reaction("✅")
+            message = await ctx.send("Connected")
+            await asyncio.sleep(2)
+            await message.edit(content="Use `t!p <name> or <index>` to play songs") 
     except Exception as e:
         embed_error = discord.Embed(description=str(e), color=discord.Color.from_rgb(0, 255, 255))
         embed_error.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
-        
         await ctx.send(embed=embed_error)
 
 
@@ -344,9 +356,9 @@ async def leave_vc(ctx):
     voice_client = ctx.message.guild.voice_client
     try:
         if voice_client.is_connected():
-            await voice_client.disconnect()
             message = await ctx.send("Disconnected")
-            await message.add_reaction("⭕")
+            await asyncio.sleep(2)
+            await message.edit(content="See ya later!")
     except:        
         embed = discord.Embed(description="Not in a voice channel to disconnect from [❌]", color=discord.Color.from_rgb(0, 255, 255))
         embed.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
@@ -415,12 +427,12 @@ async def play_music(ctx, *, char):
                 embed = discord.Embed(description="Now playing `{}` [🎸]".format(queue[int(char)][0].replace(" - YouTube", " ")), color=discord.Color.from_rgb(0, 255, 255))
                 embed.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
                 await ctx.send(embed=embed)
-                voice.play(discord.FFmpegOpusAudio(URL, bitrate=96, codec=None, executable=FFMPEG_OPTS))
+                voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
             else:
                 embed = discord.Embed(description="Now playing `{}` [🎸]".format(queue[int(char)][0].replace(" - YouTube", " ")), color=discord.Color.from_rgb(0, 255, 255))
                 embed.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
                 await ctx.send(embed=embed)
-                voice.play(discord.FFmpegPCMAudio(URL))
+                voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
         except Exception as e:
             embed = discord.Embed(description=str(e), color=discord.Color.from_rgb(0, 255, 255))
             embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)

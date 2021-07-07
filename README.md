@@ -13,4 +13,5 @@ _Internet Commands (google, fact and memes)_<br>
 
 _<h2>Note:-</h2>_
 Make sure you have all the modules installed that are required for this bot to work.<br>
-<a href="https://ffmpeg.org/download.html">Install ffmpeg</a>
+Especially `ffmpeg` as it is required to play music.<br>
+<a href="https://ffmpeg.org/download.html">Install ffmpeg here</a>

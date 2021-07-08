@@ -34,6 +34,8 @@ ydl_op = {'format':'bestaudio/best','postprocessors':[{'key':'FFmpegExtractAudio
 facts_list = []
 # Utility
 num_req = 1
+# MEMES
+pinterest = ["https://in.pinterest.com/greenlanter5424/funny-superheroes-memes/","https://in.pinterest.com/nevaehgracesmom/superhero-memes/","https://in.pinterest.com/alexevitts98/superhero-funny/"]
 # SQL
 file = open("../env.txt","r")
 txt_from_file = str(file.read())
@@ -78,7 +80,7 @@ async def on_ready():
             facts_list += [output]    
     # MEMES
     global meme_links
-    raw = requests.get("https://in.pinterest.com/nevaehgracesmom/superhero-memes/")
+    raw = requests.get(random.choice(pinterest))
     html_content = raw.content.decode()
     stop = 0
     for i in range(0,500):
@@ -324,8 +326,8 @@ async def leave_vc(ctx):
             message = await ctx.send("Disconnected")
             await asyncio.sleep(2)
             await message.edit(content="See ya later!")
-    except:        
-        embed = discord.Embed(description="Not in a voice channel to disconnect from [❌]", color=discord.Color.from_rgb(70, 96, 253))
+    except Exception as e:        
+        embed = discord.Embed(description=str(e), color=discord.Color.from_rgb(70, 96, 253))
         embed.set_author(name="𝗠𝘂𝘀𝗶𝗰", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -342,7 +344,7 @@ async def queue_song(ctx, *, name):
     ending = htm_code.find("</title>")        
     name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&") # here we replace uncessary things like tags because we only want the title
     cursor.execute("INSERT INTO music_queue(song_name, song_url)VALUES('{first}','{last}')".format(first=name_of_the_song, last=url))
-    embed = discord.Embed(description="{} [✅]".format(name_of_the_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+    embed = discord.Embed(description="{}".format(name_of_the_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
     embed.set_author(name="Song added", icon_url=url_author_music)
     await ctx.send(embed=embed)
 

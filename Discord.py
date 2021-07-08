@@ -48,7 +48,7 @@ conn = ms.connect(host="localhost", user="root", passwd=mysql_password, database
 cursor = conn.cursor()
 # EXTRAS
 url_date_time = "https://www.intego.com/mac-security-blog/wp-content/uploads/2020/07/macos-date-time-lead.png"
-url_thumbnails = ["https://c4.wallpaperflare.com/wallpaper/42/823/767/spiderman-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/517/160/840/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/107/848/913/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://wallpapercave.com/wp/AVIUso6.jpg","https://wallpapercave.com/wp/n9L3kJf.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-man-miles-morales-minimal-art-4k-43.jpg","https://images.hdqwalls.com/wallpapers/thumb/northern-spider-5k-f3.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-and-deadpool-4k-ys.jpg","https://images.hdqwalls.com/wallpapers/thumb/spiderman-into-the-spider-verse-y7.jpg","https://wallpapercave.com/wp/wp2018132.png","https://wallpapercave.com/wp/wp2018145.jpg","https://wallpapercave.com/wp/wp2018203.jpg","https://images3.alphacoders.com/593/thumbbig-593562.webp","https://images6.alphacoders.com/107/thumbbig-1071152.webp","https://images6.alphacoders.com/107/thumbbig-1070974.webp","https://i.pinimg.com/236x/38/a4/f6/38a4f62d74d7aeb2ae2396c991fcde52.jpg","https://i.pinimg.com/236x/ed/76/cc/ed76cc8bfe41347d979c93e23fbe51a0.jpg","https://i.pinimg.com/236x/91/87/2d/91872d5c92e8339036106bc832656a49.jpg","https://i.pinimg.com/236x/e3/94/05/e39405072916bb996caee3a4045f573a.jpg","https://i.pinimg.com/236x/36/2c/42/362c4298860d79a4b49acd9370cabe04.jpg","https://i.pinimg.com/236x/cf/3c/f4/cf3cf4ef7239868b1abc243168c41647.jpg","https://i.pinimg.com/236x/b1/3e/e7/b13ee7a8a8d72fbe39153569b5618c21.jpg"]
+url_thumbnails = ["","https://i.pinimg.com/236x/4b/5e/bf/4b5ebfaba10beb08d3cae0a4ed684bdb.jpg","https://i.pinimg.com/236x/87/df/c7/87dfc7f867d4afff7c73923664a560af.jpg","https://i.pinimg.com/236x/b4/79/69/b47969fdf761ee63bf60adfdf7ba6554.jpg","https://i.pinimg.com/236x/48/0f/17/480f17eaaf087d44e540ee0a2d512297.jpg","https://i.pinimg.com/236x/4f/ab/0e/4fab0e67c4ba300f03bb5f03421ea7db.jpg","https://i.pinimg.com/236x/f6/06/ef/f606efe1e45c96ee6585cadebc6c8f74.jpg","https://c4.wallpaperflare.com/wallpaper/42/823/767/spiderman-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/517/160/840/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/107/848/913/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://wallpapercave.com/wp/AVIUso6.jpg","https://wallpapercave.com/wp/n9L3kJf.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-man-miles-morales-minimal-art-4k-43.jpg","https://images.hdqwalls.com/wallpapers/thumb/northern-spider-5k-f3.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-and-deadpool-4k-ys.jpg","https://images.hdqwalls.com/wallpapers/thumb/spiderman-into-the-spider-verse-y7.jpg","https://wallpapercave.com/wp/wp2018132.png","https://wallpapercave.com/wp/wp2018145.jpg","https://wallpapercave.com/wp/wp2018203.jpg","https://images3.alphacoders.com/593/thumbbig-593562.webp","https://images6.alphacoders.com/107/thumbbig-1071152.webp","https://images6.alphacoders.com/107/thumbbig-1070974.webp","https://i.pinimg.com/236x/38/a4/f6/38a4f62d74d7aeb2ae2396c991fcde52.jpg","https://i.pinimg.com/236x/ed/76/cc/ed76cc8bfe41347d979c93e23fbe51a0.jpg","https://i.pinimg.com/236x/91/87/2d/91872d5c92e8339036106bc832656a49.jpg","https://i.pinimg.com/236x/e3/94/05/e39405072916bb996caee3a4045f573a.jpg","https://i.pinimg.com/236x/36/2c/42/362c4298860d79a4b49acd9370cabe04.jpg","https://i.pinimg.com/236x/cf/3c/f4/cf3cf4ef7239868b1abc243168c41647.jpg","https://i.pinimg.com/236x/b1/3e/e7/b13ee7a8a8d72fbe39153569b5618c21.jpg"]
 url_author_sql = "https://miro.medium.com/max/361/1*WzqoTtRUpmJR26dzlKdIwg.png"
 url_author_music = "https://i.pinimg.com/236x/74/d8/46/74d8469c377334ffd7ae49d54491b477.jpg"
 url_author_python = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/1200px-Python.svg.png"
@@ -198,7 +198,7 @@ async def stop_program(ctx):
 
 @bot.command(aliases=['hello', 'hi', 'hey', 'hey there', 'salut',"kon'nichiwa","hola","aloha"])
 async def greet_bot(ctx):
-    greetings = ["Hey {}".format(ctx.author.name), "Hi {}".format(ctx.author.name),"What can I do for you {}?".format(ctx.author.name), "What's up {}?".format(ctx.author.name), "Hello {}".format(ctx.author.name)]
+    greetings = ["Hey {}!".format(ctx.author.name), "Hi {}!".format(ctx.author.name), "How's it going {}?".format(ctx.author.name), "What can I do for you {}?".format(ctx.author.name), "What's up {}?".format(ctx.author.name), "Hello {}!".format(ctx.author.name)]
     await ctx.send(random.choice(greetings))
 
 
@@ -215,7 +215,7 @@ async def embed_help(ctx):
     embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="g <topic> to google\nfact to get an interesting fact\nmeme to get superhero memes",inline=False)
     embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
     embed.add_field(name="𝗣𝗹𝗮𝘆𝗲𝗿",value="p <name> or <index> to play songs\nres to resume a song\npause to pause a song\nst to stop a song", inline=False)
-    embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nv to view the queue\ncq to clear queue", inline=False)
+    embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nrem <index> to remove a song\nv to view the queue\ncq to clear queue", inline=False)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text="New Features Coming Soon! [🛠]\n1)Autoplay  2)Next  3)Previous  4)Loop Queue  5)Repeat Song  6)Remove")
     await ctx.send(embed=embed)
@@ -365,43 +365,46 @@ async def play_music(ctx, *, char):
     voice = get(bot.voice_clients, guild=ctx.guild)
     voice_client = ctx.message.guild.voice_client
     playing = ctx.voice_client.is_playing()
-    if char.isnumeric() == False:
-        try:
-            if playing != True:
-                embed = discord.Embed(description="{}".format(name_of_the_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
-                embed.set_author(name="Now playing [🎸]", icon_url=url_author_music)
+    if ctx.message.author.voice:
+        if char.isnumeric() == False:
+            try:
+                if playing != True:
+                    embed = discord.Embed(description="{}".format(name_of_the_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+                    embed.set_author(name="Now playing [🎸]", icon_url=url_author_music)
+                    await ctx.send(embed=embed)
+                    voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
+                else:
+                    embed = discord.Embed(description="{}".format(name_of_the_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+                    embed.set_author(name="Now playing [🎸]", icon_url=url_author_music)
+                    voice.stop()
+                    await ctx.send(embed=embed)
+                    voice.play(discord.FFmpegOpusAudio(URL, bitrate=96, codec=None, executable=FFMPEG_OPTS))
+            except Exception as e:
+                embed = discord.Embed(description=str(e), color=discord.Color.from_rgb(70, 96, 253))
+                embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
                 await ctx.send(embed=embed)
-                voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
-            else:
-                embed = discord.Embed(description="{}".format(name_of_the_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
-                embed.set_author(name="Now playing [🎸]", icon_url=url_author_music)
-                voice.stop()
-                await ctx.send(embed=embed)
-                voice.play(discord.FFmpegOpusAudio(URL, bitrate=96, codec=None, executable=FFMPEG_OPTS))
-        except Exception as e:
-            embed = discord.Embed(description=str(e), color=discord.Color.from_rgb(70, 96, 253))
-            embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
-            await ctx.send(embed=embed)
+        else:
+            URL = youtube_download(ctx, queue[int(char)][1])
+            try: 
+                if not ctx.guild.id in list(current.keys()) and int(char) < len(queue):
+                    current[ctx.guild.id] = int(char)
+                if playing != True:
+                    embed = discord.Embed(description="{}".format(queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+                    embed.set_author(name="Now playing [🎸]", icon_url=url_author_music)
+                    await ctx.send(embed=embed)
+                    voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
+                else:
+                    embed = discord.Embed(description="{}".format(queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+                    embed.set_author(name="Now playing [🎸]", icon_url=url_author_music)
+                    voice.stop()
+                    await ctx.send(embed=embed)
+                    voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
+            except Exception as e:
+                embed = discord.Embed(description=str(e), color=discord.Color.from_rgb(70, 96, 253))
+                embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
+                await ctx.send(embed=embed)    
     else:
-        URL = youtube_download(ctx, queue[int(char)][1])
-        try: 
-            if not ctx.guild.id in list(current.keys()) and int(char) < len(queue):
-                current[ctx.guild.id] = int(char)
-            if playing != True:
-                embed = discord.Embed(description="{}".format(queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
-                embed.set_author(name="Now playing [🎸]", icon_url=url_author_music)
-                await ctx.send(embed=embed)
-                voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
-            else:
-                embed = discord.Embed(description="{}".format(queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
-                embed.set_author(name="Now playing [🎸]", icon_url=url_author_music)
-                voice.stop()
-                await ctx.send(embed=embed)
-                voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
-        except Exception as e:
-            embed = discord.Embed(description=str(e), color=discord.Color.from_rgb(70, 96, 253))
-            embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
-            await ctx.send(embed=embed)    
+        await ctx.send("{}, connect to a voice channel first [🔊]".format(ctx.author.message))
 
 
 @bot.command(aliases=["view","v"])
@@ -415,8 +418,8 @@ async def view_queue(ctx):
         for song in queue:
             string += str(song_index) + ". " + str(queue[song_index][0]) + "\n"
             song_index += 1
-        embed = discord.Embed(description=string.replace(" - YouTube"," "), color=discord.Color.from_rgb(70, 96, 253))
-        embed.set_author(name="𝗤𝘂𝗲𝘂𝗲", icon_url=url_author_music)
+        embed = discord.Embed(title="𝗤𝘂𝗲𝘂𝗲", description=string.replace(" - YouTube"," "), color=discord.Color.from_rgb(70, 96, 253))
+        embed.set_thumbnail(url="https://i.pinimg.com/236x/10/06/35/100635a268123393a208b3e6efb5ec0d.jpg")
         await ctx.send(embed=embed)
     else:
         embed = discord.Embed(description="No songs in queue [⭕]", color=discord.Color.from_rgb(70, 96, 253))
@@ -429,21 +432,24 @@ async def pause_song(ctx):
     voice_client = ctx.message.guild.voice_client
     pause = ctx.voice_client.is_paused()
     playing = ctx.voice_client.is_playing()
-    try:
-        if playing == True:    
-            voice_client.pause()
-            message = await ctx.send("Song paused")
-            await message.add_reaction("⏸")
-        else:
-            if pause == True:
-                await ctx.send(embed=discord.Embed(description="Song is already paused [❗]", color=discord.Color.from_rgb(70, 96, 253)))
+    if ctx.message.author.voice:
+        try:
+            if playing == True:    
+                voice_client.pause()
+                message = await ctx.send("Song paused")
+                await message.add_reaction("⏸")
             else:
-                embed = discord.Embed(description="No song playing currently [❗]", color=discord.Color.from_rgb(70, 96, 253))
-                await ctx.send(embed=embed)
-    except Exception as e: 
-        embed = discord.Embed(description=str(e), color=discord.Color.from_rgb(70, 96, 253))
-        embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
-        await ctx.send(embed=embed)
+                if pause == True:
+                    await ctx.send(embed=discord.Embed(description="Song is already paused [❗]", color=discord.Color.from_rgb(70, 96, 253)))
+                else:
+                    embed = discord.Embed(description="No song playing currently [❗]", color=discord.Color.from_rgb(70, 96, 253))
+                    await ctx.send(embed=embed)
+        except Exception as e: 
+            embed = discord.Embed(description=str(e), color=discord.Color.from_rgb(70, 96, 253))
+            embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
+            await ctx.send(embed=embed)
+    else:
+        await ctx.send("{}, connect to a voice channel first [🔊]".format(ctx.author.message))
 
 
 @bot.command(aliases=["resume","res"])
@@ -451,21 +457,24 @@ async def resume_song(ctx):
     voice_client = ctx.message.guild.voice_client
     pause = ctx.voice_client.is_paused()
     playing = ctx.voice_client.is_playing()
-    try:
-        if pause == True:
-            voice_client.resume()
-            message = await ctx.send("Song resumed")
-            await message.add_reaction("▶")
-        else:
-            if playing == True:
-                embed = discord.Embed(description="Song isn't paused [❓]\nUse _pause to pause the song.", color=discord.Color.from_rgb(70, 96, 253))
-                await ctx.send(embed=embed)
+    if ctx.message.author.voice:
+        try:
+            if pause == True:
+                voice_client.resume()
+                message = await ctx.send("Song resumed")
+                await message.add_reaction("▶")
             else:
-                await ctx.send(embed=discord.Embed(description="No song playing currently [❗]\nUse _p <name>  or <index> to play a song.", color=discord.Color.from_rgb(70, 96, 253)))
-    except Exception as e:
-            embed = discord.Embed(description=str(e), color=discord.Color.from_rgb(70, 96, 253))
-            embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
-            await ctx.send(embed=embed)
+                if playing == True:
+                    embed = discord.Embed(description="Song isn't paused [❓]\nUse _pause to pause the song.", color=discord.Color.from_rgb(70, 96, 253))
+                    await ctx.send(embed=embed)
+                else:
+                    await ctx.send(embed=discord.Embed(description="No song playing currently [❗]\nUse _p <name>  or <index> to play a song.", color=discord.Color.from_rgb(70, 96, 253)))
+        except Exception as e:
+                embed = discord.Embed(description=str(e), color=discord.Color.from_rgb(70, 96, 253))
+                embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
+                await ctx.send(embed=embed)
+    else:
+        await ctx.send("{}, connect to a voice channel first [🔊]".format(ctx.author.message))
 
 
 @bot.command(aliases=["stop","st"])
@@ -473,18 +482,21 @@ async def stop_song(ctx):
     voice_client = ctx.message.guild.voice_client
     pause = ctx.voice_client.is_paused()
     playing = ctx.voice_client.is_playing()
-    try:
-        if playing == True or pause == True:    
-            voice_client.stop()
-            message = await ctx.send("Song stopped")
-            await message.add_reaction("⏹")
-        else:
-            await ctx.send(embed=discord.Embed(description="Nothing is playing right now [❗]", color=discord.Color.from_rgb(70, 96, 253))
-            )
-    except Exception as e:
-            embed = discord.Embed(description=str(e), color=discord.Color.from_rgb(70, 96, 253))
-            embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
-            await ctx.send(embed=embed)
+    if ctx.message.author.voice:
+        try:
+            if playing == True or pause == True:    
+                voice_client.stop()
+                message = await ctx.send("Song stopped")
+                await message.add_reaction("⏹")
+            else:
+                await ctx.send(embed=discord.Embed(description="Nothing is playing right now [❗]", color=discord.Color.from_rgb(70, 96, 253))
+                )
+        except Exception as e:
+                embed = discord.Embed(description=str(e), color=discord.Color.from_rgb(70, 96, 253))
+                embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
+                await ctx.send(embed=embed)
+    else:
+        await ctx.send("{}, connect to a voice channel first [🔊]".format(ctx.author.message))
 
 
 @bot.command(aliases=["rem","remove"])
@@ -492,8 +504,8 @@ async def remove_song(ctx, index):
     global queue
     global cursor
     try:
-        operation_remove = "DELETE FROM music_queue WHERE song_name={first} AND song_url={last}".format(first=queue[index][0], last=queue[index][1])
-        await ctx.send(embed=discord.Embed(title="Song removed", description="`{}` [✅]".format(queue[index][0]), color=discord.Color.from_rgb(70, 96, 253)))
+        operation_remove = "DELETE FROM music_queue WHERE song_name = '{first}' AND song_url = '{last}'".format(first=queue[int(index)][0], last=queue[int(index)][1])
+        await ctx.send(embed=discord.Embed(description="{} removed from queue [✅]".format(queue[int(index)][0]), color=discord.Color.from_rgb(70, 96, 253)))
         cursor.execute(operation_remove)
     except Exception as e:
         await ctx.send(embed=discord.Embed(description=str(e), color=discord.Color.from_rgb(70, 96, 253)))

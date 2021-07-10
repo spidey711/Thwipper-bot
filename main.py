@@ -31,6 +31,7 @@ facts_list = []
 # Utility
 num_req = 1
 dev_users = []
+log_channel = 863484698290290688
 # MEMES
 meme_links = []
 pinterest = ["https://in.pinterest.com/greenlanter5424/funny-superheroes-memes/","https://in.pinterest.com/nevaehgracesmom/superhero-memes/","https://in.pinterest.com/alexevitts98/superhero-funny/"]
@@ -92,16 +93,6 @@ async def on_ready():
     # UPDATION
     @tasks.loop(seconds=5.0)
     async def updation():
-        # dev_users
-        global cursor
-        operation_dev = "SELECT * FROM dev_users"
-        cursor.execute(operation_dev)
-        devs = cursor.fetchall()
-        for dev in devs:
-            if dev not in dev_users:
-                dev_users.append(dev)
-            else:
-                continue
         # music queue 
         global queue
         operation_queue = "SELECT * FROM music_queue"
@@ -147,7 +138,11 @@ async def remove_access(ctx, member:discord.Member):
 
 @bot.command(aliases=["t"])
 async def python_shell(ctx, *, expression):
-    if ctx.author.id in dev_users:
+    global cursor
+    operation_dev = "SELECT * FROM dev_users"
+    cursor.execute(operation_dev)
+    dev_ids = cursor.fetchall()
+    if ctx.author.id == [dev_id for dev_id in dev_ids] or ctx.author.id == 622497106657148939:  
         try:
             embed_acc = discord.Embed(title=str(expression), description=str(eval(expression)), color=discord.Color.from_rgb(70, 96, 253))
             embed_acc.set_author(name="Python Shell", icon_url=url_author_python)
@@ -285,19 +280,19 @@ async def sql_shell(ctx, *, expression):
 
 @bot.command(aliases=["cn","connect"])
 async def join_vc(ctx):
-    try:
-        if not ctx.message.author.voice:
-            embed = discord.Embed(description="{}, connect to a voice channel first [🔊]".format(ctx.author.name), color=discord.Color.from_rgb(70, 96, 253))
-            embed.set_author(name='Voice', icon_url=url_author_music)
-            await ctx.send(embed=embed)
-        else:    
-            channel = ctx.message.author.voice.channel
-            await channel.connect()
-            message = await ctx.send("Connected")
-            await asyncio.sleep(2)
-            await message.edit(content="Use `t!p <name> or <index>` to play songs [🎸]") 
-    except Exception as e:
-        embed = discord.Embed(description=str(e) + " [✅]", color=discord.Color.from_rgb(70, 96, 253))
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    if not ctx.message.author.voice:
+        embed = discord.Embed(description="{}, connect to a voice channel first [🔊]".format(ctx.author.name), color=discord.Color.from_rgb(70, 96, 253))
+        embed.set_author(name='Voice', icon_url=url_author_music)
+        await ctx.send(embed=embed)
+    if voice == None:    
+        channel = ctx.message.author.voice.channel
+        await channel.connect()
+        message = await ctx.send("Connected")
+        await asyncio.sleep(2)
+        await message.edit(content="Use `t!p <name> or <index>` to play songs [🎸]")
+    if voice != None:
+        embed = discord.Embed(description="Already connected to a voice channel [✅]", color=discord.Color.from_rgb(70, 96, 253))
         embed.set_author(name='Voice', icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -310,7 +305,7 @@ async def leave_vc(ctx):
             await voice_client.disconnect() 
             message = await ctx.send("Disconnected")
             await asyncio.sleep(2)
-            await message.edit(content="See ya later [👋🏻]")
+            await message.edit(content="See ya later [😎]")
     except AttributeError:
         embed = discord.Embed(description="I am not connected to a voice channel [❗]", color=discord.Color.from_rgb(70, 96, 253))
         embed.set_author(name='Voice', icon_url=url_author_music)
@@ -336,7 +331,6 @@ async def queue_song(ctx, *, name):
 
 @bot.command(aliases=["play","p"])
 async def play_music(ctx, *, char):
-    global ydl_op
     global queue
     global cursor
     global FFMPEG_OPTS
@@ -348,42 +342,43 @@ async def play_music(ctx, *, char):
     htm_code = str(urllib.request.urlopen(url).read().decode())
     starting = htm_code.find("<title>") + len("<title>")
     ending = htm_code.find("</title>")
-    name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&").replace("&quot;", " ")
+    name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&").replace(" - YouTube", " ")
     # Personalized Queue Init
     operation = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
     cursor.execute(operation)
     server_queue = cursor.fetchall() 
-    URL_QUEUE = youtube_download(ctx, server_queue[int(char)][1])
+    server_song = server_queue[int(char)][0]
     # Setup for playing music
-    URL_PLAY = youtube_download(ctx, url)
-    voice = get(bot.voice_clients, guild=ctx.guild)
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     playing = ctx.voice_client.is_playing()
     pause = ctx.voice_client.is_paused()
-    if char.isnumeric() == True:
+    if char.isdigit() == False:
+        URL = youtube_download(ctx, url)
         if playing != True:
-            embed = discord.Embed(description="{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+            embed = discord.Embed(description=name_of_the_song, color=discord.Color.from_rgb(70, 96, 253))
             embed.set_author(name="Now playing", icon_url=url_author_music)
-            voice.play(discord.FFmpegPCMAudio(URL_QUEUE, **FFMPEG_OPTS))
+            voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
             await ctx.send(embed=embed)
         else:
             voice.stop()
-            embed = discord.Embed(description="{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+            embed = discord.Embed(description=name_of_the_song, color=discord.Color.from_rgb(70, 96, 253))
             embed.set_author(name="Now playing", icon_url=url_author_music)
-            voice.play(discord.FFmpegPCMAudio(URL_QUEUE, **FFMPEG_OPTS))
+            voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
             await ctx.send(embed=embed)
     else:
+        URL = youtube_download(ctx, server_queue[int(char)][1])
         if playing != True:
-            embed = discord.Embed(description="{}".format(name_of_the_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+            embed = discord.Embed(description="{}".format(server_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
             embed.set_author(name="Now playing", icon_url=url_author_music)
-            voice.play(discord.FFmpegPCMAudio(source=URL_PLAY, executable=FFMPEG_OPTS))
+            voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
             await ctx.send(embed=embed)
         else:
             voice.stop()
-            embed = discord.Embed(description="{}".format(name_of_the_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+            embed = discord.Embed(description="{}".format(server_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
             embed.set_author(name="Now playing", icon_url=url_author_music)
-            voice.play(discord.FFmpegPCMAudio(URL_PLAY, executable=FFMPEG_OPTS))
+            voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
             await ctx.send(embed=embed)
-
+    
 
 @bot.command(aliases=["view","v"])
 async def view_queue(ctx):

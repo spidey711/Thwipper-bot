@@ -21,8 +21,6 @@ import mysql.connector as ms
 bot = commands.Bot(command_prefix="t!")
 intents = discord.Intents().all()
 client = discord.Client(intents=intents)
-# MEMES
-meme_links = []
 # MUSIC
 queue = {}
 current = {}
@@ -32,7 +30,9 @@ ydl_op = {'format':'bestaudio/best','postprocessors':[{'key':'FFmpegExtractAudio
 facts_list = []
 # Utility
 num_req = 1
+dev_users = []
 # MEMES
+meme_links = []
 pinterest = ["https://in.pinterest.com/greenlanter5424/funny-superheroes-memes/","https://in.pinterest.com/nevaehgracesmom/superhero-memes/","https://in.pinterest.com/alexevitts98/superhero-funny/"]
 # SQL
 file = open("../env.txt","r")
@@ -44,7 +44,7 @@ mysql_password = str(eval(txt_from_file[start_password:end_password]))
 conn = ms.connect(host="localhost", user="root", passwd=mysql_password, database="discord")
 cursor = conn.cursor()
 # EXTRAS
-url_date_time = "https://www.intego.com/mac-security-blog/wp-content/uploads/2020/07/macos-date-time-lead.png"
+url_date_time = "https://news.mit.edu/sites/default/files/images/202012/MIT-Time-Series-01-press.jpg"
 url_thumbnails = ["https://i.pinimg.com/236x/f4/7d/1b/f47d1b34c2988f10a33f77c33e966d4c.jpg","https://i.pinimg.com/236x/4b/5e/bf/4b5ebfaba10beb08d3cae0a4ed684bdb.jpg","https://i.pinimg.com/236x/87/df/c7/87dfc7f867d4afff7c73923664a560af.jpg","https://i.pinimg.com/236x/b4/79/69/b47969fdf761ee63bf60adfdf7ba6554.jpg","https://i.pinimg.com/236x/48/0f/17/480f17eaaf087d44e540ee0a2d512297.jpg","https://i.pinimg.com/236x/4f/ab/0e/4fab0e67c4ba300f03bb5f03421ea7db.jpg","https://i.pinimg.com/236x/f6/06/ef/f606efe1e45c96ee6585cadebc6c8f74.jpg","https://c4.wallpaperflare.com/wallpaper/42/823/767/spiderman-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/517/160/840/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/107/848/913/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://wallpapercave.com/wp/AVIUso6.jpg","https://wallpapercave.com/wp/n9L3kJf.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-man-miles-morales-minimal-art-4k-43.jpg","https://images.hdqwalls.com/wallpapers/thumb/northern-spider-5k-f3.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-and-deadpool-4k-ys.jpg","https://images.hdqwalls.com/wallpapers/thumb/spiderman-into-the-spider-verse-y7.jpg","https://wallpapercave.com/wp/wp2018132.png","https://wallpapercave.com/wp/wp2018145.jpg","https://wallpapercave.com/wp/wp2018203.jpg","https://images3.alphacoders.com/593/thumbbig-593562.webp","https://images6.alphacoders.com/107/thumbbig-1071152.webp","https://images6.alphacoders.com/107/thumbbig-1070974.webp","https://i.pinimg.com/236x/38/a4/f6/38a4f62d74d7aeb2ae2396c991fcde52.jpg","https://i.pinimg.com/236x/ed/76/cc/ed76cc8bfe41347d979c93e23fbe51a0.jpg","https://i.pinimg.com/236x/91/87/2d/91872d5c92e8339036106bc832656a49.jpg","https://i.pinimg.com/236x/e3/94/05/e39405072916bb996caee3a4045f573a.jpg","https://i.pinimg.com/236x/36/2c/42/362c4298860d79a4b49acd9370cabe04.jpg","https://i.pinimg.com/236x/cf/3c/f4/cf3cf4ef7239868b1abc243168c41647.jpg","https://i.pinimg.com/236x/b1/3e/e7/b13ee7a8a8d72fbe39153569b5618c21.jpg"]
 url_author_sql = "https://miro.medium.com/max/361/1*WzqoTtRUpmJR26dzlKdIwg.png"
 url_author_music = "https://i.pinimg.com/236x/7f/d2/b8/7fd2b8ebf56ad7ad5587de70c80bcf88.jpg"
@@ -92,11 +92,18 @@ async def on_ready():
     # UPDATION
     @tasks.loop(seconds=5.0)
     async def updation():
-        # requests
+        # dev_users
         global cursor
+        operation_dev = "SELECT * FROM dev_users"
+        cursor.execute(operation_dev)
+        devs = cursor.fetchall()
+        for dev in devs:
+            if dev not in dev_users:
+                dev_users.append(dev)
+            else:
+                continue
         # music queue 
         global queue
-        global cursor
         operation_queue = "SELECT * FROM music_queue"
         cursor.execute(operation_queue)         
         items = cursor.fetchall()
@@ -140,23 +147,15 @@ async def remove_access(ctx, member:discord.Member):
 
 @bot.command(aliases=["t"])
 async def python_shell(ctx, *, expression):
-    global cursor
-    global url_author_python
-    operation = "SELECT * FROM dev_users"
-    cursor.execute(operation)
-    dev_ids = cursor.fetchall()
-    for dev_id in dev_ids:
-        if ctx.author.id == int(dev_id[0]) or ctx.author.id == 622497106657148939:
-            try:
-                embed_acc = discord.Embed(title=str(expression), description=str(eval(expression)), color=discord.Color.from_rgb(70, 96, 253))
-                embed_acc.set_author(name="Python Shell", icon_url=url_author_python)
-                await ctx.send(embed=embed_acc)
-                break
-            except Exception as e:
-                embed_err = discord.Embed(title="𝗘𝗥𝗥𝗢𝗥", description=str(e), color=discord.Color.from_rgb(70, 96, 253))
-                embed_err.set_author(name="Python Shell", icon_url=url_author_python)
-                await ctx.send(embed=embed_err)
-                break
+    if ctx.author.id in dev_users:
+        try:
+            embed_acc = discord.Embed(title=str(expression), description=str(eval(expression)), color=discord.Color.from_rgb(70, 96, 253))
+            embed_acc.set_author(name="Python Shell", icon_url=url_author_python)
+            await ctx.send(embed=embed_acc)
+        except Exception as e:
+            embed_err = discord.Embed(title="𝗘𝗥𝗥𝗢𝗥", description=str(e), color=discord.Color.from_rgb(70, 96, 253))
+            embed_err.set_author(name="Python Shell", icon_url=url_author_python)
+            await ctx.send(embed=embed_err)
     else:
         embed_dc = discord.Embed(title="Access Denied", color=discord.Color.from_rgb(70, 96, 253))
         embed_dc.set_author(name="Python Shell",icon_url=url_author_python)
@@ -165,23 +164,15 @@ async def python_shell(ctx, *, expression):
 
 @bot.command()
 async def clear(ctx, text, num=10000000000000):
-    global cursor
-    operation = "SELECT * FROM dev_users"
-    cursor.execute(operation)
-    devs_id = cursor.fetchall()
-    for dev_id in devs_id:
-        if ctx.author.id == 622497106657148939 or ctx.author.id == dev_id:
-            await ctx.channel.purge(limit=1)
-            if str(text) == "OK":
-                await ctx.channel.purge(limit=num)
-                break
-            else:
-                await ctx.send("Incorrect Password")
-                break
+    if ctx.author.id in dev_users:
+        await ctx.channel.purge(limit=1)
+        if str(text) == "OK":
+            await ctx.channel.purge(limit=num)
         else:
-            await ctx.send("Access Denied")
-            break
-
+            await ctx.send("Incorrect Password")
+    else:
+        await ctx.send("Access Denied")
+    
 
 @bot.command(aliases=["exit"])
 async def stop_program(ctx):
@@ -215,7 +206,7 @@ async def embed_help(ctx):
     embed.add_field(name="𝗣𝗹𝗮𝘆𝗲𝗿",value="p <name> or <index> to play songs\nres to resume a song\npause to pause a song\nst to stop a song", inline=False)
     embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nrem <index> to remove a song\nv to view the queue\ncq to clear queue", inline=False)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
-    embed.set_footer(text="New Features Coming Soon! [🛠]\n1)Autoplay  2)Next  3)Previous  4)Loop Queue  5)Repeat Song  6)Remove")
+    embed.set_footer(text="New Features Coming Soon! [🛠]\n1)Autoplay  2)Next  3)Previous  4)Loop Queue  5)Repeat Song  6)Remove  7)Wikipedia")
     await ctx.send(embed=embed)
 
 # //////////////////////////////////// INTERNET //////////////////////////////////////////////
@@ -451,10 +442,10 @@ async def resume_song(ctx):
             await message.add_reaction("▶")
         else:
             if playing == True:
-                embed = discord.Embed(description="Song isn't paused [❓]\nUse _pause to pause the song.", color=discord.Color.from_rgb(70, 96, 253))
+                embed = discord.Embed(description="Song isn't paused [❗]\nUse `t!pause` to pause the song.", color=discord.Color.from_rgb(70, 96, 253))
                 await ctx.send(embed=embed)
             else:
-                await ctx.send(embed=discord.Embed(description="No song playing currently [❗]\nUse _p <name>  or <index> to play a song.", color=discord.Color.from_rgb(70, 96, 253)))
+                await ctx.send(embed=discord.Embed(description="No song playing currently [❗]\nUse `t!p <name>  or <index>` to play a song.", color=discord.Color.from_rgb(70, 96, 253)))
     except Exception as e:
             embed = discord.Embed(description=str(e), color=discord.Color.from_rgb(70, 96, 253))
             embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)

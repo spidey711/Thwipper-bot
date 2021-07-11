@@ -29,9 +29,8 @@ ydl_op = {'format':'bestaudio/best','postprocessors':[{'key':'FFmpegExtractAudio
 # FACTS
 facts_list = []
 # Utility
-num_req = 1
-dev_users = []
 log_channel = 863484698290290688
+dev_users = []
 # MEMES
 meme_links = []
 pinterest = ["https://in.pinterest.com/greenlanter5424/funny-superheroes-memes/","https://in.pinterest.com/nevaehgracesmom/superhero-memes/","https://in.pinterest.com/alexevitts98/superhero-funny/"]
@@ -93,17 +92,6 @@ async def on_ready():
     # UPDATION
     @tasks.loop(seconds=5.0)
     async def updation():
-        # music queue 
-        global queue
-        operation_queue = "SELECT * FROM music_queue"
-        cursor.execute(operation_queue)         
-        items = cursor.fetchall()
-        for item in items:
-            if item not in queue:
-                queue[item] = item[2]
-            else:
-                continue
-        # sql table 
         global conn
         conn.commit()
     updation.start()
@@ -138,11 +126,8 @@ async def remove_access(ctx, member:discord.Member):
 
 @bot.command(aliases=["t"])
 async def python_shell(ctx, *, expression):
-    global cursor
-    operation_dev = "SELECT * FROM dev_users"
-    cursor.execute(operation_dev)
-    dev_ids = cursor.fetchall()
-    if ctx.author.id == [dev_id for dev_id in dev_ids] or ctx.author.id == 622497106657148939:  
+    global dev_users
+    if str(ctx.author.id) in dev_users:
         try:
             embed_acc = discord.Embed(title=str(expression), description=str(eval(expression)), color=discord.Color.from_rgb(70, 96, 253))
             embed_acc.set_author(name="Python Shell", icon_url=url_author_python)
@@ -171,9 +156,11 @@ async def clear(ctx, text, num=10000000000000):
 
 @bot.command(aliases=["exit"])
 async def stop_program(ctx):
+    global conn
     msgs = ["Bye {}!".format(ctx.author.name), "See ya {}!".format(ctx.author.name), "Till next time {} ;)".format(ctx.author.name)]
     if ctx.author.id == 622497106657148939:
         await ctx.send(random.choice(msgs))
+        conn.commit()
         exit()
     else:
        await ctx.send("Access Denied")
@@ -236,17 +223,23 @@ async def get_ping(ctx):
 @bot.command(aliases=["serverinfo","si"])
 async def server_information(ctx):
     name = str(ctx.guild.name)
+    ID = str(ctx.guild.id)
     description = str(ctx.guild.description)
     owner = str(ctx.guild.owner)
     region = str(ctx.guild.region)
     num_mem = str(ctx.guild.member_count)
     icon = str(ctx.guild.icon_url)
+    role_count = len(ctx.guild.roles)
+    bots_list = [bot.mention for bot in ctx.guild.members if bot.bot]
     embed = discord.Embed(title="{}'s INFO".format(name), color=discord.Color.from_rgb(70, 96, 253))
     embed.set_thumbnail(url=icon)
-    embed.add_field(name="Owner", value=owner, inline=False)
+    embed.add_field(name="Owner", value=owner, inline=True)
+    embed.add_field(name="Server ID", value=ID, inline=True)
+    embed.add_field(name="Member Count", value=num_mem, inline=True)
+    embed.add_field(name="Role Count", value=role_count, inline=True)
+    embed.add_field(name="Region", value=region, inline=True)
     embed.add_field(name="Description", value=description, inline=False)
-    embed.add_field(name="Region", value=region, inline=False)
-    embed.add_field(name="Member Count", value=num_mem, inline=False)
+    embed.add_field(name="Created on", value=ctx.guild.created_at.__format__('%A, %d. %B %Y @ %H:%M:%S'), inline=False)
     await ctx.send(embed=embed)
 
 # /////////////////////////////////////// DATE & TIME /////////////////////////////////////////

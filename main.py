@@ -18,9 +18,9 @@ from googlesearch import search
 import mysql.connector as ms
 
 # SETUP
-bot = commands.Bot(command_prefix="t!")
-intents = discord.Intents().all()
-client = discord.Client(intents=intents)
+intents = discord.Intents.default()
+intents.members = True
+bot = commands.Bot(command_prefix="t!", intents=intents)
 # MUSIC
 queue = {}
 current = {}
@@ -93,17 +93,33 @@ async def on_ready():
     @tasks.loop(seconds=5.0)
     async def updation():
         global conn
+        global cursor
+        # Music Queue
+        operation_queue = "SELECT * FROM music_queue"
+        cursor.execute(operation_queue)
+        songs = cursor.fetchall()
+        for song in songs:
+            if song not in queue:
+                queue[song] = song[2] 
+            else:
+                continue
         conn.commit()
     updation.start()
 
 # //////////////////////////////////// SPECIAL ACCESS /////////////////////////////////////////
+
+@bot.command(aliases=['test'])
+async def test_queue(ctx):
+    global queue
+    await ctx.send(queue)
+
 
 @bot.command(aliases=["allow","alw"])
 async def allow_access(ctx, member:discord.Member):
     global url_author_python
     global cursor
     if ctx.author.id == 622497106657148939:
-        cursor.execute("INSERT INTO dev_users(id)values({})".format(str(member.id)))
+        cursor.execute("INSERT INTO dev_users(dev_id)values({})".format(str(member.id)))
         embed = discord.Embed(description="{} has been allowed access".format(member), color=discord.Color.from_rgb(70, 96, 253))
         embed.set_author(name="Python Shell", icon_url=url_author_python)
         await ctx.send(embed=embed)
@@ -116,8 +132,8 @@ async def remove_access(ctx, member:discord.Member):
     global url_author_python
     global cursor
     if ctx.author.id == 622497106657148939:    
-        cursor.execute("DELETE FROM dev_users WHERE id={}".format(member.id))    
-        embed = discord.Embed(description="{} is now restricted".format(str(member.display_name)), color=discord.Color.from_rgb(70, 96, 253))
+        cursor.execute("DELETE FROM dev_users WHERE dev_id={}".format(str(member.id)))    
+        embed = discord.Embed(description="{} is now restricted".format(str(member)), color=discord.Color.from_rgb(70, 96, 253))
         embed.set_author(name="Python Shell", icon_url=url_author_python)
         await ctx.send(embed=embed)
     else:
@@ -126,8 +142,11 @@ async def remove_access(ctx, member:discord.Member):
 
 @bot.command(aliases=["t"])
 async def python_shell(ctx, *, expression):
-    global dev_users
-    if str(ctx.author.id) in dev_users:
+    global cursor
+    op_dev = "SELECT * FROM dev_users"
+    cursor.execute(op_dev)
+    dev_list = cursor.fetchall()
+    if str(ctx.author.id) in str(dev_list) or ctx.author.id == 622497106657148939:
         try:
             embed_acc = discord.Embed(title=str(expression), description=str(eval(expression)), color=discord.Color.from_rgb(70, 96, 253))
             embed_acc.set_author(name="Python Shell", icon_url=url_author_python)
@@ -239,7 +258,7 @@ async def server_information(ctx):
     embed.add_field(name="Role Count", value=role_count, inline=True)
     embed.add_field(name="Region", value=region, inline=True)
     embed.add_field(name="Description", value=description, inline=False)
-    embed.add_field(name="Created on", value=ctx.guild.created_at.__format__('%A, %d. %B %Y @ %H:%M:%S'), inline=False)
+    embed.add_field(name="Created on", value=ctx.guild.created_at.__format__('%A, %B %d %Y @ %H:%M:%S'), inline=False)
     await ctx.send(embed=embed)
 
 # /////////////////////////////////////// DATE & TIME /////////////////////////////////////////
@@ -333,62 +352,11 @@ async def queue_song(ctx, *, name):
     starting = htm_code.find("<title>") + len("<title>") # now we use .find method to find the title of the vid which is in between <title></title> tags
     ending = htm_code.find("</title>")        
     name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&") # here we replace uncessary things like tags because we only want the title
-    cursor.execute("INSERT INTO music_queue(song_name, song_url, server)VALUES('{name}','{url}','{serverid}')".format(name=name_of_the_song, url=url, serverid=str(ctx.guild.id)))
+    cursor.execute("INSERT INTO music_queue(song_name, song_url, server)VALUES('{name}','{url}','{id}')".format(name=name_of_the_song, url=url, id=str(ctx.guild.id)))
     embed = discord.Embed(description="{}".format(name_of_the_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
     embed.set_author(name="Song added", icon_url=url_author_music)
     await ctx.send(embed=embed)
 
-
-@bot.command(aliases=["play","p"])
-async def play_music(ctx, *, char):
-    global queue
-    global cursor
-    global FFMPEG_OPTS
-    # Web Scrape
-    char = char.replace(" ","+")
-    htm = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + char)
-    video = regex.findall(r"watch\?v=(\S{11})", htm.read().decode())
-    url = "https://www.youtube.com/watch?v=" + video[0]
-    htm_code = str(urllib.request.urlopen(url).read().decode())
-    starting = htm_code.find("<title>") + len("<title>")
-    ending = htm_code.find("</title>")
-    name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&").replace(" - YouTube", " ")
-    # Personalized Queue Init
-    operation = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
-    cursor.execute(operation)
-    server_queue = cursor.fetchall() 
-    server_song = server_queue[int(char)][0]
-    # Setup for playing music
-    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-    playing = ctx.voice_client.is_playing()
-    pause = ctx.voice_client.is_paused()
-    if char.isdigit() == False:
-        URL = youtube_download(ctx, url)
-        if playing != True:
-            embed = discord.Embed(description=name_of_the_song, color=discord.Color.from_rgb(70, 96, 253))
-            embed.set_author(name="Now playing", icon_url=url_author_music)
-            voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
-            await ctx.send(embed=embed)
-        else:
-            voice.stop()
-            embed = discord.Embed(description=name_of_the_song, color=discord.Color.from_rgb(70, 96, 253))
-            embed.set_author(name="Now playing", icon_url=url_author_music)
-            voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
-            await ctx.send(embed=embed)
-    else:
-        URL = youtube_download(ctx, server_queue[int(char)][1])
-        if playing != True:
-            embed = discord.Embed(description="{}".format(server_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
-            embed.set_author(name="Now playing", icon_url=url_author_music)
-            voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
-            await ctx.send(embed=embed)
-        else:
-            voice.stop()
-            embed = discord.Embed(description="{}".format(server_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
-            embed.set_author(name="Now playing", icon_url=url_author_music)
-            voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
-            await ctx.send(embed=embed)
-    
 
 @bot.command(aliases=["view","v"])
 async def view_queue(ctx):
@@ -411,6 +379,51 @@ async def view_queue(ctx):
         embed = discord.Embed(description="No songs in queue [⭕]", color=discord.Color.from_rgb(70, 96, 253))
         embed.set_author(name="𝗤𝘂𝗲𝘂𝗲", icon_url=url_author_music)
         await ctx.send(embed=embed)
+
+
+@bot.command(aliases=['play','p'])
+async def play_music(ctx, *, char):
+    # Web Scrape
+    char = char.replace(" ","+")
+    htm = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + char)
+    video = regex.findall(r"watch\?v=(\S{11})", htm.read().decode())
+    url = "https://www.youtube.com/watch?v=" + video[0]
+    htm_code = str(urllib.request.urlopen(url).read().decode())
+    starting = htm_code.find("<title>") + len("<title>")
+    ending = htm_code.find("</title>")
+    name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&").replace(" - YouTube", " ")
+    # Server Specific Queue
+    operation = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
+    cursor.execute(operation)
+    server_queue = cursor.fetchall()
+    # Setup 
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    if char.isdigit() == True:
+        URL = youtube_download(ctx, server_queue[int(char)][1])
+        if ctx.voice_client.is_playing() != True:
+            embed = discord.Embed(description="{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+            embed.set_author(name="Now playing", icon_url=url_author_music)
+            await ctx.send(embed=embed)
+            voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
+        else:
+            voice.stop()
+            embed = discord.Embed(description="{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+            embed.set_author(name="Now playing", icon_url=url_author_music)
+            await ctx.send(embed=embed)
+            voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
+    else:
+        URL = youtube_download(ctx, url)
+        if ctx.voice_client.is_playing() != True:
+            embed = discord.Embed(description=name_of_the_song.replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+            embed.set_author(name="Now playing", icon_url=url_author_music)
+            await ctx.send(embed=embed)
+            voice.play(discord.FFmpegOpusAudio(URL, bitrate=96, codec=None, executable=FFMPEG_OPTS))
+        else:
+            embed = discord.Embed(description=name_of_the_song.replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+            embed.set_author(name="Now playing", icon_url=url_author_music)
+            await ctx.send(embed=embed)
+            voice.play(discord.FFmpegOpusAudio(URL, bitrate=96, codec=None, executable=FFMPEG_OPTS))
+            voice.stop()
 
 
 @bot.command(aliases=["pause"])
@@ -481,7 +494,7 @@ async def clear_song_queue(ctx):
     global queue
     global cursor
     if len(queue) > 0:
-        operation_clear_song = "DELETE FROM music_queue WHERE server={}".format(ctx.guild.id)
+        operation_clear_song = "DELETE FROM music_queue WHERE server={}".format(str(ctx.guild.id))
         cursor.execute(operation_clear_song)
         queue.clear()
         message = await ctx.send("Queue Cleared")

@@ -193,7 +193,7 @@ async def embed_help(ctx):
                         description="Prefix => `t!`",
                         color=discord.Color.from_rgb(70, 96, 253))
     embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nh to get this embed", inline=False)
-    embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="ping to get user latency", inline=False)
+    embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="ping to get user latency\nserverinfo to get server's information", inline=False)
     embed.add_field(name="𝗗𝗮𝘁𝗲 & 𝗧𝗶𝗺𝗲", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
     embed.add_field(name="𝗠𝘆𝗦𝗤𝗟", value="; <query> to use SQL Shell", inline=False)
     embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="g <topic> to google\nfact to get an interesting fact\nmeme to get superhero memes",inline=False)
@@ -231,6 +231,23 @@ async def get_meme(ctx):
 @bot.command(aliases=["ping"])
 async def get_ping(ctx):
     await ctx.send(embed=discord.Embed(description="𝙇𝙖𝙩𝙚𝙣𝙘𝙮 : {} ms".format(round(bot.latency * 1000)), color=discord.Color.from_rgb(70, 96, 253)))
+
+
+@bot.command(aliases=["serverinfo","si"])
+async def server_information(ctx):
+    name = str(ctx.guild.name)
+    description = str(ctx.guild.description)
+    owner = str(ctx.guild.owner)
+    region = str(ctx.guild.region)
+    num_mem = str(ctx.guild.member_count)
+    icon = str(ctx.guild.icon_url)
+    embed = discord.Embed(title="{}'s INFO".format(name), color=discord.Color.from_rgb(70, 96, 253))
+    embed.set_thumbnail(url=icon)
+    embed.add_field(name="Owner", value=owner, inline=False)
+    embed.add_field(name="Description", value=description, inline=False)
+    embed.add_field(name="Region", value=region, inline=False)
+    embed.add_field(name="Member Count", value=num_mem, inline=False)
+    await ctx.send(embed=embed)
 
 # /////////////////////////////////////// DATE & TIME /////////////////////////////////////////
 

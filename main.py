@@ -30,10 +30,12 @@ ydl_op = {'format':'bestaudio/best','postprocessors':[{'key':'FFmpegExtractAudio
 facts_list = []
 # Utility
 log_channel = 863484698290290688
-dev_users = []
+# QUIPS
+wit_list = ["Hey kiddo, let mom and dad talk.","My weakness, its small knives!","Please dont put your eggs in me!!","I am in the moment, its a terrible moment!","It gets kinda itchy near the crotch tho.","Ah man! When wolverine grows his face back, he is gonna be really upset : (","You're so fat that when you cut yourself shaving, marshmellow fluff comes out XD","My name is Peter Parker, and I've been Spider-Man since I was fifteen years old.","But it's not the same thing! All these years, I've done my best to make up for that! I've wore this suit--gone out there and put my life on the line again and again! But no matter how hard I try... people... die!","You know about the shoulder touch..?\n**deepens voice**\nHey...⚡","We're not just our failures. As much as they hurt, we learn from them. Then we go out there and do our best to make up for them, even though we never will. We save people. We save as many as we can to make up for the ones we couldn't. That's all we do.","My fault, all my fault! If only I had stopped him when I could have! But I didn't, and now... Uncle Ben... is dead.","When I think of Spider-Man? I think, no matter what… He’s never going to stop helping people.","No man can win every battle, but no man should fall without a struggle.","Uncle Ben. I couldn’t save him… No matter what I did. But I saved you. I did it. I did…","Except the dignity of knowing I never carried a man-purse.","With Great Power, Comes Great Responsibility","Who am I? You sure you want to know? The story of my life is not for the faint of heart. If somebody said it was a happy little tale... if somebody told you I was just your average ordinary guy, not a care in the world... somebody lied.","​The itsy bitsy spider climbed up the waterspout. Down came the Goblin and took the spider out.","Whatever life holds in store for me, I will never forget these words: 'With great power comes great responsibility.' This is my gift, my curse. Who am I? I'm Spiderman.","No matter what I do, no matter how hard I try, the ones I love will always be the ones who pay…","But she can never know. I made a choice once to live a life of responsibility. A life she can never be a part of. Who am I? I'm Spider-Man, given a job to do. And I'm Peter Parker, and I too have a job.","You know in the future if you're gonna steal cars, don't dress like a car thief man.","There's no place like home.","On behalf of the fine people of New York City and real rhinos everywhere, I ask you to put your mechanized paws in the air."," I am following you now. I am just going to follow you anywhere. I am going to follow you for the rest of my life."]
+# Web scrape version for this coming soon!
 # MEMES
 meme_links = []
-pinterest = ["https://in.pinterest.com/greenlanter5424/funny-superheroes-memes/","https://in.pinterest.com/nevaehgracesmom/superhero-memes/","https://in.pinterest.com/alexevitts98/superhero-funny/"]
+pinterest = ["https://i.pinimg.com/236x/a5/ae/8d/a5ae8d7a0fe20b1b1ed97ffc725b95c1.jpg","https://i.pinimg.com/236x/10/27/c9/1027c94d3e939471d2ff518d8103990c.jpg","https://i.pinimg.com/236x/26/7a/71/267a7117af7d869f11a09189349b211b.jpg","https://i.pinimg.com/236x/63/45/68/634568c6b171d3d63889fa39ba331594.jpg","https://in.pinterest.com/greenlanter5424/funny-superheroes-memes/","https://in.pinterest.com/nevaehgracesmom/superhero-memes/","https://in.pinterest.com/alexevitts98/superhero-funny/","https://in.pinterest.com/joshuacgreenste/funny-superhero-memes/"]
 # SQL
 file = open("../env.txt","r")
 txt_from_file = str(file.read())
@@ -46,11 +48,11 @@ cursor = conn.cursor()
 # EXTRAS
 url_date_time = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKxv6EIh3VisynQX9TNkA7l15CvR0eJ8nWMA&usqp=CAU"
 url_calendar = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsb98d6ZOyxwxLUf1Y97yWFKW0Pz6JzuyBww&usqp=CAU"
-url_thumbnails = ["https://i.pinimg.com/236x/3d/dd/ec/3dddecd82efb45026771dba7287aa010.jpg","https://i.pinimg.com/236x/4d/16/7e/4d167e9a51166d0ce955c4eac6b26d7c.jpg","https://i.pinimg.com/236x/46/56/8c/46568c65f50f4cd5dce76c1ea1833258.jpg","https://i.pinimg.com/236x/74/e6/d8/74e6d846301bd4e3722ed465240b894f.jpg","https://i.pinimg.com/236x/4f/ef/67/4fef67d2a553dba286ab311354370d28.jpg","https://i.pinimg.com/236x/f4/7d/1b/f47d1b34c2988f10a33f77c33e966d4c.jpg","https://i.pinimg.com/236x/4b/5e/bf/4b5ebfaba10beb08d3cae0a4ed684bdb.jpg","https://i.pinimg.com/236x/87/df/c7/87dfc7f867d4afff7c73923664a560af.jpg","https://i.pinimg.com/236x/b4/79/69/b47969fdf761ee63bf60adfdf7ba6554.jpg","https://i.pinimg.com/236x/48/0f/17/480f17eaaf087d44e540ee0a2d512297.jpg","https://i.pinimg.com/236x/4f/ab/0e/4fab0e67c4ba300f03bb5f03421ea7db.jpg","https://i.pinimg.com/236x/f6/06/ef/f606efe1e45c96ee6585cadebc6c8f74.jpg","https://c4.wallpaperflare.com/wallpaper/42/823/767/spiderman-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/517/160/840/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/107/848/913/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://wallpapercave.com/wp/AVIUso6.jpg","https://wallpapercave.com/wp/n9L3kJf.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-man-miles-morales-minimal-art-4k-43.jpg","https://images.hdqwalls.com/wallpapers/thumb/northern-spider-5k-f3.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-and-deadpool-4k-ys.jpg","https://images.hdqwalls.com/wallpapers/thumb/spiderman-into-the-spider-verse-y7.jpg","https://wallpapercave.com/wp/wp2018132.png","https://wallpapercave.com/wp/wp2018145.jpg","https://wallpapercave.com/wp/wp2018203.jpg","https://images3.alphacoders.com/593/thumbbig-593562.webp","https://images6.alphacoders.com/107/thumbbig-1071152.webp","https://images6.alphacoders.com/107/thumbbig-1070974.webp","https://i.pinimg.com/236x/38/a4/f6/38a4f62d74d7aeb2ae2396c991fcde52.jpg","https://i.pinimg.com/236x/ed/76/cc/ed76cc8bfe41347d979c93e23fbe51a0.jpg","https://i.pinimg.com/236x/91/87/2d/91872d5c92e8339036106bc832656a49.jpg","https://i.pinimg.com/236x/e3/94/05/e39405072916bb996caee3a4045f573a.jpg","https://i.pinimg.com/236x/36/2c/42/362c4298860d79a4b49acd9370cabe04.jpg","https://i.pinimg.com/236x/cf/3c/f4/cf3cf4ef7239868b1abc243168c41647.jpg","https://i.pinimg.com/236x/b1/3e/e7/b13ee7a8a8d72fbe39153569b5618c21.jpg"]
+url_thumbnails = ["https://i.pinimg.com/236x/31/fc/50/31fc5099e24775b613a69fa5bf4f8064.jpg","https://i.pinimg.com/236x/e5/f5/54/e5f55401dfb0588daaa0c3baad528ae8.jpg","https://i.pinimg.com/236x/be/80/cf/be80cf957b028e16083d534f3890cda1.jpg","https://i.pinimg.com/236x/02/6c/7d/026c7d47fd43ff30180fdc7c91e155c2.jpg","https://i.pinimg.com/236x/14/ca/dc/14cadcf0d437fe2d670bff20254e3422.jpg","https://i.pinimg.com/236x/3d/dd/ec/3dddecd82efb45026771dba7287aa010.jpg","https://i.pinimg.com/236x/4d/16/7e/4d167e9a51166d0ce955c4eac6b26d7c.jpg","https://i.pinimg.com/236x/46/56/8c/46568c65f50f4cd5dce76c1ea1833258.jpg","https://i.pinimg.com/236x/74/e6/d8/74e6d846301bd4e3722ed465240b894f.jpg","https://i.pinimg.com/236x/4f/ef/67/4fef67d2a553dba286ab311354370d28.jpg","https://i.pinimg.com/236x/f4/7d/1b/f47d1b34c2988f10a33f77c33e966d4c.jpg","https://i.pinimg.com/236x/4b/5e/bf/4b5ebfaba10beb08d3cae0a4ed684bdb.jpg","https://i.pinimg.com/236x/87/df/c7/87dfc7f867d4afff7c73923664a560af.jpg","https://i.pinimg.com/236x/b4/79/69/b47969fdf761ee63bf60adfdf7ba6554.jpg","https://i.pinimg.com/236x/48/0f/17/480f17eaaf087d44e540ee0a2d512297.jpg","https://i.pinimg.com/236x/4f/ab/0e/4fab0e67c4ba300f03bb5f03421ea7db.jpg","https://i.pinimg.com/236x/f6/06/ef/f606efe1e45c96ee6585cadebc6c8f74.jpg","https://c4.wallpaperflare.com/wallpaper/42/823/767/spiderman-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/517/160/840/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/107/848/913/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://wallpapercave.com/wp/AVIUso6.jpg","https://wallpapercave.com/wp/n9L3kJf.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-man-miles-morales-minimal-art-4k-43.jpg","https://images.hdqwalls.com/wallpapers/thumb/northern-spider-5k-f3.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-and-deadpool-4k-ys.jpg","https://images.hdqwalls.com/wallpapers/thumb/spiderman-into-the-spider-verse-y7.jpg","https://wallpapercave.com/wp/wp2018132.png","https://wallpapercave.com/wp/wp2018145.jpg","https://wallpapercave.com/wp/wp2018203.jpg","https://images3.alphacoders.com/593/thumbbig-593562.webp","https://images6.alphacoders.com/107/thumbbig-1071152.webp","https://images6.alphacoders.com/107/thumbbig-1070974.webp","https://i.pinimg.com/236x/38/a4/f6/38a4f62d74d7aeb2ae2396c991fcde52.jpg","https://i.pinimg.com/236x/ed/76/cc/ed76cc8bfe41347d979c93e23fbe51a0.jpg","https://i.pinimg.com/236x/91/87/2d/91872d5c92e8339036106bc832656a49.jpg","https://i.pinimg.com/236x/e3/94/05/e39405072916bb996caee3a4045f573a.jpg","https://i.pinimg.com/236x/36/2c/42/362c4298860d79a4b49acd9370cabe04.jpg","https://i.pinimg.com/236x/cf/3c/f4/cf3cf4ef7239868b1abc243168c41647.jpg","https://i.pinimg.com/236x/b1/3e/e7/b13ee7a8a8d72fbe39153569b5618c21.jpg"]
 url_author_sql = "https://miro.medium.com/max/361/1*WzqoTtRUpmJR26dzlKdIwg.png"
 url_author_music = "https://i.pinimg.com/236x/7f/d2/b8/7fd2b8ebf56ad7ad5587de70c80bcf88.jpg"
 url_author_python = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/1200px-Python.svg.png"
-url_author_queue = ["https://i.pinimg.com/236x/10/06/35/100635a268123393a208b3e6efb5ec0d.jpg","https://i.pinimg.com/236x/d8/a1/fc/d8a1fcbc9482a9ae7a9352620dd3e4ea.jpg",""]
+url_author_queue = ["https://i.pinimg.com/236x/10/06/35/100635a268123393a208b3e6efb5ec0d.jpg","https://i.pinimg.com/236x/d8/a1/fc/d8a1fcbc9482a9ae7a9352620dd3e4ea.jpg"]
 
 def youtube_download(ctx,url):
     if True:
@@ -97,6 +99,7 @@ async def on_ready():
         global conn
         global cursor
         # Music Queue
+        global queue
         operation_queue = "SELECT * FROM music_queue"
         cursor.execute(operation_queue)
         songs = cursor.fetchall()
@@ -109,12 +112,6 @@ async def on_ready():
     updation.start()
 
 # //////////////////////////////////// SPECIAL ACCESS /////////////////////////////////////////
-
-@bot.command(aliases=['test'])
-async def test_queue(ctx):
-    global queue
-    await ctx.send(queue)
-
 
 @bot.command(aliases=["allow","alw"])
 async def allow_access(ctx, member:discord.Member):
@@ -142,7 +139,7 @@ async def remove_access(ctx, member:discord.Member):
         embed = discord.Embed(description="Access Denied", color=discord.Color.from_rgb(70, 96, 253))    
 
 
-@bot.command(aliases=["t"])
+@bot.command(aliases=["py"])
 async def python_shell(ctx, *, expression):
     global cursor
     op_dev = "SELECT * FROM dev_users"
@@ -165,7 +162,10 @@ async def python_shell(ctx, *, expression):
 
 @bot.command()
 async def clear(ctx, text, num=10000000000000):
-    if ctx.author.id in dev_users:
+    op_dev = "SELECT * FROM dev_users"
+    cursor.execute(op_dev)
+    dev_list = cursor.fetchall()
+    if str(ctx.author.id) in str(dev_list) or ctx.author.id == 622497106657148939:
         await ctx.channel.purge(limit=1)
         if str(text) == "OK":
             await ctx.channel.purge(limit=num)
@@ -200,16 +200,30 @@ async def embed_help(ctx):
     embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
                         description="Prefix => `t!`",
                         color=discord.Color.from_rgb(70, 96, 253))
-    embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nh to get this embed", inline=False)
+    embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nh to get this embed\nwit to get famous dialogues and quips\nabout to get information about Thwipper", inline=False)
     embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="ping to get user latency\nserverinfo to get server's information", inline=False)
     embed.add_field(name="𝗗𝗮𝘁𝗲 & 𝗧𝗶𝗺𝗲", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
     embed.add_field(name="𝗠𝘆𝗦𝗤𝗟", value="; <query> to use SQL Shell", inline=False)
     embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="g <topic> to google\nfact to get an interesting fact\nmeme to get superhero memes",inline=False)
     embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
     embed.add_field(name="𝗣𝗹𝗮𝘆𝗲𝗿",value="p <name> or <index> to play songs\nres to resume a song\npause to pause a song\nst to stop a song", inline=False)
-    embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nrem <index> to remove a song\nv to view the queue\ncq to clear queue", inline=False)
+    embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="working on this", inline=False)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text="New Features Coming Soon! [🛠]\n1)Autoplay  2)Next  3)Previous  4)Loop Queue  5)Repeat Song  6)Remove  7)Wikipedia")
+    await ctx.send(embed=embed)
+
+
+@bot.command(aliases=['wit'])
+async def do_quips(ctx):
+    embed = discord.Embed(title="Quote", description=random.choice(wit_list), color=discord.Color.from_rgb(70, 96, 253))
+    embed.set_thumbnail(url=random.choice(url_thumbnails))
+    await ctx.send(embed=embed)
+
+
+@bot.command(aliases=['about'])
+async def description_thwipper(ctx):
+    embed = discord.Embed(title='About', description="This bot is made by Spider-Man#0711 to tend to people's needs on discord while he is out there in the city protecting innocent from harm. As you can guess, it takes inspiration from Spider-Man and hence, the name, `Thwipper` [🕸]", color=discord.Color.from_rgb(70, 96, 253))
+    embed.set_thumbnail(url=random.choice(url_thumbnails))
     await ctx.send(embed=embed)
 
 # //////////////////////////////////// INTERNET //////////////////////////////////////////////
@@ -385,6 +399,9 @@ async def view_queue(ctx):
 
 @bot.command(aliases=['play','p'])
 async def play_music(ctx, *, char):
+    global current
+    global FFMPEG_OPTS
+    global current
     # Web Scrape
     char = char.replace(" ","+")
     htm = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + char)
@@ -394,38 +411,38 @@ async def play_music(ctx, *, char):
     starting = htm_code.find("<title>") + len("<title>")
     ending = htm_code.find("</title>")
     name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&").replace(" - YouTube", " ")
+    URL_direct = youtube_download(ctx, url)
     # Server Specific Queue
     operation = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
     cursor.execute(operation)
     server_queue = cursor.fetchall()
+    URL_queue = youtube_download(ctx, server_queue[int(char)][1])
     # Setup 
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     if char.isdigit() == True:
-        URL = youtube_download(ctx, server_queue[int(char)][1])
         if ctx.voice_client.is_playing() != True:
             embed = discord.Embed(description="{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
             embed.set_author(name="Now playing", icon_url=url_author_music)
             await ctx.send(embed=embed)
-            voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
+            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
         else:
             voice.stop()
             embed = discord.Embed(description="{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
             embed.set_author(name="Now playing", icon_url=url_author_music)
             await ctx.send(embed=embed)
-            voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
+            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
     else:
-        URL = youtube_download(ctx, url)
         if ctx.voice_client.is_playing() != True:
             embed = discord.Embed(description=name_of_the_song.replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
             embed.set_author(name="Now playing", icon_url=url_author_music)
+            voice.play(discord.FFmpegPCMAudio(URL_direct, executable=FFMPEG_OPTS))
             await ctx.send(embed=embed)
-            voice.play(discord.FFmpegOpusAudio(URL, bitrate=96, codec=None, executable=FFMPEG_OPTS))
         else:
+            voice.stop()
             embed = discord.Embed(description=name_of_the_song.replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
             embed.set_author(name="Now playing", icon_url=url_author_music)
+            voice.play(discord.FFmpegPCMAudio(URL_direct, executable=FFMPEG_OPTS))
             await ctx.send(embed=embed)
-            voice.play(discord.FFmpegOpusAudio(URL, bitrate=96, codec=None, executable=FFMPEG_OPTS))
-            voice.stop()
 
 
 @bot.command(aliases=["pause"])

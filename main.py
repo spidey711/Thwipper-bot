@@ -398,27 +398,37 @@ async def view_queue(ctx):
 
 @bot.command(aliases=['play','p'])
 async def play_music(ctx, *, char):
-    global current
     global FFMPEG_OPTS
-    global current
-    # Web Scrape
-    char = char.replace(" ","+")
-    htm = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + char)
-    video = regex.findall(r"watch\?v=(\S{11})", htm.read().decode())
-    url = "https://www.youtube.com/watch?v=" + video[0]
-    htm_code = str(urllib.request.urlopen(url).read().decode())
-    starting = htm_code.find("<title>") + len("<title>")
-    ending = htm_code.find("</title>")
-    name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&").replace(" - YouTube", " ")
-    URL_direct = youtube_download(ctx, url)
     # Server Specific Queue
     operation = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
     cursor.execute(operation)
     server_queue = cursor.fetchall()
-    URL_queue = youtube_download(ctx, server_queue[int(char)][1])
     # Setup 
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-    if char.isdigit() == True:
+    if char.isdigit() == False:
+        # Web Scrape
+        char = char.replace(" ","+")
+        htm = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + char)
+        video = regex.findall(r"watch\?v=(\S{11})", htm.read().decode())
+        url = "https://www.youtube.com/watch?v=" + video[0]
+        htm_code = str(urllib.request.urlopen(url).read().decode())
+        starting = htm_code.find("<title>") + len("<title>")
+        ending = htm_code.find("</title>")
+        name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&").replace(" - YouTube", " ")
+        URL_direct = youtube_download(ctx, url)
+        if ctx.voice_client.is_playing() != True:
+            embed = discord.Embed(description=name_of_the_song.replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+            embed.set_author(name="Now playing", icon_url=url_author_music)
+            voice.play(discord.FFmpegPCMAudio(str(URL_direct), **FFMPEG_OPTS))
+            await ctx.send(embed=embed)
+        else:
+            voice.stop()
+            embed = discord.Embed(description=name_of_the_song.replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+            embed.set_author(name="Now playing", icon_url=url_author_music)
+            voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
+            await ctx.send(embed=embed)
+    else:   
+        URL_queue = youtube_download(ctx, server_queue[int(char)][1])
         if ctx.voice_client.is_playing() != True:
             embed = discord.Embed(description="{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
             embed.set_author(name="Now playing", icon_url=url_author_music)
@@ -430,19 +440,7 @@ async def play_music(ctx, *, char):
             embed.set_author(name="Now playing", icon_url=url_author_music)
             await ctx.send(embed=embed)
             voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
-    else:
-        if ctx.voice_client.is_playing() != True:
-            embed = discord.Embed(description=name_of_the_song.replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
-            embed.set_author(name="Now playing", icon_url=url_author_music)
-            voice.play(discord.FFmpegPCMAudio(URL_direct, executable=FFMPEG_OPTS))
-            await ctx.send(embed=embed)
-        else:
-            voice.stop()
-            embed = discord.Embed(description=name_of_the_song.replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
-            embed.set_author(name="Now playing", icon_url=url_author_music)
-            voice.play(discord.FFmpegPCMAudio(URL_direct, executable=FFMPEG_OPTS))
-            await ctx.send(embed=embed)
-
+            
 
 @bot.command(aliases=["pause"])
 async def pause_song(ctx):

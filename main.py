@@ -37,9 +37,8 @@ wit_list = ["Hey kiddo, let mom and dad talk.","My weakness, its small knives!",
 meme_links = []
 pinterest = ["https://i.pinimg.com/236x/a5/ae/8d/a5ae8d7a0fe20b1b1ed97ffc725b95c1.jpg","https://i.pinimg.com/236x/10/27/c9/1027c94d3e939471d2ff518d8103990c.jpg","https://i.pinimg.com/236x/26/7a/71/267a7117af7d869f11a09189349b211b.jpg","https://i.pinimg.com/236x/63/45/68/634568c6b171d3d63889fa39ba331594.jpg","https://in.pinterest.com/greenlanter5424/funny-superheroes-memes/","https://in.pinterest.com/nevaehgracesmom/superhero-memes/","https://in.pinterest.com/alexevitts98/superhero-funny/","https://in.pinterest.com/joshuacgreenste/funny-superhero-memes/"]
 # SQL
-file = open("../env.txt","r")
+file = open("env.txt","r")
 txt_from_file = str(file.read())
-print(txt_from_file)
 start_password = txt_from_file.find("MySQL=") + len("MySQL=")
 end_password = txt_from_file.find('"',start_password + 3) + 1
 mysql_password = str(eval(txt_from_file[start_password:end_password]))

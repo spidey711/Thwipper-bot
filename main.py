@@ -221,7 +221,7 @@ async def do_quips(ctx):
 
 @bot.command(aliases=['about'])
 async def description_thwipper(ctx):
-    embed = discord.Embed(title='About', description="This bot is made by Spider-Man#0711 to tend to people's needs on discord while he is out there in the city protecting innocent from harm. As you can guess, it takes inspiration from Spider-Man and hence, the name, `Thwipper` [🕸]", color=discord.Color.from_rgb(70, 96, 253))
+    embed = discord.Embed(title='About', description="This bot is made by Spider-Man to tend to people's needs on discord while he is out there in the city protecting innocent from harm. As you can guess, it takes inspiration from Spider-Man and hence, the name, `Thwipper` [🕸]", color=discord.Color.from_rgb(70, 96, 253))
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     await ctx.send(embed=embed)
 

@@ -15,7 +15,7 @@ _Interesting Facts_<br>
 _Super-Hero Memes_<br>
 
 _<h2>Note:-</h2>_
-Have your bot token and the SQL password in a `.txt` file in the directory before `Thwipper-bot`<br>
+Have your bot token and the SQL password in a `.txt` file in the directory `Thwipper-bot`<br>
 Make sure you have all the dependencies installed that are required for this bot to work.<br>
 Especially `ffmpeg` as it is required to play music.
 <a href="https://ffmpeg.org/download.html">Install ffmpeg here</a><br>

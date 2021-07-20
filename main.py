@@ -219,7 +219,7 @@ async def embed_help(ctx):
 
 @bot.command(aliases=['wit'])
 async def do_quips(ctx):
-    embed = discord.Embed(title="Quote", description=random.choice(wit_list), color=discord.Color.from_rgb(70, 96, 253))
+    embed = discord.Embed(description=random.choice(wit_list), color=discord.Color.from_rgb(70, 96, 253))
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     await ctx.send(embed=embed)
 

@@ -18,9 +18,10 @@ from googlesearch import search
 import mysql.connector as ms
 
 # SETUP
+prefixes = ['t!','_']
 intents = discord.Intents.default()
 intents.members = True
-bot = commands.Bot(command_prefix="t!", intents=intents)
+bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents)
 # MUSIC
 queue = {}
 current = {}
@@ -78,12 +79,12 @@ async def on_ready():
     # MEMES
     global meme_links
     raw = requests.get(random.choice(pinterest))
-    html_content = raw.content.decode()
+    html_content = raw.content.decode(raw)
     stop = 0
     for i in range(0,500):
-        a = html_content.find("GrowthUnauthPinImage__Image",stop)
-        b = html_content.find('src="',a) + len('src="')
-        c = html_content.find('" ',b)
+        a = html_content.find("GrowthUnauthPinImage__Image", stop)
+        b = html_content.find('src="', a) + len('src="')
+        c = html_content.find('" ', b)
         stop = c
         if i == 0:
             continue
@@ -173,7 +174,7 @@ async def clear(ctx, text, num=10000000000000):
         await ctx.send("Access Denied")
     
 
-@bot.command(aliases=["exit"])
+@bot.command(aliases=["off"])
 async def stop_program(ctx):
     global conn
     msgs = ["Bye {}!".format(ctx.author.name), "See ya {}!".format(ctx.author.name), "Till next time {} ;)".format(ctx.author.name)]
@@ -222,7 +223,7 @@ async def do_quips(ctx):
 @bot.command(aliases=['g'])
 async def browse(ctx, *, thing_to_search):
     results = " "
-    for result in search(thing_to_search, tld='com', lang='en', safe='off', num=10, start=0,stop=10, pause=2.0):
+    for result in search(thing_to_search, tld='com', lang='en', safe='off', num=10, start=0,stop=10, pause=1.0):
         results += result + "\n\n"
     await ctx.send(results)
 
@@ -251,10 +252,10 @@ async def description_thwipper(ctx):
 
 @bot.command(aliases=["pfp"])
 async def user_pfp(ctx):
-    compliments = ["Lookin' good {}!".format(ctx.author.name),"That's a cute pfp, did your husband give it to you?","Hey, this is a nice one {}!".format(ctx.author.name),"I would give this 8 outta 10, 9 tops!","I like this one, {}.".format(ctx.author.name),"Where'd you get this {}?".format(ctx.author.name),"Oh come on! My grandma can select a better profile picture than this xD","Nice one {}!".format(ctx.author.name),"I will make an exception for this and give it 9.5 outta 10, you're welcome {}.".format(ctx.author.name)]
-    embed = discord.Embed(title=ctx.author.name, color=discord.Color.from_rgb(70, 96, 253))
+    compliments = ["Lookin' good {}!".format(ctx.author.name),"That's a cute pfp, did your husband give it to you?","Hey, this is a nice one {}!".format(ctx.author.name),"I would give this 8 outta 10, 9 tops!","I like this one, {}.".format(ctx.author.name),"Where'd you get this {}?".format(ctx.author.name),"Oh come on! My grandma can select a better profile picture than this xD","Nice one {}!".format(ctx.author.name),"I will make an exception for this and give it 9.5 outta 10, you're welcome {}.".format(ctx.author.name),"AHA! This is definitely the one for you {}".format(ctx.author.name)]
+    embed = discord.Embed(title="Profile Picture : {}".format(ctx.author.name), color=discord.Color.from_rgb(70, 96, 253))
     embed.set_image(url=ctx.author.avatar_url)
-    embed.set_footer(text=random.choice(compliments), icon_url=bot.user.avatar_url)
+    embed.set_footer(text=random.choice(compliments), icon_url="https://i.pinimg.com/236x/9f/9c/11/9f9c11d4eaa3d99bc9a8ece092f5e979.jpg")
     await ctx.send(embed=embed)
 
 

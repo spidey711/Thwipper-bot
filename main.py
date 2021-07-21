@@ -251,8 +251,10 @@ async def description_thwipper(ctx):
 
 @bot.command(aliases=["pfp"])
 async def user_pfp(ctx):
-    embed = discord.Embed(title=ctx.author.name, color=ctx.author.color)
+    compliments = ["Lookin' good {}!".format(ctx.author.name),"That's a cute pfp, did your husband give it to you?","Hey, this is a nice one {}!".format(ctx.author.name),"I would give this 8 outta 10, 9 tops!","I like this one, {}.".format(ctx.author.name),"Where'd you get this {}?".format(ctx.author.name),"Oh come on! My grandma can select a better profile picture than this xD","Nice one {}!".format(ctx.author.name),"I will make an exception for this and give it 9.5 outta 10, you're welcome {}.".format(ctx.author.name)]
+    embed = discord.Embed(title=ctx.author.name, color=discord.Color.from_rgb(70, 96, 253))
     embed.set_image(url=ctx.author.avatar_url)
+    embed.set_footer(text=random.choice(compliments), icon_url=bot.user.avatar_url)
     await ctx.send(embed=embed)
 
 

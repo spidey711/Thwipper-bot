@@ -24,7 +24,7 @@ intents.members = True
 bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents)
 # MUSIC
 FFMPEG_OPTS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
-ydl_op = {'format':'bestaudio/best','postprocessors':[{'key':'FFmpegExtractAudio','preferredcodec':'mp3','preferredquality':'96',}],}
+ydl_op = {'format':'bestaudio/best','postprocessors':[{'key':'FFmpegExtractAudio','preferredcodec':'mp3','preferredquality':'128',}],}
 # FACTS
 facts_list = []
 # Utility
@@ -166,7 +166,7 @@ async def clear(ctx, text, num=10000000000000):
 @bot.command(aliases=["exit"])
 async def stop_program(ctx):
     global conn
-    msgs = ["Bye {}!".format(ctx.author.name), "See ya {}!".format(ctx.author.name), "Till next time {} ;)".format(ctx.author.name)]
+    msgs = ["Bye {}!".format(ctx.author.name), "See ya {}!".format(ctx.author.name), "Till next time {}".format(ctx.author.name)]
     if ctx.author.id == 622497106657148939:
         await ctx.send(random.choice(msgs))
         conn.commit()

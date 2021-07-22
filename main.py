@@ -18,7 +18,7 @@ from googlesearch import search
 import mysql.connector as ms
 
 # SETUP
-prefixes = ['t!','_']
+prefixes = ["t!","_"]
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents)
@@ -62,6 +62,9 @@ def youtube_download(ctx,url):
 @bot.event
 async def on_ready():
     print("We have logged in as {0.user}".format(bot))
+    # STATUS
+    activity = discord.Game(name="Spider-Man (2018)", type=3)
+    await bot.change_presence(activity=activity)
     # FACTS
     global facts_list
     b = requests.get("https://www.thefactsite.com/1000-interesting-facts/").content.decode().replace("<i>","*").replace("</i>","*").replace("&#8220;",'"').replace("&#8221;",'"').replace("&#8217;","'")
@@ -174,7 +177,7 @@ async def clear(ctx, text, num=10000000000000):
         await ctx.send("Access Denied")
     
 
-@bot.command(aliases=["off"])
+@bot.command(aliases=["exit"])
 async def stop_program(ctx):
     global conn
     msgs = ["Bye {}!".format(ctx.author.name), "See ya {}!".format(ctx.author.name), "Till next time {} ;)".format(ctx.author.name)]
@@ -197,7 +200,7 @@ async def greet_bot(ctx):
 async def embed_help(ctx):
     global url_thumbnails
     embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
-                        description="Prefix => `t!`",
+                        description="Prefix => `t!` `_`",
                         color=discord.Color.from_rgb(70, 96, 253))
     embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nh to get this embed\nwit to get famous dialogues and quips", inline=False)
     embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="\nabout to get information about Thwipper\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture", inline=False)
@@ -252,7 +255,7 @@ async def description_thwipper(ctx):
 
 @bot.command(aliases=["pfp"])
 async def user_pfp(ctx):
-    compliments = ["Lookin' good {}!".format(ctx.author.name),"That's a cute pfp, did your husband give it to you?","Hey, this is a nice one {}!".format(ctx.author.name),"I would give this 8 outta 10, 9 tops!","I like this one, {}.".format(ctx.author.name),"Where'd you get this {}?".format(ctx.author.name),"Oh come on! My grandma can select a better profile picture than this xD","Nice one {}!".format(ctx.author.name),"I will make an exception for this and give it 9.5 outta 10, you're welcome {}.".format(ctx.author.name),"AHA! This is definitely the one for you {}".format(ctx.author.name)]
+    compliments = ["Lookin' good {}!".format(ctx.author.name),"That's a cute pfp, did your husband give it to you? 🤣","Hey, this is a nice one {}!".format(ctx.author.name),"I would give this 8 outta 10, 9 tops 🤔","I like this one, {} 😎".format(ctx.author.name),"Where'd you get this {}? 🤩".format(ctx.author.name),"Oh come on! My grandma can select a better profile picture than this xD 😒","Good profile picture {} ✅".format(ctx.author.name),"I will make an exception for this and give it 9.5 outta 10, you're welcome {}.".format(ctx.author.name),"AHA! This is definitely the one for you {} 👌🏻".format(ctx.author.name),"You're not gonna keep this one, are you {}? 😐".format(ctx.author.name),"This is fire 🔥🔥🔥", "Dude, what do I even...never mind 🤐"]
     embed = discord.Embed(title="Profile Picture : {}".format(ctx.author.name), color=discord.Color.from_rgb(70, 96, 253))
     embed.set_image(url=ctx.author.avatar_url)
     embed.set_footer(text=random.choice(compliments), icon_url="https://i.pinimg.com/236x/9f/9c/11/9f9c11d4eaa3d99bc9a8ece092f5e979.jpg")
@@ -406,12 +409,6 @@ async def view_queue(ctx):
         await ctx.send(embed=embed)
 
 
-@bot.command(aliases=["rem","remove"])
-async def remove_song(ctx, index):
-    global cursor
-    operation_remove = "DELETE FROM music_queue WHERE song_name = {}"
-
-
 @bot.command(aliases=['play','p'])
 async def play_music(ctx, *, char):
     global FFMPEG_OPTS
@@ -421,42 +418,49 @@ async def play_music(ctx, *, char):
     server_queue = cursor.fetchall()
     # Setup 
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-    if char.isdigit() == False:
-        # Web Scrape
-        char = char.replace(" ","+")
-        htm = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + char)
-        video = regex.findall(r"watch\?v=(\S{11})", htm.read().decode())
-        url = "https://www.youtube.com/watch?v=" + video[0]
-        htm_code = str(urllib.request.urlopen(url).read().decode())
-        starting = htm_code.find("<title>") + len("<title>")
-        ending = htm_code.find("</title>")
-        name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&").replace(" - YouTube", " ")
-        URL_direct = youtube_download(ctx, url)
-        if ctx.voice_client.is_playing() != True:
-            embed = discord.Embed(description=name_of_the_song.replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
-            embed.set_author(name="Now playing", icon_url=url_author_music)
-            voice.play(discord.FFmpegPCMAudio(str(URL_direct), **FFMPEG_OPTS))
-            await ctx.send(embed=embed)
+    try:
+        if voice != None:
+            if char.isdigit() == False:
+                # Web Scrape
+                char = char.replace(" ","+")
+                htm = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + char)
+                video = regex.findall(r"watch\?v=(\S{11})", htm.read().decode())
+                url = "https://www.youtube.com/watch?v=" + video[0]
+                htm_code = str(urllib.request.urlopen(url).read().decode())
+                starting = htm_code.find("<title>") + len("<title>")
+                ending = htm_code.find("</title>")
+                name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&").replace(" - YouTube", " ")
+                URL_direct = youtube_download(ctx, url)
+                if ctx.voice_client.is_playing() != True:
+                    embed = discord.Embed(description=name_of_the_song.replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+                    embed.set_author(name="Now playing", icon_url=url_author_music)
+                    voice.play(discord.FFmpegPCMAudio(str(URL_direct), **FFMPEG_OPTS))
+                    await ctx.send(embed=embed)
+                else:
+                    voice.stop()
+                    embed = discord.Embed(description=name_of_the_song.replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+                    embed.set_author(name="Now playing", icon_url=url_author_music)
+                    voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
+                    await ctx.send(embed=embed)
+            else:   
+                URL_queue = youtube_download(ctx, server_queue[int(char)][1])
+                if ctx.voice_client.is_playing() != True:
+                    embed = discord.Embed(description="{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+                    embed.set_author(name="Now playing", icon_url=url_author_music)
+                    await ctx.send(embed=embed)
+                    voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                else:
+                    voice.stop()
+                    embed = discord.Embed(description="{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+                    embed.set_author(name="Now playing", icon_url=url_author_music)
+                    await ctx.send(embed=embed)
+                    voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
         else:
-            voice.stop()
-            embed = discord.Embed(description=name_of_the_song.replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
-            embed.set_author(name="Now playing", icon_url=url_author_music)
-            voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
+            embed = discord.Embed(description="Join a voice channel first {} and connect Thwipper [🔊]".format(ctx.author.name), color=discord.Color.from_rgb(70, 96, 253))
             await ctx.send(embed=embed)
-    else:   
-        URL_queue = youtube_download(ctx, server_queue[int(char)][1])
-        if ctx.voice_client.is_playing() != True:
-            embed = discord.Embed(description="{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
-            embed.set_author(name="Now playing", icon_url=url_author_music)
-            await ctx.send(embed=embed)
-            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
-        else:
-            voice.stop()
-            embed = discord.Embed(description="{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
-            embed.set_author(name="Now playing", icon_url=url_author_music)
-            await ctx.send(embed=embed)
-            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
-            
+    except AttributeError:
+        await ctx.send(embed=discord.Embed(description='I am not connected to a voice channel [❗]'.format(ctx.author.name), color=discord.Color.from_rgb(70, 96, 253)))  
+
 
 @bot.command(aliases=["pause"])
 async def pause_song(ctx):

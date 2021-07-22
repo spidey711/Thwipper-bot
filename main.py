@@ -442,19 +442,24 @@ async def play_music(ctx, *, char):
                     embed.set_author(name="Now playing", icon_url=url_author_music)
                     voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
                     await ctx.send(embed=embed)
-            else:   
-                URL_queue = youtube_download(ctx, server_queue[int(char)][1])
-                if ctx.voice_client.is_playing() != True:
-                    embed = discord.Embed(description="{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
-                    embed.set_author(name="Now playing", icon_url=url_author_music)
+            else: 
+                try:  
+                    URL_queue = youtube_download(ctx, server_queue[int(char)][1])
+                    if ctx.voice_client.is_playing() != True:
+                        embed = discord.Embed(description="{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+                        embed.set_author(name="Now playing", icon_url=url_author_music)
+                        await ctx.send(embed=embed)
+                        voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                    else:
+                        voice.stop()
+                        embed = discord.Embed(description="{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
+                        embed.set_author(name="Now playing", icon_url=url_author_music)
+                        await ctx.send(embed=embed)
+                        voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                except IndexError:
+                    embed = discord.Embed(description="Song not found in queue", color=discord.Color.from_rgb(70, 96, 253))
+                    embed.set_author(name="Oops...", icon_url=url_author_music)
                     await ctx.send(embed=embed)
-                    voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
-                else:
-                    voice.stop()
-                    embed = discord.Embed(description="{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
-                    embed.set_author(name="Now playing", icon_url=url_author_music)
-                    await ctx.send(embed=embed)
-                    voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
         else:
             embed = discord.Embed(description="Join a voice channel first {} and connect Thwipper [🔊]".format(ctx.author.name), color=discord.Color.from_rgb(70, 96, 253))
             await ctx.send(embed=embed)

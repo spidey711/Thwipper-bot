@@ -23,8 +23,6 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents)
 # MUSIC
-queue = {}
-current = {}
 FFMPEG_OPTS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
 ydl_op = {'format':'bestaudio/best','postprocessors':[{'key':'FFmpegExtractAudio','preferredcodec':'mp3','preferredquality':'96',}],}
 # FACTS
@@ -82,7 +80,7 @@ async def on_ready():
     # MEMES
     global meme_links
     raw = requests.get(random.choice(pinterest))
-    html_content = raw.content.decode(raw)
+    html_content = raw.content.decode()
     stop = 0
     for i in range(0,500):
         a = html_content.find("GrowthUnauthPinImage__Image", stop)
@@ -98,18 +96,6 @@ async def on_ready():
     # UPDATION
     @tasks.loop(seconds=5.0)
     async def updation():
-        global conn
-        global cursor
-        # Music Queue
-        global queue
-        operation_queue = "SELECT * FROM music_queue"
-        cursor.execute(operation_queue)
-        songs = cursor.fetchall()
-        for song in songs:
-            if song not in queue:
-                queue[song] = song[2] 
-            else:
-                continue
         conn.commit()
     updation.start()
 
@@ -388,7 +374,6 @@ async def queue_song(ctx, *, name):
 
 @bot.command(aliases=["view","v"])
 async def view_queue(ctx):
-    global queue
     global cursor
     global current
     operation_view = "SELECT song_name FROM music_queue WHERE server={}".format(str(ctx.guild.id))
@@ -532,19 +517,16 @@ async def stop_song(ctx):
 
 @bot.command(aliases=["clear_queue","cq"])
 async def clear_song_queue(ctx):
-    global queue
     global cursor
-    if len(queue) > 0:
-        operation_clear_song = "DELETE FROM music_queue WHERE server={}".format(str(ctx.guild.id))
-        cursor.execute(operation_clear_song)
-        queue.clear()
-        message = await ctx.send("Queue Cleared")
-        await message.add_reaction("✅")
-    else:
-        embed_empty = discord.Embed(description="Queue is already empty [⭕]", color=discord.Color.from_rgb(70, 96, 253))
-        embed_empty.set_author(name="Hmm...", icon_url=url_author_music)
-        await ctx.send(embed=embed_empty)
-
+    # if len(queue) > 0:
+    operation_clear_song = "DELETE FROM music_queue WHERE server={}".format(str(ctx.guild.id))
+    cursor.execute(operation_clear_song)
+    message = await ctx.send("Queue Cleared")
+    await message.add_reaction("✅")
+    # else:
+    #     embed_empty = discord.Embed(description="Queue is already empty [⭕]", color=discord.Color.from_rgb(70, 96, 253))
+    #     embed_empty.set_author(name="Hmm...", icon_url=url_author_music)
+    #     await ctx.send(embed=embed_empty)
 start_token = txt_from_file.find("token=") + len("token=")
 end_token = txt_from_file.find('"',start_token + 3) + 1
 bot.run(eval(txt_from_file[start_token:end_token]))

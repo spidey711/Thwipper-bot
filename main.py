@@ -188,7 +188,7 @@ async def embed_help(ctx):
     embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
                         description="Prefix => `t!` `_`",
                         color=discord.Color.from_rgb(70, 96, 253))
-    embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nh to get this embed\nwit to get famous dialogues and quips\nthwip for fun", inline=False)
+    embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nh to get this embed\nwit to get famous dialogues and quips", inline=False)
     embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="\nabout to get information about Thwipper\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture", inline=False)
     embed.add_field(name="𝗗𝗮𝘁𝗲 & 𝗧𝗶𝗺𝗲", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
     embed.add_field(name="𝗠𝘆𝗦𝗤𝗟", value="; <query> to use SQL Shell", inline=False)
@@ -208,10 +208,10 @@ async def do_quips(ctx):
     await ctx.send(embed=embed)
 
 
-@bot.command(aliases=['thwip'])
-async def fun_function(ctx):
-    phrases = ["Lessgo!", "That's what I am talkin' about", "That's how we do it!", "Alright Whooooooo!","Thwip!","Whoa...that's awesome!"]
-    await ctx.send(embed=discord.Embed(title=random.choice(phrases)))
+@bot.command(aliases=['gg','yay'])
+async def fun(ctx):
+    phrases = ["Lessgo!", "That's what I am talkin' about", "That's how we do it", "Alright Whooooooo","Thwip!"]
+    await ctx.send(random.choice(phrases))
 
 # //////////////////////////////////// INTERNET //////////////////////////////////////////////
 

@@ -27,10 +27,6 @@ FFMPEG_OPTS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_
 ydl_op = {'format':'bestaudio/best','postprocessors':[{'key':'FFmpegExtractAudio','preferredcodec':'mp3','preferredquality':'128',}],}
 # FACTS
 facts_list = []
-# Utility
-log_channel = 863484698290290688
-# QUIPS
-wit_list = []
 # MEMES
 meme_links = []
 pinterest = ["https://i.pinimg.com/236x/a5/ae/8d/a5ae8d7a0fe20b1b1ed97ffc725b95c1.jpg","https://i.pinimg.com/236x/10/27/c9/1027c94d3e939471d2ff518d8103990c.jpg","https://i.pinimg.com/236x/26/7a/71/267a7117af7d869f11a09189349b211b.jpg","https://i.pinimg.com/236x/63/45/68/634568c6b171d3d63889fa39ba331594.jpg","https://in.pinterest.com/greenlanter5424/funny-superheroes-memes/","https://in.pinterest.com/nevaehgracesmom/superhero-memes/","https://in.pinterest.com/alexevitts98/superhero-funny/","https://in.pinterest.com/joshuacgreenste/funny-superhero-memes/"]
@@ -188,7 +184,7 @@ async def embed_help(ctx):
     embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
                         description="Prefix => `t!` `_`",
                         color=discord.Color.from_rgb(70, 96, 253))
-    embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nh to get this embed\nwit to get famous dialogues and quips", inline=False)
+    embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nh to get this embed", inline=False)
     embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="\nabout to get information about Thwipper\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture", inline=False)
     embed.add_field(name="𝗗𝗮𝘁𝗲 & 𝗧𝗶𝗺𝗲", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
     embed.add_field(name="𝗠𝘆𝗦𝗤𝗟", value="; <query> to use SQL Shell", inline=False)
@@ -198,13 +194,6 @@ async def embed_help(ctx):
     embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\ncq to clear queue", inline=False)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text="New Features Coming Soon! [🛠]\n1)Autoplay  2)Next  3)Previous  4)Loop Queue  5)Repeat Song  6)Remove  7)Wikipedia")
-    await ctx.send(embed=embed)
-
-
-@bot.command(aliases=['wit'])
-async def do_quips(ctx):
-    embed = discord.Embed(description=random.choice(wit_list), color=discord.Color.from_rgb(70, 96, 253))
-    embed.set_thumbnail(url=random.choice(url_thumbnails))
     await ctx.send(embed=embed)
 
 # //////////////////////////////////// INTERNET //////////////////////////////////////////////
@@ -240,10 +229,14 @@ async def description_thwipper(ctx):
 
 
 @bot.command(aliases=["pfp"])
-async def user_pfp(ctx):
-    compliments = ["Lookin' good {}!".format(ctx.author.name),"That's a cute pfp, did your husband give it to you? 🤣","Hey, this is a nice one {}!".format(ctx.author.name),"I like this one, {} 😎".format(ctx.author.name),"Where'd you get this {}? 🤩".format(ctx.author.name),"Good profile picture {} ✅".format(ctx.author.name),"I will make an exception for this and give it 9.5 outta 10, you're welcome {}.".format(ctx.author.name),"The Daily Bugle would definitely pay a lot for this one 📸","AHA! This is definitely the one for you {} 👌🏻".format(ctx.author.name),"This is fire 🔥🔥🔥"]
-    embed = discord.Embed(title="Profile Picture : {}".format(ctx.author.name), color=discord.Color.from_rgb(70, 96, 253))
-    embed.set_image(url=ctx.author.avatar_url)
+async def user_pfp(ctx, member:discord.Member=None):
+    compliments = ["Man, the daily bugle would pay a lot for this 🤩", "This is nice one! I like it 😎", " ✅✅✅", "🔥🔥🔥","Great Profile Picture, I must say","Damn, where'd you get this? 💙"]
+    if member is None:
+        embed = discord.Embed(title="Profile Picture : {}".format(ctx.author.name), color=discord.Color.from_rgb(70, 96, 253))
+        embed.set_image(url=ctx.author.avatar_url)
+    else:
+        embed = discord.Embed(title="Profile Picture : {}".format(member.name), color=discord.Color.from_rgb(70, 96, 253))
+        embed.set_image(url=member.avatar_url)
     embed.set_footer(text=random.choice(compliments), icon_url="https://i.pinimg.com/236x/9f/9c/11/9f9c11d4eaa3d99bc9a8ece092f5e979.jpg")
     await ctx.send(embed=embed)
 
@@ -366,7 +359,7 @@ async def queue_song(ctx, *, name):
     starting = htm_code.find("<title>") + len("<title>") # now we use .find method to find the title of the vid which is in between <title></title> tags
     ending = htm_code.find("</title>")        
     name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&") # here we replace uncessary things like tags because we only want the title
-    cursor.execute("INSERT INTO music_queue(song_name, song_url, server)VALUES('{name}','{url}','{id}')".format(name=name_of_the_song, url=url, id=str(ctx.guild.id)))
+    cursor.execute("""INSERT INTO music_queue(song_name, song_url, server)VALUES("{name}","{url}","{id}")""".format(name=name_of_the_song, url=url, id=str(ctx.guild.id)))
     embed = discord.Embed(description="{}".format(name_of_the_song).replace(" - YouTube", " "), color=discord.Color.from_rgb(70, 96, 253))
     embed.set_author(name="Song added", icon_url=url_author_music)
     await ctx.send(embed=embed)
@@ -375,7 +368,6 @@ async def queue_song(ctx, *, name):
 @bot.command(aliases=["view","v"])
 async def view_queue(ctx):
     global cursor
-    global current
     operation_view = "SELECT song_name FROM music_queue WHERE server={}".format(str(ctx.guild.id))
     cursor.execute(operation_view)
     songs = cursor.fetchall()

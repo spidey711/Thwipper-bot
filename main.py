@@ -207,12 +207,6 @@ async def do_quips(ctx):
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     await ctx.send(embed=embed)
 
-
-@bot.command(aliases=['gg','yay'])
-async def fun(ctx):
-    phrases = ["Lessgo!", "That's what I am talkin' about", "That's how we do it", "Alright Whooooooo","Thwip!"]
-    await ctx.send(random.choice(phrases))
-
 # //////////////////////////////////// INTERNET //////////////////////////////////////////////
 
 @bot.command(aliases=['g'])

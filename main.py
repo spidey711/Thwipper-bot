@@ -298,19 +298,25 @@ async def get_calendar(ctx, year, month):
 @bot.command(aliases=[";"])
 async def sql_shell(ctx, *, expression):
     global cursor
-    try:
-        output = ""
-        cursor.execute(expression)
-        for item in cursor.fetchall():
-            output += str(item) + "\n"
-        conn.commit()
-        embed = discord.Embed(title=str(expression), description=str(output), color=discord.Color.from_rgb(70, 96, 253))
-        embed.set_author(name="MySQL Shell", icon_url=url_author_sql)   
-        await ctx.send(embed=embed)
-    except Exception as e:
-        embed_err = discord.Embed(title="ERROR", description=str(e), color=discord.Color.from_rgb(70, 96, 253))
-        embed_err.set_author(name="MySQL Shell", icon_url=url_author_sql)   
-        await ctx.send(embed=embed_err)
+    op_dev = "SELECT * FROM dev_users"
+    cursor.execute(op_dev)
+    dev_list = cursor.fetchall()
+    if str(ctx.author.id) in str(dev_list) or ctx.author.id == 622497106657148939:
+        try:
+            output = ""
+            cursor.execute(expression)
+            for item in cursor.fetchall():
+                output += str(item) + "\n"
+            conn.commit()
+            embed = discord.Embed(title=str(expression), description=str(output), color=discord.Color.from_rgb(70, 96, 253))
+            embed.set_author(name="MySQL Shell", icon_url=url_author_sql)   
+            await ctx.send(embed=embed)
+        except Exception as e:
+            embed_err = discord.Embed(title="ERROR", description=str(e), color=discord.Color.from_rgb(70, 96, 253))
+            embed_err.set_author(name="MySQL Shell", icon_url=url_author_sql)   
+            await ctx.send(embed=embed_err)
+    else:
+        embed = discord.Embed(description="Access Denied", color=discord.Color.from_rgb(70, 96, 253))
 
 #///////////////////////////////////////// MUSIC /////////////////////////////////////////////
 

@@ -27,9 +27,11 @@ FFMPEG_OPTS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_
 ydl_op = {'format':'bestaudio/best','postprocessors':[{'key':'FFmpegExtractAudio','preferredcodec':'mp3','preferredquality':'128',}],}
 # FACTS
 facts_list = []
+# WITS
+wit_list = []
 # MEMES
+pinterest = ["https://in.pinterest.com/joshuacgreenste/funny-superhero-memes/","https://in.pinterest.com/greenlanter5424/funny-superheroes-memes/","https://in.pinterest.com/comicnity/superhero-memes/"]
 meme_links = []
-pinterest = ["https://i.pinimg.com/236x/a5/ae/8d/a5ae8d7a0fe20b1b1ed97ffc725b95c1.jpg","https://i.pinimg.com/236x/10/27/c9/1027c94d3e939471d2ff518d8103990c.jpg","https://i.pinimg.com/236x/26/7a/71/267a7117af7d869f11a09189349b211b.jpg","https://i.pinimg.com/236x/63/45/68/634568c6b171d3d63889fa39ba331594.jpg","https://in.pinterest.com/greenlanter5424/funny-superheroes-memes/","https://in.pinterest.com/nevaehgracesmom/superhero-memes/","https://in.pinterest.com/alexevitts98/superhero-funny/","https://in.pinterest.com/joshuacgreenste/funny-superhero-memes/"]
 # SQL
 file = open("env.txt","r")
 txt_from_file = str(file.read())
@@ -56,28 +58,40 @@ def youtube_download(ctx,url):
 @bot.event
 async def on_ready():
     print("We have logged in as {0.user}".format(bot))
+    stop = 0
     # STATUS
     activity = discord.Game(name="Spider-Man (2018)", type=3)
     await bot.change_presence(activity=activity)
-    # FACTS
-    global facts_list
-    b = requests.get("https://www.thefactsite.com/1000-interesting-facts/").content.decode().replace("<i>","*").replace("</i>","*").replace("&#8220;",'"').replace("&#8221;",'"').replace("&#8217;","'")
-    stop = 0
-    for i in range(0,117):
-        n1 = b.find('<p class="list">',stop) + len('<p class="list">')
-        n2 = b.find("</p>",stop)
-        stop = n2 + len("</p>")
-        output = ""
-        if not b[n1:n2]:
+    # WITS
+    global wit_list
+    x = requests.get("https://www.cbr.com/greatest-spider-man-stories/").content.decode().replace("<em>"," ").replace("</em>"," ")
+    for i in range(0, 10000):
+        a = x.find("<p>", stop)
+        b = x.find("</p>", stop)
+        stop = b + len("</p>")
+        wits = ""
+        if not x[a:b]:
             continue
         else:
-            output = b[n1:n2]
-            facts_list += [output]    
+            wits = x[a:b]
+            wit_list += [wits]
+    # # FACTS
+    # global facts_list
+    # b = requests.get("https://www.thefactsite.com/1000-interesting-facts/").content.decode().replace("<i>","*").replace("</i>","*").replace("&#8220;",'"').replace("&#8221;",'"').replace("&#8217;","'")
+    # for i in range(0,117):
+    #     n1 = b.find('<p class="list">', stop) + len('<p class="list">')
+    #     n2 = b.find("</p>", stop)
+    #     stop = n2 + len("</p>")
+    #     output = ""
+    #     if not b[n1:n2]:
+    #         continue
+    #     else:
+    #         output = b[n1:n2]
+    #         facts_list += [output]    
     # MEMES
     global meme_links
     raw = requests.get(random.choice(pinterest))
     html_content = raw.content.decode()
-    stop = 0
     for i in range(0,500):
         a = html_content.find("GrowthUnauthPinImage__Image", stop)
         b = html_content.find('src="', a) + len('src="')
@@ -184,16 +198,26 @@ async def embed_help(ctx):
     embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
                         description="Prefix => `t!` `_`",
                         color=discord.Color.from_rgb(70, 96, 253))
-    embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nh to get this embed", inline=False)
+    embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nh to get this embed\nwit to get a famous dialogue or plot (under works)", inline=False)
     embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="\nabout to get information about Thwipper\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture", inline=False)
     embed.add_field(name="𝗗𝗮𝘁𝗲 & 𝗧𝗶𝗺𝗲", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
     embed.add_field(name="𝗠𝘆𝗦𝗤𝗟", value="; <query> to use SQL Shell", inline=False)
-    embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="g <topic> to google\nfact to get an interesting fact\nmeme to get superhero memes",inline=False)
+    embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="g <topic> to google\nfact to get an interesting fact (under works)\nmeme to get superhero memes (under works)",inline=False)
     embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
     embed.add_field(name="𝗣𝗹𝗮𝘆𝗲𝗿",value="p <name> or <index> to play songs\nres to resume a song\npause to pause a song\nst to stop a song", inline=False)
     embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\ncq to clear queue", inline=False)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text="New Features Coming Soon! [🛠]\n1)Autoplay  2)Next  3)Previous  4)Loop Queue  5)Repeat Song  6)Remove  7)Wikipedia")
+    await ctx.send(embed=embed)
+
+
+@bot.command(aliases=["wit"])
+async def get_wit(ctx):
+    footers = ["Ha! How'd you like that?","Man this brings back some memories!","So..what do you think?","New stuff for wit coming soon!"]
+    titles = ["Oh man, I remember this one!","Here you go...","I gotta say, this still holds up today...","One wit..coming right up!"]
+    embed = discord.Embed(title=random.choice(titles), description=random.choice(wit_list), color=discord.Color.from_rgb(70, 96, 253))
+    embed.set_thumbnail(url=random.choice(url_thumbnails))
+    embed.set_footer(text=random.choice(footers), icon_url=ctx.author.avatar_url)
     await ctx.send(embed=embed)
 
 # //////////////////////////////////// INTERNET //////////////////////////////////////////////

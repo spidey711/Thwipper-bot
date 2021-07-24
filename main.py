@@ -230,7 +230,7 @@ async def description_thwipper(ctx):
 
 @bot.command(aliases=["pfp"])
 async def user_pfp(ctx, member:discord.Member=None):
-    compliments = ["Man, the daily bugle would pay a lot for this 🤩", "This is nice one! I like it 😎", " ✅✅✅", "🔥🔥🔥","Great Profile Picture, I must say","Damn, where'd you get this? 💙"]
+    compliments = ["Man, the daily bugle would pay a lot for this 🤩", "This is nice one! I like it 😎", "Oh Boy! JJJ is gonna be real happy 😃", "🔥🔥🔥","Great Profile Picture, I must say","Damn, where'd you get this? 💙"]
     if member is None:
         embed = discord.Embed(title="Profile Picture : {}".format(ctx.author.name), color=discord.Color.from_rgb(70, 96, 253))
         embed.set_image(url=ctx.author.avatar_url)

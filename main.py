@@ -28,8 +28,9 @@ FFMPEG_OPTS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_
 ydl_op = {'format':'bestaudio/best','postprocessors':[{'key':'FFmpegExtractAudio','preferredcodec':'mp3','preferredquality':'128',}],}
 # FACTS
 facts_list = []
-# WITS
-wit_list = []
+# WIT
+plot_list = []
+dialogue_list = []
 # MEMES
 pinterest = ["https://in.pinterest.com/joshuacgreenste/funny-superhero-memes/","https://in.pinterest.com/greenlanter5424/funny-superheroes-memes/","https://in.pinterest.com/comicnity/superhero-memes/"]
 meme_links = []
@@ -50,7 +51,7 @@ url_author_sql = "https://miro.medium.com/max/361/1*WzqoTtRUpmJR26dzlKdIwg.png"
 url_author_music = "https://i.pinimg.com/originals/f9/33/3d/f9333dd53a0a35d08362004e17b75976.jpg"
 url_author_queue = ["https://i.pinimg.com/236x/10/06/35/100635a268123393a208b3e6efb5ec0d.jpg","https://i.pinimg.com/236x/d8/a1/fc/d8a1fcbc9482a9ae7a9352620dd3e4ea.jpg"]
 
-def youtube_download(ctx,url):
+def youtube_download(ctx, url):
     if True:
         with youtube_dl.YoutubeDL(ydl_op) as ydl:
             URL = ydl.extract_info(url, download=False)['formats'][0]['url']
@@ -64,7 +65,7 @@ async def on_ready():
     activity = discord.Game(name="Spider-Man (2018)", type=3)
     await bot.change_presence(activity=activity)
     # WITS
-    global wit_list
+    global plot_list
     x = requests.get("https://www.cbr.com/greatest-spider-man-stories/").content.decode().replace("<em>"," ").replace("</em>"," ")
     for i in range(0, 10000):
         a = x.find("<p>", stop)
@@ -75,20 +76,33 @@ async def on_ready():
             continue
         else:
             wits = x[a:b]
-            wit_list += [wits]
+            plot_list += [wits.replace("<p>"," ")]
+    # DIALOGUES
+    global dialogue_list
+    site = requests.get("https://geektrippers.com/spiderman-quotes/").content.decode().replace("<br>","\n").replace("<strong>"," ").replace("</strong>"," ").replace("<em>"," ").replace("</em>"," ").replace("&#8217;","'").replace("&#8221;",'"\n\r').replace("&#8230;","...").replace("&#8220;",'"').replace("&nbsp;"," ")
+    for i in range(0, 1000):
+        q = site.find('<p class="has-background" style="background-color:#dedfe0">', stop) + len('<p class="has-background style="background-color:#dedfe0">')
+        w = site.find("</p>", stop)
+        stop = w + len("</p>")
+        dialogues = ""
+        if not site[q:w]:
+            continue
+        else:
+            dialogues = site[q:w]
+            dialogue_list += [dialogues]
     # # FACTS
-    # global facts_list
-    # b = requests.get("https://www.thefactsite.com/1000-interesting-facts/").content.decode().replace("<i>","*").replace("</i>","*").replace("&#8220;",'"').replace("&#8221;",'"').replace("&#8217;","'")
-    # for i in range(0,117):
-    #     n1 = b.find('<p class="list">', stop) + len('<p class="list">')
-    #     n2 = b.find("</p>", stop)
-    #     stop = n2 + len("</p>")
-    #     output = ""
-    #     if not b[n1:n2]:
-    #         continue
-    #     else:
-    #         output = b[n1:n2]
-    #         facts_list += [output]    
+    global facts_list
+    b = requests.get("https://www.thefactsite.com/1000-interesting-facts/").content.decode().replace("<i>","*").replace("</i>","*").replace("&#8220;",'"').replace("&#8221;",'"').replace("&#8217;","'")
+    for i in range(0,117):
+        n1 = b.find('<p class="list">', stop) + len('<p class="list">')
+        n2 = b.find("</p>", stop)
+        stop = n2 + len("</p>")
+        output = ""
+        if not b[n1:n2]:
+            continue
+        else:
+            output = b[n1:n2]
+            facts_list += [output]    
     # MEMES
     global meme_links
     raw = requests.get(random.choice(pinterest))
@@ -196,7 +210,7 @@ async def greet_bot(ctx):
 async def embed_help(ctx):
     global url_thumbnails
     embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
-                        description="Prefix => `t!` `_`",
+                        description="Prefix => `t!`or `_`",
                         color=color)
     embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nh to get this embed\nwit to get a famous dialogue or plot (under works)", inline=False)
     embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="\nabout to get information about Thwipper\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture", inline=False)
@@ -213,11 +227,13 @@ async def embed_help(ctx):
 
 @bot.command(aliases=["wit"])
 async def get_wit(ctx):
-    footers = ["Ha! How'd you like that?","Man this brings back some memories!","So..what do you think?","New stuff for wit coming soon!"]
-    titles = ["Oh man, I remember this one!","Here you go...","I gotta say, this still holds up today...","One wit..coming right up!"]
-    embed = discord.Embed(title=random.choice(titles), description=random.choice(wit_list), color=color)
+    global plot_list
+    global dialogue_list
+    titles = ["Oh man, I remember this one!","Here you go...","I gotta say, this still holds up today..."]
+    footers = ["Man, this is killer material!","Now this is what I call a good wit!","Oh boy, this is one of my favorites!"]
+    embed = discord.Embed(title=random.choice(titles), description=random.choice(plot_list) or random.choice(dialogue_list), color=color)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
-    embed.set_footer(text=random.choice(footers), icon_url=ctx.author.avatar_url)
+    embed.set_footer(text=random.choice(footers), icon_url=bot.user.avatar_url)
     await ctx.send(embed=embed)
 
 # //////////////////////////////////// INTERNET //////////////////////////////////////////////
@@ -242,7 +258,7 @@ async def get_fact(ctx):
 async def get_meme(ctx):
     await ctx.send(random.choice(meme_links))
 
-#///////////////////////////////////// UTILITY ///////////////////////////////////////////////
+#///////////////////////////////////// UTILITY ///////////////////////////////////////////////        
 
 @bot.command(aliases=['about'])
 async def description_thwipper(ctx):
@@ -348,7 +364,7 @@ async def sql_shell(ctx, *, expression):
 async def join_vc(ctx):
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     if not ctx.message.author.voice:
-        embed = discord.Embed(description="{}, connect to a voice channel first [🔊]".format(ctx.author.name), color=color)
+        embed = discord.Embed(description="{}, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
         embed.set_author(name='Voice', icon_url=url_author_music)
         await ctx.send(embed=embed)
     if voice == None:    
@@ -356,9 +372,9 @@ async def join_vc(ctx):
         await channel.connect()
         message = await ctx.send("Connected")
         await asyncio.sleep(2)
-        await message.edit(content="Use `t!p <name> or <index>` to play songs [🎸]")
+        await message.edit(content="Use `t!p <name> or <index>` to play songs🎵")
     if voice != None:
-        embed = discord.Embed(description="Already connected to a voice channel [✅]", color=color)
+        embed = discord.Embed(description="Already connected to a voice channel✅", color=color)
         embed.set_author(name='Voice', icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -371,9 +387,9 @@ async def leave_vc(ctx):
             await voice_client.disconnect() 
             message = await ctx.send("Disconnected")
             await asyncio.sleep(2)
-            await message.edit(content="See ya later [😎]")
+            await message.edit(content="See ya later😎")
     except AttributeError:
-        embed = discord.Embed(description="I am not connected to a voice channel [❗]", color=color)
+        embed = discord.Embed(description="I am not connected to a voice channel ❗", color=color)
         embed.set_author(name='Voice', icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -411,7 +427,7 @@ async def view_queue(ctx):
         embed.set_thumbnail(url=random.choice(url_author_queue))
         await ctx.send(embed=embed)
     else:
-        embed = discord.Embed(description="No songs in queue [⭕]", color=color)
+        embed = discord.Embed(description="No songs in queue...\nUse t!q <song name>", color=color)
         embed.set_author(name="𝗤𝘂𝗲𝘂𝗲", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -468,10 +484,10 @@ async def play_music(ctx, *, char):
                     embed.set_author(name="Oops...", icon_url=url_author_music)
                     await ctx.send(embed=embed)
         else:
-            embed = discord.Embed(description="Join a voice channel first {} and connect Thwipper [🔊]".format(ctx.author.name), color=color)
+            embed = discord.Embed(description="Join a voice channel first {} and connect Thwipper 🔊".format(ctx.author.name), color=color)
             await ctx.send(embed=embed)
     except AttributeError:
-        await ctx.send(embed=discord.Embed(description='I am not connected to a voice channel [❗]'.format(ctx.author.name), color=color))  
+        await ctx.send(embed=discord.Embed(description='I am not connected to a voice channel ❗'.format(ctx.author.name), color=color))  
 
 
 @bot.command(aliases=["pause"])

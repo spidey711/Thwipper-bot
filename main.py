@@ -377,9 +377,9 @@ async def join_vc(ctx):
         await channel.connect()
         message = await ctx.send("Connected")
         await asyncio.sleep(2)
-        await message.edit(content="Use `t!p <name> or <index>` to play songs🎵")
+        await message.edit(content="Use `t!p <name> or <index>` to play songs 🎵")
     if voice != None:
-        embed = discord.Embed(description="Already connected to a voice channel✅", color=color)
+        embed = discord.Embed(description="Already connected to a voice channel ✅", color=color)
         embed.set_author(name='Voice', icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -392,7 +392,7 @@ async def leave_vc(ctx):
             await voice_client.disconnect() 
             message = await ctx.send("Disconnected")
             await asyncio.sleep(2)
-            await message.edit(content="See ya later😎")
+            await message.edit(content="See ya later 😎")
     except AttributeError:
         embed = discord.Embed(description="I am not connected to a voice channel ❗", color=color)
         embed.set_author(name='Voice', icon_url=url_author_music)
@@ -573,6 +573,12 @@ async def clear_song_queue(ctx):
         embed_empty = discord.Embed(description="Queue is already empty [⭕]", color=color)
         embed_empty.set_author(name="Hmm...", icon_url=url_author_music)
         await ctx.send(embed=embed_empty)
+
+# /////////////////////////////////////////// EXTRA //////////////////////////////////////////////////
+
+@bot.command(aliases=["thwip"])
+async def thwipper(ctx):
+    await ctx.send(embed=discord.Embed(title="*Thwip!*", color=color))
 
 start_token = txt_from_file.find("token=") + len("token=")
 end_token = txt_from_file.find('"',start_token + 3) + 1

@@ -229,9 +229,14 @@ async def embed_help(ctx):
 async def get_wit(ctx):
     global plot_list
     global dialogue_list
+    wit_list = []
+    for plot in plot_list:
+        for dialogue in dialogue_list:
+            wit_list.append(plot)
+            wit_list.append(dialogue)
     titles = ["Oh man, I remember this one!","Here you go...","I gotta say, this still holds up today..."]
     footers = ["Man, this is killer material!","Now this is what I call a good wit!","Oh boy, this is one of my favorites!"]
-    embed = discord.Embed(title=random.choice(titles), description=random.choice(plot_list) or random.choice(dialogue_list), color=color)
+    embed = discord.Embed(title=random.choice(titles), description=random.choice(wit_list), color=color)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text=random.choice(footers), icon_url=bot.user.avatar_url)
     await ctx.send(embed=embed)

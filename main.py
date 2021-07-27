@@ -577,7 +577,7 @@ async def clear_song_queue(ctx):
 
 # /////////////////////////////////////////// EXTRA //////////////////////////////////////////////////
 
-@bot.command(aliases=["thwip"])
+@bot.command(aliases=["web"])
 async def thwipper(ctx):
     await ctx.send(embed=discord.Embed(title="*Thwip!*", color=color))
 

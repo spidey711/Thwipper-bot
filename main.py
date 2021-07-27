@@ -247,7 +247,8 @@ async def get_wit(ctx):
 async def browse(ctx, *, thing_to_search):
     results = " "
     for result in search(thing_to_search, tld='com', lang='en', safe='off', num=10, start=0,stop=10, pause=1.0):
-        results += result + "\n\n"
+        results += result + "\n"
+    await ctx.send("Search results for: **{}**".format(thing_to_search))
     await ctx.send(results)
 
 
@@ -489,7 +490,7 @@ async def play_music(ctx, *, char):
                     embed.set_author(name="Oops...", icon_url=url_author_music)
                     await ctx.send(embed=embed)
         else:
-            embed = discord.Embed(description="Join a voice channel first {} and connect Thwipper 🔊".format(ctx.author.name), color=color)
+            embed = discord.Embed(description="Join a voice channel first, {}, and connect Thwipper 🔊".format(ctx.author.name), color=color)
             await ctx.send(embed=embed)
     except AttributeError:
         await ctx.send(embed=discord.Embed(description='I am not connected to a voice channel ❗'.format(ctx.author.name), color=color))  

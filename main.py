@@ -219,9 +219,9 @@ async def embed_help(ctx):
     embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="g <topic> to google\nfact to get an interesting fact (under works)\nmeme to get superhero memes",inline=False)
     embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
     embed.add_field(name="𝗣𝗹𝗮𝘆𝗲𝗿",value="p <name> or <index> to play songs\nres to resume a song\npause to pause a song\nst to stop a song", inline=False)
-    embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\ncq to clear queue", inline=False)
+    embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nauto ON/OFF to toggle autoplay\ncq to clear queue", inline=False)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
-    embed.set_footer(text="New Features Coming Soon! [🛠]\n1)Autoplay  2)Next  3)Previous  4)Loop Queue  5)Repeat Song  6)Remove  7)Wikipedia")
+    embed.set_footer(text="New Features Coming Soon! [🛠]\n1)Next  2)Previous  3)Loop Queue  4)Repeat Song  5)Remove  6)Wikipedia")
     await ctx.send(embed=embed)
 
 
@@ -387,16 +387,21 @@ async def join_vc(ctx):
 
 @bot.command(aliases=["dc","disconnect"])
 async def leave_vc(ctx):
-    voice_client = ctx.message.guild.voice_client
-    try:
-        if voice_client.is_connected():
-            await voice_client.disconnect() 
-            message = await ctx.send("Disconnected")
-            await asyncio.sleep(2)
-            await message.edit(content="See ya later 😎")
-    except AttributeError:
-        embed = discord.Embed(description="I am not connected to a voice channel ❗", color=color)
-        embed.set_author(name='Voice', icon_url=url_author_music)
+    if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
+        voice_client = ctx.message.guild.voice_client
+        try:
+            if voice_client.is_connected():
+                await voice_client.disconnect() 
+                message = await ctx.send("Disconnected")
+                await asyncio.sleep(2)
+                await message.edit(content="See ya later 😎")
+        except AttributeError:
+            embed = discord.Embed(description="I am not connected to a voice channel", color=color)
+            embed.set_author(name='Music Player', icon_url=url_author_music)
+            await ctx.send(embed=embed)
+    else:
+        embed = discord.Embed(description="{}, buddy, connect to the voice channel first 🔊".format(ctx.author.name), color=color)
+        embed.set_author(name="Music Player", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
 
@@ -417,6 +422,15 @@ async def queue_song(ctx, *, name):
     await ctx.send(embed=embed)
 
 
+@bot.command(aliases=['test'])
+async def testefbef(ctx):
+    global cursor
+    operation_queue = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
+    cursor.execute(operation_queue)
+    songs = cursor.fetchall()
+    await ctx.send(songs)
+
+
 @bot.command(aliases=["view","v"])
 async def view_queue(ctx):
     global cursor
@@ -427,7 +441,7 @@ async def view_queue(ctx):
     song_index = 0
     if len(songs) > 0:
         for song in songs:
-            string += str(song_index) + ". " + str(song) + "\n"
+            string += str(song_index) + ". " + str(song).replace('("'," ").replace('",)'," ") + "\n"
             song_index += 1
         embed = discord.Embed(title="𝗤𝘂𝗲𝘂𝗲", description=string.replace(" - YouTube"," ").replace("('", " ").replace("',)"," "), color=color)
         embed.set_thumbnail(url=random.choice(url_author_queue))
@@ -435,6 +449,45 @@ async def view_queue(ctx):
     else:
         embed = discord.Embed(description="No songs in queue...\nUse t!q <song name>", color=color)
         embed.set_author(name="𝗤𝘂𝗲𝘂𝗲", icon_url=url_author_music)
+        await ctx.send(embed=embed)
+
+
+@bot.command(aliases=["auto"])
+async def autoplay(ctx, toggle):
+    global cursor
+    global FFMPEG_OPTS
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    operation_queue = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
+    cursor.execute(operation_queue)
+    songs = cursor.fetchall()
+    num = 0
+    if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
+        if toggle == "ON":
+            while num <= len(songs):
+                def auto1():
+                    return lambda: songs[num][1]
+                def auto2(function):
+                    res = function()
+                    return res
+                play_songs = auto2(auto1())
+                embed = discord.Embed(description=songs[num][0].replace(" - YouTube"," "), color=color)
+                embed.set_author(name="Music Player", icon_url=url_author_music)
+                embed.set_footer(text="Autoplay ON 📝")
+                await ctx.send(embed=embed)
+                voice.play(discord.FFmpegPCMAudio(play_songs, **FFMPEG_OPTS))
+                num += 1
+                continue
+            else:
+                embed = discord.Embed(description="Hey, looks like no more songs left to play 🤔")
+                embed.set_author(name="Queue", icon_url=url_author_music)
+                await ctx.send(embed=embed)
+        if toggle == "OFF":
+            embed = discord.Embed(description="Autoplay OFF 📝")
+            embed.set_author(name="Music Player", icon_url=url_author_music)
+            await ctx.send(embed=embed)
+    else:
+        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+        embed.set_author(name='Music Player', icon_url=url_author_music)
         await ctx.send(embed=embed)
 
 
@@ -447,8 +500,8 @@ async def play_music(ctx, *, char):
     server_queue = cursor.fetchall()
     # Setup 
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-    try:
-        if voice != None:
+    if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
+        try:
             if char.isdigit() == False:
                 # Web Scrape
                 char = char.replace(" ","+")
@@ -461,39 +514,40 @@ async def play_music(ctx, *, char):
                 name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&").replace(" - YouTube", " ")
                 URL_direct = youtube_download(ctx, url)
                 if ctx.voice_client.is_playing() != True:
-                    embed = discord.Embed(description=name_of_the_song.replace(" - YouTube", " "), color=color)
-                    embed.set_author(name="Now playing", icon_url=url_author_music)
+                    embed = discord.Embed(description="Now playing: ```{}```".format(name_of_the_song.replace(" - YouTube", " ")), color=color)
+                    embed.set_author(name="Music Player", icon_url=url_author_music)
                     voice.play(discord.FFmpegPCMAudio(str(URL_direct), **FFMPEG_OPTS))
                     await ctx.send(embed=embed)
                 else:
                     voice.stop()
-                    embed = discord.Embed(description=name_of_the_song.replace(" - YouTube", " "), color=color)
-                    embed.set_author(name="Now playing", icon_url=url_author_music)
+                    embed = discord.Embed(description="Now playing: ```{}```".format(name_of_the_song.replace(" - YouTube", " ")), color=color)
+                    embed.set_author(name="Music Player", icon_url=url_author_music)
                     voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
                     await ctx.send(embed=embed)
-            else: 
+            if char.isdigit() == True: 
                 try:  
                     URL_queue = youtube_download(ctx, server_queue[int(char)][1])
                     if ctx.voice_client.is_playing() != True:
-                        embed = discord.Embed(description="{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=color)
-                        embed.set_author(name="Now playing", icon_url=url_author_music)
+                        embed = discord.Embed(description="Now playing: ```{}```".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=color)
+                        embed.set_author(name="Music Player", icon_url=url_author_music)
                         await ctx.send(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                     else:
                         voice.stop()
-                        embed = discord.Embed(description="{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=color)
-                        embed.set_author(name="Now playing", icon_url=url_author_music)
+                        embed = discord.Embed(description="Now playing: ```{}```".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=color)
+                        embed.set_author(name="Music Player", icon_url=url_author_music)
                         await ctx.send(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                 except IndexError:
                     embed = discord.Embed(description="Looks like there is no song at this index", color=color)
                     embed.set_author(name="Oops...", icon_url=url_author_music)
                     await ctx.send(embed=embed)
-        else:
-            embed = discord.Embed(description="Join a voice channel first, {}, and connect Thwipper 🔊".format(ctx.author.name), color=color)
-            await ctx.send(embed=embed)
-    except AttributeError:
-        await ctx.send(embed=discord.Embed(description='I am not connected to a voice channel ❗'.format(ctx.author.name), color=color))  
+        except AttributeError:
+            await ctx.send(embed=discord.Embed(description='I am not connected to a voice channel'.format(ctx.author.name), color=color))  
+    else:
+        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+        embed.set_author(name="Music Player", icon_url=url_author_music)
+        await ctx.send(embed=embed)
 
 
 @bot.command(aliases=["pause"])
@@ -501,20 +555,25 @@ async def pause_song(ctx):
     voice_client = ctx.message.guild.voice_client
     pause = ctx.voice_client.is_paused()
     playing = ctx.voice_client.is_playing()
-    try:
-        if playing == True:    
-            voice_client.pause()
-            message = await ctx.send("Song paused")
-            await message.add_reaction("⏸")
-        else:
-            if pause == True:
-                await ctx.send(embed=discord.Embed(description="Song is already paused [❗]", color=color))
+    if ctx.author.id in [mem.id for mem in ctx.voice_client.channel.members]:
+        try:
+            if playing == True:    
+                voice_client.pause()
+                message = await ctx.send("Song paused")
+                await message.add_reaction("⏸")
             else:
-                embed = discord.Embed(description="No song playing currently [❗]", color=color)
-                await ctx.send(embed=embed)
-    except Exception as e: 
-        embed = discord.Embed(description=str(e), color=color)
-        embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
+                if pause == True:
+                    await ctx.send(embed=discord.Embed(description="Song is already paused ❗", color=color))
+                else:
+                    embed = discord.Embed(description="No song playing currently ❗", color=color)
+                    await ctx.send(embed=embed)
+        except Exception as e: 
+            embed = discord.Embed(description=str(e), color=color)
+            embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
+            await ctx.send(embed=embed)
+    else:
+        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+        embed.set_author(name="Music Player", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
 
@@ -523,21 +582,26 @@ async def resume_song(ctx):
     voice_client = ctx.message.guild.voice_client
     pause = ctx.voice_client.is_paused()
     playing = ctx.voice_client.is_playing()
-    try:
-        if pause == True:
-            voice_client.resume()
-            message = await ctx.send("Song resumed")
-            await message.add_reaction("▶")
-        else:
-            if playing == True:
-                embed = discord.Embed(description="Song isn't paused [❗]\nUse `t!pause` to pause the song.", color=color)
-                await ctx.send(embed=embed)
+    if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
+        try:
+            if pause == True:
+                voice_client.resume()
+                message = await ctx.send("Song resumed")
+                await message.add_reaction("▶")
             else:
-                await ctx.send(embed=discord.Embed(description="No song playing currently [❗]\nUse `t!p <name>  or <index>` to play a song.", color=color))
-    except Exception as e:
-            embed = discord.Embed(description=str(e), color=color)
-            embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
-            await ctx.send(embed=embed)
+                if playing == True:
+                    embed = discord.Embed(description="Song isn't paused\nUse `t!pause` to pause the song.", color=color)
+                    await ctx.send(embed=embed)
+                else:
+                    await ctx.send(embed=discord.Embed(description="No song playing currently\nUse `t!p <name>  or <index>` to play a song.", color=color))
+        except Exception as e:
+                embed = discord.Embed(description=str(e), color=color)
+                embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
+                await ctx.send(embed=embed)
+    else:
+        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+        embed.set_author(name="Music Player", icon_url=url_author_music)
+        await ctx.send(embed=embed)
 
 
 @bot.command(aliases=["stop","st"])
@@ -545,18 +609,23 @@ async def stop_song(ctx):
     voice_client = ctx.message.guild.voice_client
     pause = ctx.voice_client.is_paused()
     playing = ctx.voice_client.is_playing()
-    try:
-        if playing == True or pause == True:    
-            voice_client.stop()
-            message = await ctx.send("Song stopped")
-            await message.add_reaction("⏹")
-        else:
-            await ctx.send(embed=discord.Embed(description="Nothing is playing right now [❗]", color=color)
-            )
-    except Exception as e:
-            embed = discord.Embed(description=str(e), color=color)
-            embed.set_author(name="ERROR", icon_url=url_author_music)
-            await ctx.send(embed=embed)
+    if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
+        try:
+            if playing == True or pause == True:    
+                voice_client.stop()
+                message = await ctx.send("Song stopped")
+                await message.add_reaction("⏹")
+            else:
+                await ctx.send(embed=discord.Embed(description="Nothing is playing right now", color=color)
+                )
+        except Exception as e:
+                embed = discord.Embed(description=str(e), color=color)
+                embed.set_author(name="ERROR", icon_url=url_author_music)
+                await ctx.send(embed=embed)
+    else:
+        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+        embed.set_author(name="Music Player", icon_url=url_author_music)
+        await ctx.send(embed=embed)
 
 
 @bot.command(aliases=["clear_queue","cq"])
@@ -571,7 +640,7 @@ async def clear_song_queue(ctx):
         message = await ctx.send("Queue Cleared")
         await message.add_reaction("✅")
     else:
-        embed_empty = discord.Embed(description="Queue is already empty [⭕]", color=color)
+        embed_empty = discord.Embed(description="Queue is already empty ⭕", color=color)
         embed_empty.set_author(name="Hmm...", icon_url=url_author_music)
         await ctx.send(embed=embed_empty)
 

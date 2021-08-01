@@ -79,7 +79,7 @@ async def on_ready():
             plot_list += [wits.replace("<p>"," ")]
     # DIALOGUES
     global dialogue_list
-    site = requests.get("https://geektrippers.com/spiderman-quotes/").content.decode().replace("<br>","\n").replace("<strong>"," ").replace("</strong>"," ").replace("<em>"," ").replace("</em>"," ").replace("&#8217;","'").replace("&#8221;",'"\n\r').replace("&#8230;","...").replace("&#8220;",'"').replace("&nbsp;"," ")
+    site = requests.get("https://geektrippers.com/spiderman-quotes/").content.decode().replace("<br>","\n").replace("<strong>"," ").replace("</strong>"," ").replace("<em>"," ").replace("</em>"," ").replace("&#8217;","'").replace("&#8221;",'"\n\r').replace("&#8230;","...").replace("&#8220;",'"').replace("&nbsp;"," ").replace("&#8211;","-").replace("&#8216;","'")
     for i in range(0, 1000):
         q = site.find('<p class="has-background" style="background-color:#dedfe0">', stop) + len('<p class="has-background style="background-color:#dedfe0">')
         w = site.find("</p>", stop)
@@ -417,7 +417,7 @@ async def queue_song(ctx, *, name):
     ending = htm_code.find("</title>")        
     name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&") # here we replace uncessary things like tags because we only want the title
     cursor.execute("""INSERT INTO music_queue(song_name, song_url, server)VALUES("{name}","{url}","{id}")""".format(name=name_of_the_song, url=url, id=str(ctx.guild.id)))
-    embed = discord.Embed(description="{}".format(name_of_the_song).replace(" - YouTube", " "), color=color)
+    embed = discord.Embed(description="`{}`".format(name_of_the_song).replace(" - YouTube", " "), color=color)
     embed.set_author(name="Song added", icon_url=url_author_music)
     await ctx.send(embed=embed)
 
@@ -514,13 +514,13 @@ async def play_music(ctx, *, char):
                 name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&").replace(" - YouTube", " ")
                 URL_direct = youtube_download(ctx, url)
                 if ctx.voice_client.is_playing() != True:
-                    embed = discord.Embed(description="Now playing: ```{}```".format(name_of_the_song.replace(" - YouTube", " ")), color=color)
+                    embed = discord.Embed(description="Now playing: `{}`".format(name_of_the_song.replace(" - YouTube", " ")), color=color)
                     embed.set_author(name="Music Player", icon_url=url_author_music)
                     voice.play(discord.FFmpegPCMAudio(str(URL_direct), **FFMPEG_OPTS))
                     await ctx.send(embed=embed)
                 else:
                     voice.stop()
-                    embed = discord.Embed(description="Now playing: ```{}```".format(name_of_the_song.replace(" - YouTube", " ")), color=color)
+                    embed = discord.Embed(description="Now playing: `{}`".format(name_of_the_song.replace(" - YouTube", " ")), color=color)
                     embed.set_author(name="Music Player", icon_url=url_author_music)
                     voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
                     await ctx.send(embed=embed)
@@ -528,13 +528,13 @@ async def play_music(ctx, *, char):
                 try:  
                     URL_queue = youtube_download(ctx, server_queue[int(char)][1])
                     if ctx.voice_client.is_playing() != True:
-                        embed = discord.Embed(description="Now playing: ```{}```".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=color)
+                        embed = discord.Embed(description="Now playing: `{}`".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=color)
                         embed.set_author(name="Music Player", icon_url=url_author_music)
                         await ctx.send(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                     else:
                         voice.stop()
-                        embed = discord.Embed(description="Now playing: ```{}```".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=color)
+                        embed = discord.Embed(description="Now playing: `{}`".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=color)
                         embed.set_author(name="Music Player", icon_url=url_author_music)
                         await ctx.send(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))

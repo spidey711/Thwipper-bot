@@ -24,6 +24,7 @@ intents.members = True
 bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents)
 color = discord.Color.blue()
 # MUSIC
+current = {}
 FFMPEG_OPTS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
 ydl_op = {'format':'bestaudio/best','postprocessors':[{'key':'FFmpegExtractAudio','preferredcodec':'mp3','preferredquality':'128',}],}
 # FACTS
@@ -212,7 +213,7 @@ async def embed_help(ctx):
     embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
                         description="Prefix => `t!`or `_`",
                         color=color)
-    embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nh to get this embed\nwit to get a famous dialogue or plot (under works)", inline=False)
+    embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nh to get this embed\nwit to get a famous dialogue or plot", inline=False)
     embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="\nabout to get information about Thwipper\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture", inline=False)
     embed.add_field(name="𝗗𝗮𝘁𝗲 & 𝗧𝗶𝗺𝗲", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
     embed.add_field(name="𝗠𝘆𝗦𝗤𝗟", value="; <query> to use SQL Shell", inline=False)
@@ -303,7 +304,7 @@ async def server_information(ctx):
     icon = str(ctx.guild.icon_url)
     role_count = len(ctx.guild.roles)
     bots_list = [bot.mention for bot in ctx.guild.members if bot.bot]
-    embed = discord.Embed(title="{}'s INFO".format(name), color=color)
+    embed = discord.Embed(title="Server Details: {}".format(name), color=color)
     embed.set_thumbnail(url=icon)
     embed.add_field(name="Owner", value=owner, inline=True)
     embed.add_field(name="Server ID", value=ID, inline=True)
@@ -422,15 +423,6 @@ async def queue_song(ctx, *, name):
     await ctx.send(embed=embed)
 
 
-@bot.command(aliases=['test'])
-async def testefbef(ctx):
-    global cursor
-    operation_queue = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
-    cursor.execute(operation_queue)
-    songs = cursor.fetchall()
-    await ctx.send(songs)
-
-
 @bot.command(aliases=["view","v"])
 async def view_queue(ctx):
     global cursor
@@ -453,7 +445,7 @@ async def view_queue(ctx):
 
 
 @bot.command(aliases=["auto"])
-async def autoplay(ctx, toggle):
+async def autoplay(ctx):
     global cursor
     global FFMPEG_OPTS
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
@@ -462,34 +454,12 @@ async def autoplay(ctx, toggle):
     songs = cursor.fetchall()
     num = 0
     if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
-        if toggle == "ON":
-            while num <= len(songs):
-                def auto1():
-                    return lambda: songs[num][1]
-                def auto2(function):
-                    res = function()
-                    return res
-                play_songs = auto2(auto1())
-                embed = discord.Embed(description=songs[num][0].replace(" - YouTube"," "), color=color)
-                embed.set_author(name="Music Player", icon_url=url_author_music)
-                embed.set_footer(text="Autoplay ON 📝")
-                await ctx.send(embed=embed)
-                voice.play(discord.FFmpegPCMAudio(play_songs, **FFMPEG_OPTS))
-                num += 1
-                continue
-            else:
-                embed = discord.Embed(description="Hey, looks like no more songs left to play 🤔")
-                embed.set_author(name="Queue", icon_url=url_author_music)
-                await ctx.send(embed=embed)
-        if toggle == "OFF":
-            embed = discord.Embed(description="Autoplay OFF 📝")
-            embed.set_author(name="Music Player", icon_url=url_author_music)
-            await ctx.send(embed=embed)
+        while num <= len(songs):
+            voice.stop()
+            voice.play(discord.FFmpegPCMAudio(songs[num][1], **FFMPEG_OPTS))
+            num += 1
     else:
-        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
-        embed.set_author(name='Music Player', icon_url=url_author_music)
-        await ctx.send(embed=embed)
-
+        await ctx.send("join vc first")
 
 @bot.command(aliases=['play','p'])
 async def play_music(ctx, *, char):

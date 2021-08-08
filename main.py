@@ -228,13 +228,21 @@ async def greet_bot(ctx):
     await ctx.send(random.choice(greetings))
 
 
-@bot.command(aliases=['h'])
+@bot.command(aliases=["about"])
+async def thwipper_info(ctx):
+    embed = discord.Embed(title="About", description="Hey there! My name is `THWIPPER`.\nI was made by Spider-Man to tend to people's needs on discord while he is out in the city protecting the innocent from harm.", color=color)
+    embed.set_thumbnail(url=bot.user.avatar_url)
+    embed.set_footer(text="Type _use for command menu", icon_url=ctx.author.avatar_url)
+    await ctx.send(embed=embed)
+
+
+@bot.command(aliases=['use','h'])
 async def embed_help(ctx):
     global url_thumbnails
     embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
                         description="Prefix => `t!`or `_`",
                         color=color)
-    embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nh to get this embed\nwit to get a famous dialogue or plot", inline=False)
+    embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nuse to get this embed\nwit to get a famous dialogue or plot\nabout to get more info about thwipper", inline=False)
     embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="ping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nsnipe to see deleted message", inline=False)
     embed.add_field(name="𝗗𝗮𝘁𝗲 & 𝗧𝗶𝗺𝗲", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
     embed.add_field(name="𝗠𝘆𝗦𝗤𝗟", value="; <query> to use SQL Shell", inline=False)

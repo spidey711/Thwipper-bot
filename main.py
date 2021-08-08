@@ -18,11 +18,12 @@ from googlesearch import search
 import mysql.connector as ms
 
 # SETUP
-prefixes = ["t!","_"]
+prefixes = ["t!","_","thwip"]
 intents = discord.Intents.default()
 intents.members = True
-bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents)
+bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents, case_insensitive=True)
 color = discord.Color.blue()
+deleted_messages = {}
 # MUSIC
 current = {}
 FFMPEG_OPTS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
@@ -125,6 +126,26 @@ async def on_ready():
         conn.commit()
     updation.start()
 
+@bot.event
+async def on_message_delete(message):
+    if not message.channel.id in list(deleted_messages.keys()):
+        deleted_messages[message.channel.id] = []
+    deleted_messages[message.channel.id].append((str(message.author), message.content))
+
+@bot.event
+async def on_member_join(member):
+    channel = discord.utils.get(member.guild.channels, name="announcements")
+    embed = discord.Embed(title="We have a new member!", description="Welcome {}!".format(member.mention), color=color)
+    embed.set_thumbnail(url="https://www.goodfon.com/download/welcome-home-welcome-home-de/1366x768/")
+    await channel.send(embed=embed)
+
+@bot.event
+async def on_member_remove(member):
+    channel = discord.utils.get(member.guild.channels, name="announcements")
+    embed = discord.Embed(title="See ya!", description="{} has decided to leave the server".format(member.mention), color=color)
+    embed.set_thumbnail(url="https://www.dreamstime.com/neon-sign-good-bye-speech-bubble-frame-dark-background-neon-sign-good-bye-speech-bubble-frame-dark-background-light-image151416182")
+    await channel.send(embed=embed)
+
 # //////////////////////////////////// SPECIAL ACCESS /////////////////////////////////////////
 
 @bot.command(aliases=["allow","alw"])
@@ -214,7 +235,7 @@ async def embed_help(ctx):
                         description="Prefix => `t!`or `_`",
                         color=color)
     embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nh to get this embed\nwit to get a famous dialogue or plot", inline=False)
-    embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="\nabout to get information about Thwipper\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture", inline=False)
+    embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="ping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nsnipe to see deleted message", inline=False)
     embed.add_field(name="𝗗𝗮𝘁𝗲 & 𝗧𝗶𝗺𝗲", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
     embed.add_field(name="𝗠𝘆𝗦𝗤𝗟", value="; <query> to use SQL Shell", inline=False)
     embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="g <topic> to google\nfact to get an interesting fact (under works)\nmeme to get superhero memes",inline=False)
@@ -267,11 +288,9 @@ async def get_meme(ctx):
 
 #///////////////////////////////////// UTILITY ///////////////////////////////////////////////        
 
-@bot.command(aliases=['about'])
-async def description_thwipper(ctx):
-    embed = discord.Embed(title="About", description="Hey! I am Thwipper. I was made by Spider-Man to tend to people's needs on discord while he is out in the city protecting the innocent from harm.", color=color)
-    embed.set_thumbnail(url=bot.user.avatar_url)
-    embed.set_footer(text='Type t!h to know more!', icon_url=ctx.author.avatar_url)
+@bot.command()
+async def snipe(ctx):
+    embed = discord.Embed(description="**Message:** {first}\n**Deleted by:** {last}".format(first=deleted_messages[ctx.channel.id][-1][1], last=deleted_messages[ctx.channel.id][-1][0]), color=color)   
     await ctx.send(embed=embed)
 
 
@@ -445,7 +464,7 @@ async def view_queue(ctx):
 
 
 @bot.command(aliases=["auto"])
-async def autoplay(ctx):
+async def autoplay(ctx, toggle):
     global cursor
     global FFMPEG_OPTS
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
@@ -453,13 +472,17 @@ async def autoplay(ctx):
     cursor.execute(operation_queue)
     songs = cursor.fetchall()
     num = 0
-    if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
-        while num <= len(songs):
-            voice.stop()
-            voice.play(discord.FFmpegPCMAudio(songs[num][1], **FFMPEG_OPTS))
-            num += 1
-    else:
-        await ctx.send("join vc first")
+    if toggle == "on":
+        if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
+            while num <= len(songs):
+                voice.stop()
+                voice.play(discord.FFmpegPCMAudio(songs[num][1], **FFMPEG_OPTS))
+                num += 1
+        else:
+            await ctx.send("join vc first")
+    if toggle == "off":
+        voice.stop()
+
 
 @bot.command(aliases=['play','p'])
 async def play_music(ctx, *, char):

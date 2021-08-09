@@ -277,8 +277,7 @@ async def get_meme(ctx):
 
 @bot.command()
 async def snipe(ctx):
-    embed = discord.Embed(description="**Message:** {first}\n**Deleted by:** {last}".format(first=deleted_messages[ctx.channel.id][-1][1], last=deleted_messages[ctx.channel.id][-1][0]), color=color)   
-    await ctx.send(embed=embed)
+    await ctx.send("**Message:** {first}\n**Sender:** {last}".format(first=deleted_messages[ctx.channel.id][-1][1], last=deleted_messages[ctx.channel.id][-1][0]))
 
 
 @bot.command(aliases=["pfp"])
@@ -394,7 +393,7 @@ async def python_shell(ctx, *, expression):
 
 
 @bot.command(aliases=["pinfo"])
-async def function_info(ctx, *, func):
+async def function_info(ctx, func):
     embed = discord.Embed(description=func.__doc__, color=color)
     embed.set_author(name="Info: {}".format(func), icon_url=url_author_python)
     await ctx.send(embed=embed)

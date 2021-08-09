@@ -171,27 +171,6 @@ async def remove_access(ctx, member:discord.Member):
         await ctx.send(embed=embed)
     else:
         embed = discord.Embed(description="Access Denied", color=color)    
-
-
-@bot.command(aliases=["py"])
-async def python_shell(ctx, *, expression):
-    global cursor
-    op_dev = "SELECT * FROM dev_users"
-    cursor.execute(op_dev)
-    dev_list = cursor.fetchall()
-    if str(ctx.author.id) in str(dev_list) or ctx.author.id == 622497106657148939:
-        try:
-            embed_acc = discord.Embed(title=str(expression), description=str(eval(expression)), color=color)
-            embed_acc.set_author(name="Python Shell", icon_url=url_author_python)
-            await ctx.send(embed=embed_acc)
-        except Exception as e:
-            embed_err = discord.Embed(title="𝗘𝗥𝗥𝗢𝗥", description=str(e), color=color)
-            embed_err.set_author(name="Python Shell", icon_url=url_author_python)
-            await ctx.send(embed=embed_err)
-    else:
-        embed_dc = discord.Embed(title="Access Denied", color=color)
-        embed_dc.set_author(name="Python Shell",icon_url=url_author_python)
-        await ctx.send(embed=embed_dc)
         
 
 @bot.command()
@@ -245,7 +224,7 @@ async def embed_help(ctx):
     embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nuse to get this embed\nwit to get a famous dialogue or plot\nabout to get more info about thwipper", inline=False)
     embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="ping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nsnipe to see deleted message", inline=False)
     embed.add_field(name="𝗗𝗮𝘁𝗲 & 𝗧𝗶𝗺𝗲", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
-    embed.add_field(name="𝗠𝘆𝗦𝗤𝗟", value="; <query> to use SQL Shell", inline=False)
+    embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; <query> to use SQL Shell\npy for python shell\npinfo to get use of that python function", inline=False)
     embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="g <topic> to google\nfact to get an interesting fact (under works)\nmeme to get superhero memes",inline=False)
     embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
     embed.add_field(name="𝗣𝗹𝗮𝘆𝗲𝗿",value="p <name> or <index> to play songs\nres to resume a song\npause to pause a song\nst to stop a song", inline=False)
@@ -367,7 +346,7 @@ async def get_calendar(ctx, year, month):
         embed.set_author(name='𝗖𝗮𝗹𝗲𝗻𝗱𝗮𝗿', icon_url=url_calendar)
         await ctx.send(embed=embed)
 
-#///////////////////////////////////// STORAGE(SQL SHELL) ////////////////////////////////////
+#///////////////////////////////////// SHELLS ///////////////////////////////////////////
 
 @bot.command(aliases=[";"])
 async def sql_shell(ctx, *, expression):
@@ -391,6 +370,34 @@ async def sql_shell(ctx, *, expression):
             await ctx.send(embed=embed_err)
     else:
         embed = discord.Embed(description="Access Denied", color=color)
+
+
+@bot.command(aliases=["py"])
+async def python_shell(ctx, *, expression):
+    global cursor
+    op_dev = "SELECT * FROM dev_users"
+    cursor.execute(op_dev)
+    dev_list = cursor.fetchall()
+    if str(ctx.author.id) in str(dev_list) or ctx.author.id == 622497106657148939:
+        try:
+            embed_acc = discord.Embed(title=str(expression), description=str(eval(expression)), color=color)
+            embed_acc.set_author(name="Python Shell", icon_url=url_author_python)
+            await ctx.send(embed=embed_acc)
+        except Exception as e:
+            embed_err = discord.Embed(title="𝗘𝗥𝗥𝗢𝗥", description=str(e), color=color)
+            embed_err.set_author(name="Python Shell", icon_url=url_author_python)
+            await ctx.send(embed=embed_err)
+    else:
+        embed_dc = discord.Embed(title="Access Denied", color=color)
+        embed_dc.set_author(name="Python Shell",icon_url=url_author_python)
+        await ctx.send(embed=embed_dc)
+
+
+@bot.command(aliases=["pinfo"])
+async def function_info(ctx, *, func):
+    embed = discord.Embed(description=func.__doc__, color=color)
+    embed.set_author(name="Info: {}".format(func), icon_url=url_author_python)
+    await ctx.send(embed=embed)
 
 #///////////////////////////////////////// MUSIC /////////////////////////////////////////////
 

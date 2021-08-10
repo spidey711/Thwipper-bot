@@ -378,29 +378,30 @@ async def python_shell(ctx, *, expression):
     cursor.execute(op_dev)
     dev_list = cursor.fetchall()
     if str(ctx.author.id) in str(dev_list) or ctx.author.id == 622497106657148939:
-        if expression == "sys.exit()" or expression == "eval(sys.exit())":
-            embed = discord.Embed(description="I see what you're trying to do, not gonna happen dude", color=color)
+        if expression == "sys.exit()" or expression == "eval(sys.exit)":
+            embed = discord.Embed(description="Sorry, this function will not be executed", color=color)
             embed.set_author(name="Permission Denied", icon_url=url_author_python)
             await ctx.send(embed=embed)
+        else:
+            try:
+                embed_acc = discord.Embed(title=str(expression), description=str(eval(expression)), color=color)
+                embed_acc.set_author(name="Python Shell", icon_url=url_author_python)
+                await ctx.send(embed=embed_acc)
+            except Exception as e:
+                embed_err = discord.Embed(title="ERROR", description=str(e), color=color)
+                embed_err.set_author(name="Python Shell", icon_url=url_author_python)
+                await ctx.send(embed=embed_err)
     else:
         embed_dc = discord.Embed(title="Access Denied", color=color)
         embed_dc.set_author(name="Python Shell",icon_url=url_author_python)
         await ctx.send(embed=embed_dc)
-    try:
-        embed_acc = discord.Embed(title=str(expression), description=str(eval(expression)), color=color)
-        embed_acc.set_author(name="Python Shell", icon_url=url_author_python)
-        await ctx.send(embed=embed_acc)
-    except Exception as e:
-        embed_err = discord.Embed(title="ERROR", description=str(e), color=color)
-        embed_err.set_author(name="Python Shell", icon_url=url_author_python)
-        await ctx.send(embed=embed_err)
 
 
 @bot.command(aliases=["pinfo"])
 async def function_info(ctx, func):
     try:
-        if func == "sys.exit()" or func == "eval(sys.exit())":
-            embed = discord.Embed(description="I see what you're trying to do, not gonna happen dude", color=color)
+        if "(" in [char for char in func] and ")" in [char for char in func]:
+            embed = discord.Embed(description="Sorry, can't do functions. Do without brackets to get information", color=color)
             embed.set_author(name="Permission Denied", icon_url=url_author_python)
             await ctx.send(embed=embed)
         else:

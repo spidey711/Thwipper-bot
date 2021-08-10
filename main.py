@@ -378,14 +378,19 @@ async def python_shell(ctx, *, expression):
     cursor.execute(op_dev)
     dev_list = cursor.fetchall()
     if str(ctx.author.id) in str(dev_list) or ctx.author.id == 622497106657148939:
-        try:
-            embed_acc = discord.Embed(title=str(expression), description=str(eval(expression)), color=color)
-            embed_acc.set_author(name="Python Shell", icon_url=url_author_python)
-            await ctx.send(embed=embed_acc)
-        except Exception as e:
-            embed_err = discord.Embed(title="𝗘𝗥𝗥𝗢𝗥", description=str(e), color=color)
-            embed_err.set_author(name="Python Shell", icon_url=url_author_python)
-            await ctx.send(embed=embed_err)
+        if expression == "sys.exit()":
+            embed = discord.Embed(description="I see what you're trying to do, not gonna happen dude", color=color)
+            embed.set_author(name="Permission Denied", icon_url=url_author_python)
+            await ctx.send(embed=embed)
+        else:
+            try:
+                embed_acc = discord.Embed(title=str(expression), description=str(eval(expression)), color=color)
+                embed_acc.set_author(name="Python Shell", icon_url=url_author_python)
+                await ctx.send(embed=embed_acc)
+            except Exception as e:
+                embed_err = discord.Embed(title="𝗘𝗥𝗥𝗢𝗥", description=str(e), color=color)
+                embed_err.set_author(name="Python Shell", icon_url=url_author_python)
+                await ctx.send(embed=embed_err)
     else:
         embed_dc = discord.Embed(title="Access Denied", color=color)
         embed_dc.set_author(name="Python Shell",icon_url=url_author_python)

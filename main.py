@@ -18,16 +18,26 @@ from googlesearch import search
 import mysql.connector as ms
 
 # SETUP
-prefixes = ["t!","_","thwip"]
+prefixes = ["t!","_","thwip "]
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents, case_insensitive=True)
-color = discord.Color.blue()
+color = discord.Color.from_rgb(10, 43, 78)
 deleted_messages = {}
 # MUSIC
 current = {}
-FFMPEG_OPTS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
-ydl_op = {'format':'bestaudio/best','postprocessors':[{'key':'FFmpegExtractAudio','preferredcodec':'mp3','preferredquality':'128',}],}
+FFMPEG_OPTS = {
+    'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 
+    'options': '-vn'
+    }
+ydl_op = {
+    'format':'bestaudio/best',
+    'postprocessors':[
+        {
+        'key':'FFmpegExtractAudio',
+        'preferredcodec':'mp3',
+        'preferredquality':'128',
+        }],}
 # FACTS
 facts_list = []
 # WIT
@@ -227,7 +237,7 @@ async def embed_help(ctx):
     embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; <query> to use SQL Shell\npy for python shell\npinfo to get use of that python function", inline=False)
     embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="g <topic> to google\nfact to get an interesting fact (under works)\nmeme to get superhero memes",inline=False)
     embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
-    embed.add_field(name="𝗣𝗹𝗮𝘆𝗲𝗿",value="p <name> or <index> to play songs\nres to resume a song\npause to pause a song\nst to stop a song", inline=False)
+    embed.add_field(name="𝗣𝗹𝗮𝘆𝗲𝗿",value="p <name> or <index> to play songs\nres to resume a song\npause to pause a song\nst to stop a song\nbit to set quality of bitrate", inline=False)
     embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nauto ON/OFF to toggle autoplay\ncq to clear queue", inline=False)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text="New Features Coming Soon! [🛠]\n1)Next  2)Previous  3)Loop Queue  4)Repeat Song  5)Remove  6)Wikipedia")
@@ -276,10 +286,25 @@ async def get_meme(ctx):
 #///////////////////////////////////// UTILITY ///////////////////////////////////////////////        
 
 @bot.command()
-async def snipe(ctx):
-    await ctx.send("**Message:** {first}\n**Sender:** {last}".format(first=deleted_messages[ctx.channel.id][-1][1], last=deleted_messages[ctx.channel.id][-1][0]))
+async def snipe(ctx, num_msg=None):
+    if num_msg is None:
+        await ctx.send("**Message:** {first}\n**Sender:** {last}".format(first=deleted_messages[ctx.channel.id][-1][1], last=deleted_messages[ctx.channel.id][-1][0]))
+    if num_msg is not None:
+        for message in deleted_messages:
 
+    
+    
+    
+    
+    # if num_msg is not None:
+    #     if num_msg.isdigit() == True:
+    #         for msg in deleted_messages[0:int(num_msg)+1]:
+    #             await ctx.send(msg)
+    #     else:
+    #         embed = discord.Embed(title="Error", description="You need to enter number of messages {}".format(ctx.author.name), color=color)
+    #         await ctx.send(embed=embed)
 
+            pass
 @bot.command(aliases=["pfp"])
 async def user_pfp(ctx, member:discord.Member=None):
     compliments = ["Man, the daily bugle would pay a lot for this 🤩", "This is nice one! I like it 😎", "Oh Boy! JJJ is gonna be real happy 😃", "🔥🔥🔥","Great Profile Picture, I must say","Damn, where'd you get this? 💙"]
@@ -437,23 +462,44 @@ async def join_vc(ctx):
 
 @bot.command(aliases=["dc","disconnect"])
 async def leave_vc(ctx):
-    if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
-        voice_client = ctx.message.guild.voice_client
-        try:
-            if voice_client.is_connected():
-                await voice_client.disconnect() 
-                message = await ctx.send("Disconnected")
-                await asyncio.sleep(2)
-                await message.edit(content="See ya later 😎")
-        except AttributeError:
-            embed = discord.Embed(description="I am not connected to a voice channel", color=color)
-            embed.set_author(name='Music Player', icon_url=url_author_music)
+    try:
+        if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
+            voice_client = ctx.message.guild.voice_client
+            try:
+                if voice_client.is_connected():
+                    await voice_client.disconnect() 
+                    message = await ctx.send("Disconnected")
+                    await asyncio.sleep(2)
+                    await message.edit(content="See ya later 😎")
+            except AttributeError:
+                embed = discord.Embed(description="I am not connected to a voice channel", color=color)
+                embed.set_author(name='Music Player', icon_url=url_author_music)
+                await ctx.send(embed=embed)
+        else:
+            embed = discord.Embed(description="{}, buddy, connect to the voice channel first 🔊".format(ctx.author.name), color=color)
+            embed.set_author(name="Music Player", icon_url=url_author_music)
             await ctx.send(embed=embed)
-    else:
-        embed = discord.Embed(description="{}, buddy, connect to the voice channel first 🔊".format(ctx.author.name), color=color)
-        embed.set_author(name="Music Player", icon_url=url_author_music)
+    except AttributeError:
+        embed = discord.Embed(description="I am not connected to a voice channel", color=color)
+        embed.set_author(name='Music Player', icon_url=url_author_music)
         await ctx.send(embed=embed)
 
+
+@bot.command(aliases=["setbit","bit"])
+async def set_bitrate(ctx, kbps):
+    global cursor
+    op_dev = "SELECT * FROM dev_users"
+    cursor.execute(op_dev)
+    dev_list = cursor.fetchall()
+    if str(ctx.author.id) in str(dev_list) or ctx.author.id == 622497106657148939:
+        for items in ydl_op['postprocessors']:
+            items['preferredquality'] = str(kbps)
+            embed = discord.Embed(description='**Bitrate:** {} kbps'.format(kbps), color=color)
+            embed.set_author(name='Audio Quality', icon_url=url_author_music)
+            await ctx.send(embed=embed)
+    else:
+        await ctx.send(title="Access Denied", description="{}, only dev users can edit bitrate".format(ctx.author.name))
+    
 
 @bot.command(aliases=["queue","q"])
 async def queue_song(ctx, *, name):
@@ -484,12 +530,14 @@ async def view_queue(ctx):
         for song in songs:
             string += str(song_index) + ". " + str(song).replace('("'," ").replace('",)'," ") + "\n"
             song_index += 1
-        embed = discord.Embed(title="𝗤𝘂𝗲𝘂𝗲", description=string.replace(" - YouTube"," ").replace("('", " ").replace("',)"," "), color=color)
+        embed = discord.Embed(description="```{a}```".format(a=string.replace(" - YouTube"," ").replace("('", " ").replace("',)"," ")), color=color)
+        embed.set_author(name="{}'s Queue".format(ctx.guild.name), icon_url=url_author_music)
+        embed.add_field(name='Additional Info', value="Number of songs: {a}\nChannel Bitrate: {b}".format(a=len(songs), b=ctx.voice_client.bitrate))
         embed.set_thumbnail(url=random.choice(url_author_queue))
         await ctx.send(embed=embed)
     else:
         embed = discord.Embed(description="No songs in queue...\nUse t!q <song name>", color=color)
-        embed.set_author(name="𝗤𝘂𝗲𝘂𝗲", icon_url=url_author_music)
+        embed.set_author(name="{}'s Queue".format(ctx.guild.name), icon_url=url_author_music)
         await ctx.send(embed=embed)
 
 
@@ -592,7 +640,7 @@ async def pause_song(ctx):
                     await ctx.send(embed=embed)
         except Exception as e: 
             embed = discord.Embed(description=str(e), color=color)
-            embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
+            embed.set_author(name="ERROR", icon_url=url_author_music)
             await ctx.send(embed=embed)
     else:
         embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)

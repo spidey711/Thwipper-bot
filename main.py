@@ -388,7 +388,7 @@ async def python_shell(ctx, *, expression):
                 embed_acc.set_author(name="Python Shell", icon_url=url_author_python)
                 await ctx.send(embed=embed_acc)
             except Exception as e:
-                embed_err = discord.Embed(title="𝗘𝗥𝗥𝗢𝗥", description=str(e), color=color)
+                embed_err = discord.Embed(title="ERROR", description=str(e), color=color)
                 embed_err.set_author(name="Python Shell", icon_url=url_author_python)
                 await ctx.send(embed=embed_err)
     else:
@@ -399,14 +399,19 @@ async def python_shell(ctx, *, expression):
 
 @bot.command(aliases=["pinfo"])
 async def function_info(ctx, func):
-    if func == "sys.exit()":
-        embed = discord.Embed(description="I see what you're trying to do, not gonna happen dude", color=color)
-        embed.set_author(name="Permission Denied", icon_url=url_author_python)
-        await ctx.send(embed=embed)
-    else:
-        function = eval(func)
-        embed = discord.Embed(description=function.__doc__, color=color)
-        embed.set_author(name="Info: {}".format(func), icon_url=url_author_python)
+    try:
+        if func == "sys.exit()":
+            embed = discord.Embed(description="I see what you're trying to do, not gonna happen dude", color=color)
+            embed.set_author(name="Permission Denied", icon_url=url_author_python)
+            await ctx.send(embed=embed)
+        else:
+            function = eval(func)
+            embed = discord.Embed(description=function.__doc__, color=color)
+            embed.set_author(name="Info: {}".format(func), icon_url=url_author_python)
+            await ctx.send(embed=embed)
+    except Exception as e:
+        embed = discord.Embed(description=str(e), color=color)
+        embed.set_author(name="ERROR", icon_url=url_author_python)
         await ctx.send(embed=embed)
 
 #///////////////////////////////////////// MUSIC /////////////////////////////////////////////

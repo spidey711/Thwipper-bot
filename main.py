@@ -394,7 +394,8 @@ async def python_shell(ctx, *, expression):
 
 @bot.command(aliases=["pinfo"])
 async def function_info(ctx, func):
-    embed = discord.Embed(description=func.__doc__, color=color)
+    function = eval(func)
+    embed = discord.Embed(description=function.__doc__, color=color)
     embed.set_author(name="Info: {}".format(func), icon_url=url_author_python)
     await ctx.send(embed=embed)
 

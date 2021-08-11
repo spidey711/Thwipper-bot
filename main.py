@@ -21,7 +21,7 @@ prefixes = ["t!","_","thwip "]
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents, case_insensitive=True)
-color = discord.Color.from_rgb(217,226,231)
+color = discord.Color.from_rgb(10,43,78)
 deleted_messages = {}
 # MUSIC
 current = {}

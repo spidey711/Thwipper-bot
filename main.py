@@ -19,7 +19,7 @@ from googlesearch import search
 import mysql.connector as ms
 
 # SETUP
-prefixes = ["t!","_","thwip "]
+prefixes = ["t!","_","thwip ", "thwipper "]
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents, case_insensitive=True)
@@ -240,7 +240,7 @@ async def embed_help(ctx):
     number_of_requests()
     global url_thumbnails
     embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
-                        description="Prefixes => `[t!] [ _ ] [thwip ]`",
+                        description="Prefixes => `[t!] [ _ ] [thwip] [thwipper]`",
                         color=color)
     embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nuse to get this embed\nwit to get a famous dialogue or plot\n@Thwipper to get more info about thwipper", inline=False)
     embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nsnipe to see deleted message\nroast to roast someone", inline=False)
@@ -451,7 +451,7 @@ async def function_info(ctx, func):
     try:
         if "(" in [char for char in func] and ")" in [char for char in func]:
             embed = discord.Embed(description="Sorry, can't do functions. Do without brackets to get information", color=color)
-            embed.set_author(name="Permission Denied", icon_url=url_author_python)
+            embed.set_author(name="Request Denied", icon_url=url_author_python)
             await ctx.send(embed=embed)
         else:
             function = eval(func)

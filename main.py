@@ -2,7 +2,6 @@ import discord
 from discord.utils import get
 from discord.ext import commands, tasks
 from important import token, sql_pass
-import functools
 import os
 import sys
 import pytz
@@ -29,7 +28,7 @@ deleted_messages = {}
 # NUMBER OF REQUESTS
 num = 0
 # MUSIC
-current = {}
+server_index = {}
 FFMPEG_OPTS = {
     'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 
     'options': '-vn'
@@ -62,6 +61,11 @@ url_author_sql = "https://miro.medium.com/max/361/1*WzqoTtRUpmJR26dzlKdIwg.png"
 url_author_music = "https://image.freepik.com/free-vector/cute-astronaut-playing-dj-electronic-music-with-headphone-cartoon-icon-illustration-science-technology-icon-concept_138676-2113.jpg"
 url_author_queue = ["https://i.pinimg.com/236x/10/06/35/100635a268123393a208b3e6efb5ec0d.jpg","https://i.pinimg.com/236x/d8/a1/fc/d8a1fcbc9482a9ae7a9352620dd3e4ea.jpg"]
 
+def youtube_download(ctx, url):
+    if True:
+        with youtube_dl.YoutubeDL(ydl_op) as ydl:
+            URL = ydl.extract_info(url, download=False)['formats'][0]['url']
+    return URL
 def requests_query():
     global cursor
     operation = "INSERT INTO requests(number)VALUES({})".format(num)
@@ -70,11 +74,6 @@ def number_of_requests():
     global num # num = 0
     num += 1
     requests_query()
-def youtube_download(ctx, url):
-    if True:
-        with youtube_dl.YoutubeDL(ydl_op) as ydl:
-            URL = ydl.extract_info(url, download=False)['formats'][0]['url']
-    return URL
 
 @bot.event
 async def on_ready():
@@ -152,6 +151,13 @@ async def on_ready():
     updation.start()
 
 @bot.event
+async def on_reaction_add(reaction, user):
+    if reaction.emoji == "🔼":
+        pass
+    if reaction.emoji == "🔼":
+        pass
+    
+@bot.event
 async def on_message(message):
     if f"<@!{bot.user.id}>" in message.content:
             number_of_requests()
@@ -167,6 +173,10 @@ async def on_message_delete(message):
     if not message.channel.id in list(deleted_messages.keys()):
         deleted_messages[message.channel.id] = []
     deleted_messages[message.channel.id].append((str(message.author), message.content))
+
+@bot.event
+async def on_reaction_add(reaction, user):
+    pass
 
 # //////////////////////////////////// SPECIAL ACCESS /////////////////////////////////////////
 
@@ -562,11 +572,26 @@ async def view_queue(ctx):
         embed = discord.Embed(description="{a}\n**Number of songs:** {b}".format(a=string.replace(" - YouTube"," ").replace("('", " ").replace("',)"," "), b=len(songs)), color=color)
         embed.set_author(name="{}'s Queue".format(ctx.guild.name), icon_url=url_author_music)
         embed.set_thumbnail(url=random.choice(url_author_queue))
-        await ctx.send(embed=embed)
+        queue = await ctx.send(embed=embed)
+        await queue.add_reaction("🔼")
+        await queue.add_reaction("🔽")
     else:
         embed = discord.Embed(description="No songs in queue...\nUse t!q <song name>", color=color)
         embed.set_author(name="{}'s Queue".format(ctx.guild.name), icon_url=url_author_music)
         await ctx.send(embed=embed)
+
+
+@bot.command(aliases=["rem","remove"])
+async def remove_song(ctx, index):
+    global cursor
+    operation_view = 'SELECT * FROM music_queue WHERE server="{}"'.format(str(ctx.guild.id))
+    cursor.execute(operation_view)
+    songs = cursor.fetchall()
+    embed = discord.Embed(description="{}".format(songs[int(index)][0]), color=color)
+    embed.set_author(name="Song removed", icon_url=url_author_music)
+    await ctx.send(embed=embed)
+    operation_remove = "DELETE FROM music_queue WHERE song_url = '{}'".format(songs[int(index)][1])
+    cursor.execute(operation_remove)
 
 
 @bot.command(aliases=["auto"])
@@ -625,7 +650,7 @@ async def play_music(ctx, *, char):
                     embed.set_author(name="Music Player", icon_url=url_author_music)
                     voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
                     await ctx.send(embed=embed)
-            if char.isdigit() == True: 
+            if char.isdigit() == True:
                 try:  
                     URL_queue = youtube_download(ctx, server_queue[int(char)][1])
                     if ctx.voice_client.is_playing() != True:

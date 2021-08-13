@@ -2,7 +2,7 @@
 
 _<h2>What is Thwipper?</h2>_
 A discord bot I made that I plan to make all-purpose. It takes inspiration from Spider-Man, hence the name <strong>Thwipper</strong>.<br>
-Prefixes => `[t!], [ _ ], [thwip ]`<br>
+Prefixes => `[t!], [ _ ], [thwip] [thwipper]`<br>
 
 <img src="https://wallpapercave.com/wp/wp2513595.png"></img>
 

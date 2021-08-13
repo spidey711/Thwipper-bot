@@ -590,7 +590,7 @@ async def remove_song(ctx, index):
     embed = discord.Embed(description="{}".format(songs[int(index)][0]), color=color)
     embed.set_author(name="Song removed", icon_url=url_author_music)
     await ctx.send(embed=embed)
-    operation_remove = "DELETE FROM music_queue WHERE song_url = '{}'".format(songs[int(index)][1])
+    operation_remove = "DELETE FROM music_queue WHERE song_url = '{a}' AND server='{b}'".format(a=songs[int(index)][1], b=str(ctx.guild.id))
     cursor.execute(operation_remove)
 
 

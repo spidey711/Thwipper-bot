@@ -12,6 +12,7 @@ import datetime
 import regex
 import ffmpeg
 import requests
+import pytube
 import youtube_dl 
 import urllib.request
 from googlesearch import search
@@ -607,13 +608,40 @@ async def autoplay(ctx, toggle):
     if toggle == "on":
         if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
             while num <= len(songs):
-                voice.stop()
-                voice.play(discord.FFmpegPCMAudio(songs[num][1], **FFMPEG_OPTS))
-                num += 1
+                if ctx.voice_client.is_playing() == True:
+                    voice.stop()
+                    embed = discord.Embed(description="**Song: **{}".format(songs[num][0]).replace(" - YouTube", " "), color=color)
+                    embed.set_author(name="Now playing", icon_url=url_author_music)
+                    embed.set_thumbnail(url=pytube.YouTube(url=songs[num][1]).thumbnail_url)
+                    embed.add_field(name="Artist", value=pytube.YouTube(url=songs[num][1]).author, inline=True)
+                    embed.add_field(name="Duration", value=pytube.YouTube(url=songs[num][1]).length, inline=True)
+                    await ctx.send(embed=embed)
+                    voice.play(discord.FFmpegPCMAudio(songs[num][1], **FFMPEG_OPTS))
+                    duration = pytube.YouTube(url=songs[num][1]).length
+                    await asyncio.sleep(duration)
+                    num += 1
+                    continue
+                if ctx.voice_client.is_playing() == False:
+                    embed = discord.Embed(description="**Song: **{}".format(songs[num][0]).replace(" - YouTube", " "), color=color)
+                    embed.set_author(name="Now playing", icon_url=url_author_music)
+                    embed.set_thumbnail(url=pytube.YouTube(url=songs[num][1]).thumbnail_url)
+                    embed.add_field(name="Artist", value=pytube.YouTube(url=songs[num][1]).author, inline=True)
+                    embed.add_field(name="Duration", value=pytube.YouTube(url=songs[num][1]).length, inline=True)
+                    await ctx.send(embed=embed)
+                    voice.play(discord.FFmpegPCMAudio(songs[num][1], **FFMPEG_OPTS))
+                    duration = pytube.YouTube(url=songs[num][1]).length
+                    await asyncio.sleep(duration)
+                    num += 1
+                    continue
         else:
-            await ctx.send("join vc first")
+            embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+            embed.set_author(name="Music Player", icon_url=url_author_music)
+            await ctx.send(embed=embed)
     if toggle == "off":
         voice.stop()
+        embed = discord.Embed(description="Autoplay : OFF", color=color)
+        embed.set_author(name="Music Player", icon_url=url_author_music)
+        await ctx.send(embed=embed)
 
 
 @bot.command(aliases=['play','p'])
@@ -626,55 +654,73 @@ async def play_music(ctx, *, char):
     server_queue = cursor.fetchall()
     # Setup 
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-    if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
-        try:
-            if char.isdigit() == False:
-                # Web Scrape
-                char = char.replace(" ","+")
-                htm = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + char)
-                video = regex.findall(r"watch\?v=(\S{11})", htm.read().decode())
-                url = "https://www.youtube.com/watch?v=" + video[0]
-                htm_code = str(urllib.request.urlopen(url).read().decode())
-                starting = htm_code.find("<title>") + len("<title>")
-                ending = htm_code.find("</title>")
-                name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&").replace(" - YouTube", " ")
-                URL_direct = youtube_download(ctx, url)
-                if ctx.voice_client.is_playing() != True:
-                    embed = discord.Embed(description="Now playing: {}".format(name_of_the_song.replace(" - YouTube", " ")), color=color)
-                    embed.set_author(name="Music Player", icon_url=url_author_music)
-                    voice.play(discord.FFmpegPCMAudio(str(URL_direct), **FFMPEG_OPTS))
-                    await ctx.send(embed=embed)
-                else:
-                    voice.stop()
-                    embed = discord.Embed(description="Now playing: {}".format(name_of_the_song.replace(" - YouTube", " ")), color=color)
-                    embed.set_author(name="Music Player", icon_url=url_author_music)
-                    voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
-                    await ctx.send(embed=embed)
-            if char.isdigit() == True:
-                try:  
-                    URL_queue = youtube_download(ctx, server_queue[int(char)][1])
+    try:
+        if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
+            try:
+                if char.isdigit() == False:
+                    # Web Scrape
+                    char = char.replace(" ","+")
+                    htm = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + char)
+                    video = regex.findall(r"watch\?v=(\S{11})", htm.read().decode())
+                    url = "https://www.youtube.com/watch?v=" + video[0]
+                    htm_code = str(urllib.request.urlopen(url).read().decode())
+                    starting = htm_code.find("<title>") + len("<title>")
+                    ending = htm_code.find("</title>")
+                    name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&").replace(" - YouTube", " ")
+                    URL_direct = youtube_download(ctx, url)
                     if ctx.voice_client.is_playing() != True:
-                        embed = discord.Embed(description="Now playing: {}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=color)
-                        embed.set_author(name="Music Player", icon_url=url_author_music)
+                        embed = discord.Embed(description="**Song: **{}".format(name_of_the_song).replace(" - YouTube", " "), color=color)
+                        embed.set_author(name="Now playing", icon_url=url_author_music)
+                        embed.set_thumbnail(url=pytube.YouTube(url=url).thumbnail_url)
+                        embed.add_field(name="Artist", value=pytube.YouTube(url=url).author, inline=True)
+                        embed.add_field(name="Duration", value=pytube.YouTube(url=url).length, inline=True)
                         await ctx.send(embed=embed)
-                        voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                        voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
                     else:
                         voice.stop()
-                        embed = discord.Embed(description="Now playing: {}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=color)
-                        embed.set_author(name="Music Player", icon_url=url_author_music)
+                        embed = discord.Embed(description="**Song: **{}".format(name_of_the_song).replace(" - YouTube", " "), color=color)
+                        embed.set_author(name="Now playing", icon_url=url_author_music)
+                        embed.set_thumbnail(url=pytube.YouTube(url=url).thumbnail_url)
+                        embed.add_field(name="Artist", value=pytube.YouTube(url=url).author, inline=True)
+                        embed.add_field(name="Duration", value=pytube.YouTube(url=url).length, inline=True)
                         await ctx.send(embed=embed)
-                        voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
-                except IndexError:
-                    embed = discord.Embed(description="Looks like there is no song at this index", color=color)
-                    embed.set_author(name="Oops...", icon_url=url_author_music)
-                    await ctx.send(embed=embed)
-        except AttributeError:
-            await ctx.send(embed=discord.Embed(description='I am not connected to a voice channel'.format(ctx.author.name), color=color))  
-    else:
-        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
-        embed.set_author(name="Music Player", icon_url=url_author_music)
-        await ctx.send(embed=embed)
-
+                        voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
+                if char.isdigit() == True:
+                    try:  
+                        URL_queue = youtube_download(ctx, server_queue[int(char)][1])
+                        if ctx.voice_client.is_playing() != True:
+                            embed = discord.Embed(description="**Song: **{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=color)
+                            embed.set_author(name="Now playing", icon_url=url_author_music)
+                            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[int(char)][1]).thumbnail_url)
+                            embed.add_field(name="Artist", value=pytube.YouTube(url=server_queue[int(char)][1]).author, inline=True)
+                            embed.add_field(name="Duration", value=pytube.YouTube(url=server_queue[int(char)][1]).length, inline=True)
+                            await ctx.send(embed=embed)
+                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                        else:
+                            voice.stop()
+                            embed = discord.Embed(description="**Song: **{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=color)
+                            embed.set_author(name="Now playing", icon_url=url_author_music)
+                            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[int(char)][1]).thumbnail_url)
+                            embed.add_field(name="Artist", value=pytube.YouTube(url=server_queue[int(char)][1]).author, inline=True)
+                            embed.add_field(name="Duration", value=pytube.YouTube(url=server_queue[int(char)][1]).length, inline=True)
+                            await ctx.send(embed=embed)
+                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                    except IndexError:
+                        embed = discord.Embed(description="Looks like there is no song at this index", color=color)
+                        embed.set_author(name="Oops...", icon_url=url_author_music)
+                        await ctx.send(embed=embed)
+            except AttributeError:
+                embed = discord.Embed(description='I am not connected to a voice channel'.format(ctx.author.name), color=color)
+                embed.set_author(name="Voice", icon_url=url_author_music)
+                await ctx.send(embed=embed)  
+        else:
+            embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+            embed.set_author(name="Music Player", icon_url=url_author_music)
+            await ctx.send(embed=embed)
+    except AttributeError:
+        embed = discord.Embed(description='I am not connected to a voice channel'.format(ctx.author.name), color=color)
+        embed.set_author(name="Voice", icon_url=url_author_music)
+        await ctx.send(embed=embed)  
 
 @bot.command(aliases=["pause"])
 async def pause_song(ctx):

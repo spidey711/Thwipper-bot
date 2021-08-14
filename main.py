@@ -62,6 +62,10 @@ url_author_sql = "https://miro.medium.com/max/361/1*WzqoTtRUpmJR26dzlKdIwg.png"
 url_author_music = "https://image.freepik.com/free-vector/cute-astronaut-playing-dj-electronic-music-with-headphone-cartoon-icon-illustration-science-technology-icon-concept_138676-2113.jpg"
 url_author_queue = ["https://i.pinimg.com/236x/10/06/35/100635a268123393a208b3e6efb5ec0d.jpg","https://i.pinimg.com/236x/d8/a1/fc/d8a1fcbc9482a9ae7a9352620dd3e4ea.jpg"]
 
+def time_converter(seconds):
+    mins, secs = divmod(seconds, 60)
+    hours, mins = divmod(mins, 60)
+    return "%d:%02d:%02d" % (hours, mins, secs)
 def youtube_download(ctx, url):
     if True:
         with youtube_dl.YoutubeDL(ydl_op) as ydl:
@@ -225,19 +229,14 @@ async def stop_program(ctx):
     number_of_requests()
     global cursor
     global conn
-    if ctx.voice_client.is_connected() == True:
-        voice_client = ctx.message.guild.voice_client
-        await voice_client.disconnect()
-    else:
-        pass
     msgs = ["Bye {}!".format(ctx.author.name), "See ya {}!".format(ctx.author.name), "Till next time {}".format(ctx.author.name)]
     if ctx.author.id == 622497106657148939:
         await ctx.send(random.choice(msgs))
         conn.commit()
         exit()
     else:
-       await ctx.send("Access Denied")
-
+        await ctx.send("Access Denied")
+    
 #///////////////////////////////////// STANDARD //////////////////////////////////////////////
 
 @bot.command(aliases=['hello', 'hi', 'hey', 'hey there', 'salut',"kon'nichiwa","hola","aloha"])
@@ -675,7 +674,7 @@ async def play_music(ctx, *, char):
                         embed.set_author(name="Now playing", icon_url=url_author_music)
                         embed.set_thumbnail(url=pytube.YouTube(url=url).thumbnail_url)
                         embed.add_field(name="Artist", value=pytube.YouTube(url=url).author, inline=True)
-                        embed.add_field(name="Duration", value="{} mins".format(pytube.YouTube(url=url).length/60), inline=True)
+                        embed.add_field(name="Duration", value="{} h".format(time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length)), inline=True)
                         await ctx.send(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
                     else:
@@ -684,7 +683,7 @@ async def play_music(ctx, *, char):
                         embed.set_author(name="Now playing", icon_url=url_author_music)
                         embed.set_thumbnail(url=pytube.YouTube(url=url).thumbnail_url)
                         embed.add_field(name="Artist", value=pytube.YouTube(url=url).author, inline=True)
-                        embed.add_field(name="Duration", value="{} mins".format(pytube.YouTube(url=url).length/60), inline=True)
+                        embed.add_field(name="Duration", value="{} h".format(time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length)), inline=True)
                         await ctx.send(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
                 if char.isdigit() == True:
@@ -695,7 +694,7 @@ async def play_music(ctx, *, char):
                             embed.set_author(name="Now playing", icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[int(char)][1]).thumbnail_url)
                             embed.add_field(name="Artist", value=pytube.YouTube(url=server_queue[int(char)][1]).author, inline=True)
-                            embed.add_field(name="Duration", value="{} mins".format(pytube.YouTube(url=server_queue[int(char)][1]).length/60), inline=True)
+                            embed.add_field(name="Duration", value="{} h".format(time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length)), inline=True)
                             await ctx.send(embed=embed)
                             voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                         else:
@@ -704,7 +703,7 @@ async def play_music(ctx, *, char):
                             embed.set_author(name="Now playing", icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[int(char)][1]).thumbnail_url)
                             embed.add_field(name="Artist", value=pytube.YouTube(url=server_queue[int(char)][1]).author, inline=True)
-                            embed.add_field(name="Duration", value="{} mins".format(pytube.YouTube(url=server_queue[int(char)][1]).length/60), inline=True)
+                            embed.add_field(name="Duration", value="{} h".format(time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length)), inline=True)
                             await ctx.send(embed=embed)
                             voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                     except IndexError:

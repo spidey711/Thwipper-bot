@@ -585,6 +585,7 @@ async def view_queue(ctx):
 @bot.command(aliases=["rem","remove"])
 async def remove_song(ctx, index):
     global cursor
+    number_of_requests()
     operation_view = 'SELECT * FROM music_queue WHERE server="{}"'.format(str(ctx.guild.id))
     cursor.execute(operation_view)
     songs = cursor.fetchall()
@@ -605,8 +606,8 @@ async def autoplay(ctx, toggle):
     cursor.execute(operation_queue)
     songs = cursor.fetchall()
     num = 0
-    if toggle == "on":
-        if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
+    if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
+        if toggle == "on":
             while num <= len(songs):
                 if ctx.voice_client.is_playing() == True:
                     voice.stop()
@@ -633,13 +634,13 @@ async def autoplay(ctx, toggle):
                     await asyncio.sleep(duration)
                     num += 1
                     continue
-        else:
-            embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+        if toggle == "off":
+            voice.stop()
+            embed = discord.Embed(description="Autoplay : OFF", color=color)
             embed.set_author(name="Music Player", icon_url=url_author_music)
             await ctx.send(embed=embed)
-    if toggle == "off":
-        voice.stop()
-        embed = discord.Embed(description="Autoplay : OFF", color=color)
+    else:
+        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
         embed.set_author(name="Music Player", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -722,6 +723,7 @@ async def play_music(ctx, *, char):
         embed = discord.Embed(description='I am not connected to a voice channel'.format(ctx.author.name), color=color)
         embed.set_author(name="Voice", icon_url=url_author_music)
         await ctx.send(embed=embed)  
+
 
 @bot.command(aliases=["pause"])
 async def pause_song(ctx):

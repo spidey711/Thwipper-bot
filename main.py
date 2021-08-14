@@ -65,7 +65,10 @@ url_author_queue = ["https://i.pinimg.com/236x/10/06/35/100635a268123393a208b3e6
 def time_converter(seconds):
     mins, secs = divmod(seconds, 60)
     hours, mins = divmod(mins, 60)
-    return "%d:%02d:%02d" % (hours, mins, secs)
+    if hours == 0:
+        return "%02d:%02d mins" % (mins, secs)
+    if hours > 0:
+        return "%d:%02d:%02d hrs" % (hours, mins, secs)
 def youtube_download(ctx, url):
     if True:
         with youtube_dl.YoutubeDL(ydl_op) as ydl:
@@ -675,7 +678,7 @@ async def play_music(ctx, *, char):
                         embed.set_author(name="Now playing", icon_url=url_author_music)
                         embed.set_thumbnail(url=pytube.YouTube(url=url).thumbnail_url)
                         embed.add_field(name="Artist", value=pytube.YouTube(url=url).author, inline=True)
-                        embed.add_field(name="Duration", value="{} h".format(time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length)), inline=True)
+                        embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=url).length), inline=True)
                         await ctx.send(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
                     else:
@@ -684,7 +687,7 @@ async def play_music(ctx, *, char):
                         embed.set_author(name="Now playing", icon_url=url_author_music)
                         embed.set_thumbnail(url=pytube.YouTube(url=url).thumbnail_url)
                         embed.add_field(name="Artist", value=pytube.YouTube(url=url).author, inline=True)
-                        embed.add_field(name="Duration", value="{} h".format(time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length)), inline=True)
+                        embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=url).length), inline=True)
                         await ctx.send(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
                 if char.isdigit() == True:
@@ -695,7 +698,7 @@ async def play_music(ctx, *, char):
                             embed.set_author(name="Now playing", icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[int(char)][1]).thumbnail_url)
                             embed.add_field(name="Artist", value=pytube.YouTube(url=server_queue[int(char)][1]).author, inline=True)
-                            embed.add_field(name="Duration", value="{} h".format(time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length)), inline=True)
+                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length), inline=True)
                             await ctx.send(embed=embed)
                             voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                         else:
@@ -704,7 +707,7 @@ async def play_music(ctx, *, char):
                             embed.set_author(name="Now playing", icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[int(char)][1]).thumbnail_url)
                             embed.add_field(name="Artist", value=pytube.YouTube(url=server_queue[int(char)][1]).author, inline=True)
-                            embed.add_field(name="Duration", value="{} h".format(time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length)), inline=True)
+                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length), inline=True)
                             await ctx.send(embed=embed)
                             voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                     except IndexError:

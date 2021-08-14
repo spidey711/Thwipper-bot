@@ -66,9 +66,9 @@ def time_converter(seconds):
     mins, secs = divmod(seconds, 60)
     hours, mins = divmod(mins, 60)
     if hours == 0:
-        return "%02d:%02d mins" % (mins, secs)
+        return "%02d mins %02d secs" % (mins, secs)
     if hours > 0:
-        return "%d:%02d:%02d hrs" % (hours, mins, secs)
+        return "%d hrs %02d mins %02d hrs" % (hours, mins, secs)
 def youtube_download(ctx, url):
     if True:
         with youtube_dl.YoutubeDL(ydl_op) as ydl:

@@ -440,9 +440,9 @@ async def python_shell(ctx, *, expression):
     cursor.execute(op_dev)
     dev_list = cursor.fetchall()
     if str(ctx.author.id) in str(dev_list) or ctx.author.id == 622497106657148939:
-        if expression == "sys.exit()" or expression == "eval(sys.exit)":
+        if expression == "sys.exit()" or expression == "eval(sys.exit)" or expression == "token" or expression == "sql_pass":
             embed = discord.Embed(description="Sorry, this function will not be executed", color=color)
-            embed.set_author(name="Permission Denied", icon_url=url_author_python)
+            embed.set_author(name="Access Denied", icon_url=url_author_python)
             await ctx.send(embed=embed)
         else:
             try:

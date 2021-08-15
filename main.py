@@ -45,14 +45,9 @@ ydl_op = {
         'preferredcodec':'mp3',
         'preferredquality':'128',
         }],}
-# FACTS
-facts_list = []
 # WIT
 plot_list = []
 dialogue_list = []
-# MEMES
-pinterest = ["https://in.pinterest.com/joshuacgreenste/funny-superhero-memes/","https://in.pinterest.com/greenlanter5424/funny-superheroes-memes/","https://in.pinterest.com/comicnity/superhero-memes/"]
-meme_links = []
 # SQL
 conn = ms.connect(host="localhost", user="root", passwd=sql_pass, database="discord")
 cursor = conn.cursor()
@@ -64,7 +59,7 @@ url_calendar = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsb98d6ZOy
 url_thumbnails = ["https://i.pinimg.com/236x/31/fc/50/31fc5099e24775b613a69fa5bf4f8064.jpg","https://i.pinimg.com/236x/e5/f5/54/e5f55401dfb0588daaa0c3baad528ae8.jpg","https://i.pinimg.com/236x/be/80/cf/be80cf957b028e16083d534f3890cda1.jpg","https://i.pinimg.com/236x/02/6c/7d/026c7d47fd43ff30180fdc7c91e155c2.jpg","https://i.pinimg.com/236x/14/ca/dc/14cadcf0d437fe2d670bff20254e3422.jpg","https://i.pinimg.com/236x/3d/dd/ec/3dddecd82efb45026771dba7287aa010.jpg","https://i.pinimg.com/236x/4d/16/7e/4d167e9a51166d0ce955c4eac6b26d7c.jpg","https://i.pinimg.com/236x/46/56/8c/46568c65f50f4cd5dce76c1ea1833258.jpg","https://i.pinimg.com/236x/74/e6/d8/74e6d846301bd4e3722ed465240b894f.jpg","https://i.pinimg.com/236x/4f/ef/67/4fef67d2a553dba286ab311354370d28.jpg","https://i.pinimg.com/236x/f4/7d/1b/f47d1b34c2988f10a33f77c33e966d4c.jpg","https://i.pinimg.com/236x/4b/5e/bf/4b5ebfaba10beb08d3cae0a4ed684bdb.jpg","https://i.pinimg.com/236x/87/df/c7/87dfc7f867d4afff7c73923664a560af.jpg","https://i.pinimg.com/236x/b4/79/69/b47969fdf761ee63bf60adfdf7ba6554.jpg","https://i.pinimg.com/236x/48/0f/17/480f17eaaf087d44e540ee0a2d512297.jpg","https://i.pinimg.com/236x/4f/ab/0e/4fab0e67c4ba300f03bb5f03421ea7db.jpg","https://i.pinimg.com/236x/f6/06/ef/f606efe1e45c96ee6585cadebc6c8f74.jpg","https://c4.wallpaperflare.com/wallpaper/42/823/767/spiderman-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/517/160/840/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/107/848/913/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://wallpapercave.com/wp/AVIUso6.jpg","https://wallpapercave.com/wp/n9L3kJf.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-man-miles-morales-minimal-art-4k-43.jpg","https://images.hdqwalls.com/wallpapers/thumb/northern-spider-5k-f3.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-and-deadpool-4k-ys.jpg","https://images.hdqwalls.com/wallpapers/thumb/spiderman-into-the-spider-verse-y7.jpg","https://wallpapercave.com/wp/wp2018132.png","https://wallpapercave.com/wp/wp2018145.jpg","https://wallpapercave.com/wp/wp2018203.jpg","https://images3.alphacoders.com/593/thumbbig-593562.webp","https://images6.alphacoders.com/107/thumbbig-1071152.webp","https://images6.alphacoders.com/107/thumbbig-1070974.webp","https://i.pinimg.com/236x/38/a4/f6/38a4f62d74d7aeb2ae2396c991fcde52.jpg","https://i.pinimg.com/236x/ed/76/cc/ed76cc8bfe41347d979c93e23fbe51a0.jpg","https://i.pinimg.com/236x/91/87/2d/91872d5c92e8339036106bc832656a49.jpg","https://i.pinimg.com/236x/e3/94/05/e39405072916bb996caee3a4045f573a.jpg","https://i.pinimg.com/236x/36/2c/42/362c4298860d79a4b49acd9370cabe04.jpg","https://i.pinimg.com/236x/cf/3c/f4/cf3cf4ef7239868b1abc243168c41647.jpg","https://i.pinimg.com/236x/b1/3e/e7/b13ee7a8a8d72fbe39153569b5618c21.jpg","https://i.pinimg.com/236x/d9/ef/b8/d9efb89361f4a8d04f2e4e8d8d8067e8.jpg","https://i.pinimg.com/236x/d7/1c/9a/d71c9a5f09e61fcea6ffc3d61f7d5011.jpg","https://i.pinimg.com/236x/3b/cc/8c/3bcc8cde6be346db7c84eaa52e8f9072.jpg","https://i.pinimg.com/236x/ea/0c/ca/ea0ccaa55471689fda39043d80bc7a07.jpg","https://i.pinimg.com/236x/0a/7e/41/0a7e413a95d88ae13487a796d40237ef.jpg","https://i.pinimg.com/236x/d5/ea/83/d5ea830dee3385bfe9fa9871e3190b40.jpg","https://i.pinimg.com/236x/3d/d6/6c/3dd66c95df0b377767bf24e16d77b5ee.jpg"]
 url_author_sql = "https://miro.medium.com/max/361/1*WzqoTtRUpmJR26dzlKdIwg.png"
 url_author_music = "https://image.freepik.com/free-vector/cute-astronaut-playing-dj-electronic-music-with-headphone-cartoon-icon-illustration-science-technology-icon-concept_138676-2113.jpg"
-url_author_queue = ["https://i.pinimg.com/236x/10/06/35/100635a268123393a208b3e6efb5ec0d.jpg","https://i.pinimg.com/236x/d8/a1/fc/d8a1fcbc9482a9ae7a9352620dd3e4ea.jpg"]
+url_thumbnail_music = ["https://i.pinimg.com/236x/10/06/35/100635a268123393a208b3e6efb5ec0d.jpg","https://i.pinimg.com/236x/d8/a1/fc/d8a1fcbc9482a9ae7a9352620dd3e4ea.jpg"]
 
 def time_converter(seconds):
     mins, secs = divmod(seconds, 60)
@@ -120,34 +115,7 @@ async def on_ready():
         else:
             dialogues = site[q:w]
             dialogue_list += [dialogues]
-    # FACTS
-    global facts_list
-    b = requests.get("https://www.thefactsite.com/1000-interesting-facts/").content.decode().replace("<i>","*").replace("</i>","*").replace("&#8220;",'"').replace("&#8221;",'"').replace("&#8217;","'")
-    for i in range(0,117):
-        n1 = b.find('<p class="list">', stop) + len('<p class="list">')
-        n2 = b.find("</p>", stop)
-        stop = n2 + len("</p>")
-        output = ""
-        if not b[n1:n2]:
-            continue
-        else:
-            output = b[n1:n2]
-            facts_list += [output]    
-    # MEMES
-    global meme_links
-    raw = requests.get(random.choice(pinterest))
-    html_content = raw.content.decode()
-    for i in range(0,500):
-        a = html_content.find("GrowthUnauthPinImage__Image", stop)
-        b = html_content.find('src="', a) + len('src="')
-        c = html_content.find('" ', b)
-        stop = c
-        if i == 0:
-            continue
-        link = html_content[b:c]
-        if link.find("</div>") != -1 or link.find("<html") != -1:
-            continue
-        meme_links += [link]
+       
     # UPDATION
     @tasks.loop(seconds=5.0)
     async def updation():
@@ -261,15 +229,15 @@ async def embed_help(ctx):
                         description="Prefixes => `[t!] [ _ ] [thwip] [thwipper]`",
                         color=color)
     embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nuse to get this embed\nwit to get a famous dialogue or plot\n@Thwipper to get more info about thwipper", inline=False)
-    embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nsnipe to see deleted message\nroast to roast someone", inline=False)
+    embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nsnipe to see deleted message", inline=False)
     embed.add_field(name="𝗗𝗮𝘁𝗲 & 𝗧𝗶𝗺𝗲", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
     embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; <query> to use SQL Shell\npy for python shell\npinfo to get use of that python function", inline=False)
-    embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="w <topic> for wikipedia\ng <topic> to google\nfact to get an interesting fact (under works)\nmeme to get superhero memes",inline=False)
+    embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="w <topic> for wikipedia\ng <topic> to google\nl <song> to get lyrics",inline=False)
     embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
-    embed.add_field(name="𝗣𝗹𝗮𝘆𝗲𝗿",value="p <name> or <index> to play songs\nres to resume a song\npause to pause a song\nst to stop a song\nbit to set quality of bitrate\nvol <number> to set volume", inline=False)
+    embed.add_field(name="𝗣𝗹𝗮𝘆𝗲𝗿",value="p <name> or <index> to play songs\nres to resume a song\npause to pause a song\nst to stop a song\nbit to set quality of bitrate", inline=False)
     embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nq to view queue\nrem <index> to remove song from queue\ncq to clear queue", inline=False)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
-    embed.set_footer(text="New Features Coming Soon! [🛠]\n1)Next  2)Previous  3)Loop Queue  4)Repeat Song  5)Wikipedia 6)Lyrics")
+    embed.set_footer(text="New Features Coming Soon! [🛠]\n1)Next  2)Previous  3)Loop Queue  4)Repeat Song 5)Volume")
     await ctx.send(embed=embed)
 
 
@@ -322,19 +290,46 @@ async def google_results(ctx, *, thing_to_search):
     await ctx.send(results)
 
 
-@bot.command(aliases=["fact"])
-async def get_fact(ctx):
-    number_of_requests()
+@bot.command(aliases=["lyrics","l"])
+async def song_lyrics(ctx, *, song_name=""):
     try:
-        await ctx.send(embed=discord.Embed(description=random.choice(facts_list), color=color))
-    except TypeError as te:
-        await ctx.send(embed=discord.Embed(description=str(te), color=color))
-    
-
-@bot.command(aliases=["meme"])
-async def get_meme(ctx):
-    number_of_requests()
-    await ctx.send(random.choice(meme_links))
+        number_of_requests()
+        search_url = ("https://search.azlyrics.com/search.php?q=" + song_name.replace(" ","+"))
+        url = ""
+        markup = urllib.request.urlopen(search_url).read().decode()
+        a = markup.find("text-left visitedlyr")
+        b = int(int(markup.find('href="', a)) + len('href="'))
+        c = markup.find('"', b)
+        url = markup[b:c]
+        if len(url) > 3:
+            lyric_1 = urllib.request.urlopen(url).read().decode()
+            lyric_2 = lyric_1[int(lyric_1.find("Sorry about that. -->") + len("Sorry about that. -->")):lyric_1.find("</div>", int(lyric_1.find("Sorry about that. -->") + 10))].replace("<br>"," ").replace("<i>", "_").replace("</i>", "_")
+            song_title = lyric_1[lyric_1.find("<title>") + len("<title>"):lyric_1.find("</title>")] + "\n"
+            if len(lyric_1) <= 1900:
+                embed1 = discord.Embed(title=song_title, description=lyric_2.replace("&quot;", '"'), color=color)
+                embed1.set_author(name="Song Lyrics", icon_url=url_author_music)
+                embed1.set_thumbnail(url=random.choice(url_thumbnail_music))
+                embed1.set_footer(text="Seached by: {}".format(ctx.author.name), icon_url=ctx.author.avatar_url)
+                await ctx.send(embed=embed1)
+                pass
+            else:
+                embed1 = discord.Embed(title=song_title, description=lyric_2[0:1900].replace("&quot;", '"'), color=color)
+                embed1.set_author(name="Song Lyrics", icon_url=url_author_music)
+                embed1.set_thumbnail(url=random.choice(url_thumbnail_music))
+                embed2 = discord.Embed(description=lyric_2[1900:].replace("&quot;", '"'), color=color)
+                embed2.set_author(name="Continued...", icon_url=url_author_music)
+                embed2.set_thumbnail(url=random.choice(url_thumbnail_music))
+                embed2.set_footer(text="Seached by: {}".format(ctx.author.name), icon_url=ctx.author.avatar_url)
+                await ctx.send(embed=embed1)
+                await ctx.send(embed=embed2)
+        else:
+            embed = discord.Embed(description="Couldn't find song...\nMake sure the song name is correct 🤔", color=color)
+            embed.set_author(name="Song Lyrics", icon_url=url_author_music)
+            await ctx.send(embed=embed)
+    except Exception as e:
+        embed = discord.Embed(description=str(e), color=color)
+        embed.set_author(name="Error", icon_url=url_author_music)
+        await ctx.send(embed=embed)
 
 #///////////////////////////////////// UTILITY ///////////////////////////////////////////////        
 
@@ -464,8 +459,8 @@ async def python_shell(ctx, *, expression):
     cursor.execute(op_dev)
     dev_list = cursor.fetchall()
     if str(ctx.author.id) in str(dev_list) or ctx.author.id == 622497106657148939:
-        if expression == "sys.exit()" or expression == "eval(sys.exit)" or expression == "token" or expression == "sql_pass":
-            embed = discord.Embed(description="Sorry, this function will not be executed", color=color)
+        if expression == "sys.exit()" or expression == "eval(sys.exit)" or expression == "token" or expression == "sql_pass" or expression == 'eval("token")' or expression == "eval('token')" or expression == 'eval("sql_pass")' or expression == "eval('sql_pass')" or expression == "10**10**10":
+            embed = discord.Embed(description="This function will not be executed", color=color)
             embed.set_author(name="Access Denied", icon_url=url_author_python)
             await ctx.send(embed=embed)
         else:
@@ -489,7 +484,7 @@ async def function_info(ctx, func):
     try:
         if "(" in [char for char in func] and ")" in [char for char in func]:
             embed = discord.Embed(description="Sorry, can't do functions. Do without brackets to get information", color=color)
-            embed.set_author(name="Request Denied", icon_url=url_author_python)
+            embed.set_author(name="Access Denied", icon_url=url_author_python)
             await ctx.send(embed=embed)
         else:
             function = eval(func)
@@ -595,7 +590,7 @@ async def queue_song(ctx, *, name=None):
                 song_index += 1
             embed = discord.Embed(description="{a}\n**Number of songs:** {b}".format(a=string.replace(" - YouTube"," ").replace("('", " ").replace("',)"," "), b=len(songs)), color=color)
             embed.set_author(name="{}'s Queue".format(ctx.guild.name), icon_url=url_author_music)
-            embed.set_thumbnail(url=random.choice(url_author_queue))
+            embed.set_thumbnail(url=random.choice(url_thumbnail_music))
             queue = await ctx.send(embed=embed)
             await queue.add_reaction("🔼")
             await queue.add_reaction("🔽")

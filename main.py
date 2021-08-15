@@ -1,23 +1,26 @@
-import discord
-from discord.utils import get
-from discord.ext import commands, tasks
-from important import token, sql_pass
-import os
-import sys
-import pytz
-import random
-import asyncio
-import calendar
-import datetime
-import regex
-import ffmpeg
-import requests
-import pytube
-import youtube_dl 
-import urllib.request
-from googlesearch import search
-import mysql.connector as ms
-
+try:
+    import discord
+    from discord.utils import get
+    from discord.ext import commands, tasks
+    from important import token, sql_pass
+    import os
+    import sys
+    import pytz
+    import random
+    import asyncio
+    import calendar
+    import datetime
+    import regex
+    import ffmpeg
+    import requests
+    import pytube
+    import youtube_dl 
+    import wikipedia
+    import urllib.request
+    from googlesearch import search
+    import mysql.connector as ms
+except Exception as e:
+    print(str(e))
 # SETUP
 prefixes = ["t!","_","thwip ", "thwipper "]
 intents = discord.Intents.default()
@@ -54,6 +57,7 @@ meme_links = []
 conn = ms.connect(host="localhost", user="root", passwd=sql_pass, database="discord")
 cursor = conn.cursor()
 # EXTRAS
+url_wiki = "https://upload.wikimedia.org/wikipedia/commons/6/61/Wikipedia-logo-transparent.png"
 url_author_python = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/1200px-Python.svg.png"
 url_date_time = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKxv6EIh3VisynQX9TNkA7l15CvR0eJ8nWMA&usqp=CAU"
 url_calendar = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsb98d6ZOyxwxLUf1Y97yWFKW0Pz6JzuyBww&usqp=CAU"
@@ -260,7 +264,7 @@ async def embed_help(ctx):
     embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nsnipe to see deleted message\nroast to roast someone", inline=False)
     embed.add_field(name="𝗗𝗮𝘁𝗲 & 𝗧𝗶𝗺𝗲", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
     embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; <query> to use SQL Shell\npy for python shell\npinfo to get use of that python function", inline=False)
-    embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="g <topic> to google\nfact to get an interesting fact (under works)\nmeme to get superhero memes",inline=False)
+    embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="w <topic> for wikipedia\ng <topic> to google\nfact to get an interesting fact (under works)\nmeme to get superhero memes",inline=False)
     embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
     embed.add_field(name="𝗣𝗹𝗮𝘆𝗲𝗿",value="p <name> or <index> to play songs\nres to resume a song\npause to pause a song\nst to stop a song\nbit to set quality of bitrate\nvol <number> to set volume", inline=False)
     embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nq to view queue\nrem <index> to remove song from queue\ncq to clear queue", inline=False)
@@ -288,11 +292,31 @@ async def get_wit(ctx):
 
 # //////////////////////////////////// INTERNET //////////////////////////////////////////////
 
-@bot.command(aliases=['g'])
-async def browse(ctx, *, thing_to_search):
+@bot.command(aliases=['wiki','w'])
+async def wikipedia_results(ctx, *, thing_to_search):
+    try:
+        try:    
+            title = wikipedia.page(thing_to_search)
+            embed = discord.Embed(description=wikipedia.summary(thing_to_search), color=color)
+            embed.set_author(name=title.title, icon_url=url_wiki)
+            embed.add_field(name='Search References', value=', '.join([x for x in wikipedia.search(thing_to_search)][:5]), inline=False)
+            embed.set_footer(text="Searched by: {}".format(ctx.author.name), icon_url=ctx.author.avatar_url)
+            await ctx.send(embed=embed)
+        except wikipedia.PageError as pe:
+            embed = discord.Embed(description=str(pe), color=color)
+            embed.set_author(name='Error', icon_url=url_wiki)   
+            await ctx.send(embed=embed)
+    except wikipedia.DisambiguationError as de:
+        embed = discord.Embed(description=str(de), color=color)
+        embed.set_author(name='Hmm...', icon_url=url_wiki)   
+        await ctx.send(embed=embed)
+
+
+@bot.command(aliases=['google','g'])
+async def google_results(ctx, *, thing_to_search):
     number_of_requests()
     results = " "
-    for result in search(thing_to_search, tld='com', lang='en', safe='off', num=10, start=0,stop=10, pause=1.0):
+    for result in search(thing_to_search, tld='com', lang='en', safe='off', num=6, start=0,stop=10, pause=1.0):
         results += result + "\n"
     await ctx.send("Search results for: **{}**".format(thing_to_search))
     await ctx.send(results)

@@ -1,8 +1,8 @@
 try:
+    from important import token, sql_pass
     import discord
     from discord.utils import get
     from discord.ext import commands, tasks
-    from important import token, sql_pass
     import os
     import sys
     import pytz
@@ -17,6 +17,7 @@ try:
     import youtube_dl 
     import wikipedia
     import urllib.request
+    from cryptography.fernet import Fernet
     from googlesearch import search
     import mysql.connector as ms
     print("All modules successfully imported")
@@ -27,7 +28,7 @@ prefixes = ["t!","_","thwip ", "thwipper "]
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents, case_insensitive=True)
-color = discord.Color.from_rgb(167,24,20)
+color = discord.Color.from_rgb(217,226,231)
 # SNIPE
 deleted_messages = {}
 # NUMBER OF REQUESTS
@@ -46,6 +47,9 @@ ydl_op = {
         'preferredcodec':'mp3',
         'preferredquality':'128',
         }],}
+# ENCRYPTER DECRYPTER
+key = Fernet.generate_key()
+cipher = Fernet(key)
 # WIT
 plot_list = []
 dialogue_list = []
@@ -53,6 +57,7 @@ dialogue_list = []
 conn = ms.connect(host="localhost", user="root", passwd=sql_pass, database="discord")
 cursor = conn.cursor()
 # EXTRAS
+url_en_dec = "https://149351115.v2.pressablecdn.com/wp-content/uploads/2021/01/blog-security-4.png"
 url_wiki = "https://upload.wikimedia.org/wikipedia/commons/6/61/Wikipedia-logo-transparent.png"
 url_author_python = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/1200px-Python.svg.png"
 url_date_time = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKxv6EIh3VisynQX9TNkA7l15CvR0eJ8nWMA&usqp=CAU"
@@ -234,14 +239,15 @@ async def embed_help(ctx):
                         color=color)
     embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nuse to get this embed\nwit to get a famous dialogue or plot\n@Thwipper to get more info about thwipper", inline=False)
     embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nsnipe to see deleted message", inline=False)
-    embed.add_field(name="𝗗𝗮𝘁𝗲 & 𝗧𝗶𝗺𝗲", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
+    embed.add_field(name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush en <text> to encrypt message\nhush dec <text> to decrypt message\n", inline=False)
+    embed.add_field(name="𝗗𝗧𝗖", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
     embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; <query> to use SQL Shell\npy for python shell\npinfo to get use of that python function", inline=False)
     embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="w <topic> for wikipedia\ng <topic> to google\nl <song> to get lyrics",inline=False)
     embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
     embed.add_field(name="𝗣𝗹𝗮𝘆𝗲𝗿",value="p <name> or <index> to play songs\nres to resume a song\npause to pause a song\nst to stop a song\nbit to set quality of bitrate", inline=False)
-    embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nq to view queue\nrem <index> to remove song from queue\ncq to clear queue", inline=False)
+    embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nq to view queue\nskip to skip song\nprev for previous song\nthis to get current song\nrem <index> to remove song from queue\ncq to clear queue", inline=False)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
-    embed.set_footer(text="New Features Coming Soon! [🛠]\n1)Next  2)Previous  3)Loop Queue  4)Repeat Song 5)Volume")
+    embed.set_footer(text="New Features Coming Soon! [🛠]\n3)Loop Queue  4)Repeat Song 5)Volume")
     await ctx.send(embed=embed)
 
 
@@ -408,6 +414,22 @@ async def server_information(ctx):
     embed.add_field(name="Created on", value=ctx.guild.created_at.__format__('%A, %B %d %Y @ %H:%M:%S'), inline=False)
     await ctx.send(embed=embed)
 
+# //////////////////////////////////////// Encrypter / Decrypter //////////////////////////////////
+
+@bot.command(aliases=["hush"])
+async def encrypt_data(ctx, mode, *, message):
+    number_of_requests()
+    global key, cipher
+    res = message.encode()
+    if mode == "en":
+        embed = discord.Embed(title="Message Encrpyted", description=cipher.encrypt(res), color=color)
+        embed.set_thumbnail(url=url_en_dec)
+        await ctx.send(embed=embed)
+    if mode == "dec":
+        embed = discord.Embed(title="Message Decrypted", description=cipher.decrypt(res), color=color)
+        embed.set_thumbnail(url=url_en_dec)
+        await ctx.send(embed=embed)
+
 # /////////////////////////////////////// DATE & TIME /////////////////////////////////////////
 
 @bot.command(aliases=["dt"])
@@ -469,8 +491,9 @@ async def python_shell(ctx, *, expression):
     op_dev = "SELECT * FROM dev_users"
     cursor.execute(op_dev)
     dev_list = cursor.fetchall()
+    denied = ["sys.exit()", "eval(sys.exit)", "token", "sql_pass", 'eval("token")', "eval('token')",'eval("sql_pass")',"key","cipher","eval('cipher')",'eval("cipher")',"eval('key')",'eval("key")']
     if str(ctx.author.id) in str(dev_list) or ctx.author.id == 622497106657148939:
-        if expression == "sys.exit()" or expression == "eval(sys.exit)" or expression == "token" or expression == "sql_pass" or expression == 'eval("token")' or expression == "eval('token')" or expression == 'eval("sql_pass")' or expression == "eval('sql_pass')" or expression == "10**10**10":
+        if expression == [msg for msg in denied]:
             embed = discord.Embed(description="This function will not be executed", color=color)
             embed.set_author(name="Access Denied", icon_url=url_author_python)
             await ctx.send(embed=embed)
@@ -670,6 +693,7 @@ async def autoplay(ctx, toggle):
 @bot.command(aliases=['play','p'])
 async def play_music(ctx, *, char):
     number_of_requests()
+    global server_index
     global FFMPEG_OPTS
     # Server Specific Queue
     operation = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
@@ -712,6 +736,13 @@ async def play_music(ctx, *, char):
                         voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
                         print("Now playing: {}...".format(name_of_the_song))
                 if char.isdigit() == True:
+                    if str(ctx.guild.id) not in server_index:
+                        server_index[str(ctx.guild.id)] = int(char)
+                        print("Server Index Dict is updated...")
+                    else:
+                        pass
+                    if str(ctx.guild.id) in server_index:
+                        server_index[str(ctx.guild.id)] = int(char)
                     try:  
                         URL_queue = youtube_download(ctx, server_queue[int(char)][1])
                         if ctx.voice_client.is_playing() != True:
@@ -751,6 +782,24 @@ async def play_music(ctx, *, char):
         await ctx.send(embed=embed)  
 
 
+@bot.command(aliases=["this","song","ts"])
+async def fetch_current_song(ctx):
+    number_of_requests()
+    global server_index
+    operation = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
+    cursor.execute(operation)
+    server_queue = cursor.fetchall()
+    try:
+        embed = discord.Embed(description="**Song: **{a}\n**Index: **{b}".format(a=server_queue[server_index[str(ctx.guild.id)]][0], b=server_index[str(ctx.guild.id)]).replace(" - YouTube", " "), color=color)
+        embed.set_author(name="Current Song", icon_url=url_author_music)
+        embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
+        await ctx.send(embed=embed)
+    except Exception as e:
+        embed = discord.Embed(description=str(e), color=color)
+        embed.set_author(name="Error", icon_url=url_author_music)
+        await ctx.send(embed=embed)
+
+
 @bot.command(aliases=["pause"])
 async def pause_song(ctx):
     number_of_requests()
@@ -771,7 +820,7 @@ async def pause_song(ctx):
                     await ctx.send(embed=embed)
         except Exception as e: 
             embed = discord.Embed(description=str(e), color=color)
-            embed.set_author(name="ERROR", icon_url=url_author_music)
+            embed.set_author(name="Error", icon_url=url_author_music)
             await ctx.send(embed=embed)
     else:
         embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
@@ -793,13 +842,16 @@ async def resume_song(ctx):
                 await message.add_reaction("▶")
             else:
                 if playing == True:
-                    embed = discord.Embed(description="Song isn't paused\nUse `t!pause` to pause the song.", color=color)
+                    embed = discord.Embed(description="Song is not paused 🤔", color=color)
+                    embed.set_author(name="Music Player", icon_url=url_author_music)
                     await ctx.send(embed=embed)
                 else:
-                    await ctx.send(embed=discord.Embed(description="No song playing currently\nUse `t!p <name>  or <index>` to play a song.", color=color))
+                    embed = discord.Embed(description="Nothing is playing right now", color=color)
+                    embed.set_author(name="Music Player", icon_url=url_author_music)
+                    await ctx.send(embed=embed)
         except Exception as e:
                 embed = discord.Embed(description=str(e), color=color)
-                embed.set_author(name="𝗘𝗥𝗥𝗢𝗥", icon_url=url_author_music)
+                embed.set_author(name="Error", icon_url=url_author_music)
                 await ctx.send(embed=embed)
     else:
         embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
@@ -859,7 +911,7 @@ async def clear_song_queue(ctx):
         message = await ctx.send("Queue Cleared")
         await message.add_reaction("✅")
     else:
-        embed_empty = discord.Embed(description="Queue is already empty ⭕", color=color)
+        embed_empty = discord.Embed(description="Queue is already empty 🤷🏻‍♂️", color=color)
         embed_empty.set_author(name="Hmm...", icon_url=url_author_music)
         await ctx.send(embed=embed_empty)
 

@@ -19,6 +19,7 @@ try:
     import urllib.request
     from googlesearch import search
     import mysql.connector as ms
+    print("All modules successfully imported")
 except Exception as e:
     print(str(e))
 # SETUP
@@ -161,6 +162,7 @@ async def allow_access(ctx, member:discord.Member):
     number_of_requests()
     global cursor
     if ctx.author.id == 622497106657148939:
+        print("{} has been allowed access.".format(member.name))
         cursor.execute("INSERT INTO dev_users(dev_id)values({})".format(str(member.id)))
         embed = discord.Embed(description="{} has been allowed access".format(member), color=color)
         embed.set_author(name="Python Shell", icon_url=url_author_python)
@@ -175,6 +177,7 @@ async def remove_access(ctx, member:discord.Member):
     global url_author_python
     global cursor
     if ctx.author.id == 622497106657148939:    
+        print("{} has been denied access.".format(member.name))
         cursor.execute("DELETE FROM dev_users WHERE dev_id={}".format(str(member.id)))    
         embed = discord.Embed(description="{} is now restricted".format(str(member)), color=color)
         embed.set_author(name="Python Shell", icon_url=url_author_python)
@@ -208,6 +211,7 @@ async def stop_program(ctx):
     if ctx.author.id == 622497106657148939:
         await ctx.send(random.choice(msgs))
         conn.commit()
+        print(random.choice(msgs))
         exit()
     else:
         await ctx.send("Access Denied")
@@ -257,6 +261,7 @@ async def get_wit(ctx):
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text=random.choice(footers), icon_url=bot.user.avatar_url)
     await ctx.send(embed=embed)
+    print("Wit successfully sent!")
 
 # //////////////////////////////////// INTERNET //////////////////////////////////////////////
 
@@ -274,10 +279,12 @@ async def wikipedia_results(ctx, *, thing_to_search):
             embed = discord.Embed(description=str(pe), color=color)
             embed.set_author(name='Error', icon_url=url_wiki)   
             await ctx.send(embed=embed)
+            print("{} couldn't be showed due to PageError".format(title.title))
     except wikipedia.DisambiguationError as de:
         embed = discord.Embed(description=str(de), color=color)
         embed.set_author(name='Hmm...', icon_url=url_wiki)   
         await ctx.send(embed=embed)
+        print("ERROR : Disambiguation Error")
 
 
 @bot.command(aliases=['google','g'])
@@ -288,6 +295,7 @@ async def google_results(ctx, *, thing_to_search):
         results += result + "\n"
     await ctx.send("Search results for: **{}**".format(thing_to_search))
     await ctx.send(results)
+    print("Results for google search sent...")
 
 
 @bot.command(aliases=["lyrics","l"])
@@ -322,14 +330,17 @@ async def song_lyrics(ctx, *, song_name=""):
                 embed2.set_footer(text="Seached by: {}".format(ctx.author.name), icon_url=ctx.author.avatar_url)
                 await ctx.send(embed=embed1)
                 await ctx.send(embed=embed2)
+            print("Lyrics sent successfully...")
         else:
             embed = discord.Embed(description="Couldn't find song...\nMake sure the song name is correct 🤔", color=color)
             embed.set_author(name="Song Lyrics", icon_url=url_author_music)
             await ctx.send(embed=embed)
+            print("Song not found...")
     except Exception as e:
         embed = discord.Embed(description=str(e), color=color)
         embed.set_author(name="Error", icon_url=url_author_music)
         await ctx.send(embed=embed)
+        print("Error", str(e))
 
 #///////////////////////////////////// UTILITY ///////////////////////////////////////////////        
 
@@ -502,20 +513,25 @@ async def function_info(ctx, func):
 async def join_vc(ctx):
     number_of_requests()
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-    if not ctx.message.author.voice:
-        embed = discord.Embed(description="{}, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+    try:
+        if not ctx.message.author.voice:
+            embed = discord.Embed(description="{}, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+            embed.set_author(name='Voice', icon_url=url_author_music)
+            await ctx.send(embed=embed)
+        if voice == None:    
+            channel = ctx.message.author.voice.channel
+            await channel.connect()
+            message = await ctx.send("Connected")
+            await asyncio.sleep(2)
+            await message.edit(content="Use `t!p <name> or <index>` to play songs 🎵")
+            print("Connected Successfully...")
+        if voice != None:
+            embed = discord.Embed(description="Already connected to a voice channel ✅", color=color)
+            embed.set_author(name='Voice', icon_url=url_author_music)
+            await ctx.send(embed=embed)
+    except Exception as e:
+        embed = discord.Embed(description="Error:\n" + str(e), color=color)
         embed.set_author(name='Voice', icon_url=url_author_music)
-        await ctx.send(embed=embed)
-    if voice == None:    
-        channel = ctx.message.author.voice.channel
-        await channel.connect()
-        message = await ctx.send("Connected")
-        await asyncio.sleep(2)
-        await message.edit(content="Use `t!p <name> or <index>` to play songs 🎵")
-    if voice != None:
-        embed = discord.Embed(description="Already connected to a voice channel ✅", color=color)
-        embed.set_author(name='Voice', icon_url=url_author_music)
-        await ctx.send(embed=embed)
 
 
 @bot.command(aliases=["dc","disconnect"])
@@ -530,6 +546,7 @@ async def leave_vc(ctx):
                     message = await ctx.send("Disconnected")
                     await asyncio.sleep(2)
                     await message.edit(content="See ya later 😎")
+                    print("Disconnected Successfully...")
             except AttributeError:
                 embed = discord.Embed(description="I am not connected to a voice channel", color=color)
                 embed.set_author(name='Music Player', icon_url=url_author_music)
@@ -578,6 +595,7 @@ async def queue_song(ctx, *, name=None):
         embed = discord.Embed(description="{}".format(name_of_the_song).replace(" - YouTube", " "), color=color)
         embed.set_author(name="Song added", icon_url=url_author_music)
         await ctx.send(embed=embed)
+        print("Song added to {}'s queue successfully...".format(ctx.guild.name))
     if name is None:
         operation_view = "SELECT song_name FROM music_queue WHERE server={}".format(str(ctx.guild.id))
         cursor.execute(operation_view)
@@ -682,6 +700,7 @@ async def play_music(ctx, *, char):
                         embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=url).length), inline=True)
                         await ctx.send(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
+                        print("Now playing: {}...".format(name_of_the_song))
                     else:
                         voice.stop()
                         embed = discord.Embed(description="**Song: **{}".format(name_of_the_song).replace(" - YouTube", " "), color=color)
@@ -691,6 +710,7 @@ async def play_music(ctx, *, char):
                         embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=url).length), inline=True)
                         await ctx.send(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
+                        print("Now playing: {}...".format(name_of_the_song))
                 if char.isdigit() == True:
                     try:  
                         URL_queue = youtube_download(ctx, server_queue[int(char)][1])
@@ -702,6 +722,7 @@ async def play_music(ctx, *, char):
                             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length), inline=True)
                             await ctx.send(embed=embed)
                             voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                            print("Now playing: {}...".format(server_queue[int(char)][0]))
                         else:
                             voice.stop()
                             embed = discord.Embed(description="**Song: **{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=color)
@@ -711,6 +732,7 @@ async def play_music(ctx, *, char):
                             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length), inline=True)
                             await ctx.send(embed=embed)
                             voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                            print("Now playing: {}...".format(server_queue[int(char)][0]))
                     except IndexError:
                         embed = discord.Embed(description="Looks like there is no song at this index", color=color)
                         embed.set_author(name="Oops...", icon_url=url_author_music)

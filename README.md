@@ -12,8 +12,8 @@ _Famous Spider-Man Dialogues and Plot summaries_<br>
 _Python & MySQL Shells_<br> 
 _Date, Time & Calendar_ <br>
 _Links for Google Searches_<br>
-_Interesting Facts_<br>
-_Super-Hero Memes_<br>
+_Encryption & Decryption_<br>
+_Lyrics for Songs_<br>
 
 _<h2>Note:-</h2>_
 Have the bot token and the SQL password in a .py file in the same directory as main.py<br>

@@ -422,11 +422,11 @@ async def encrypt_data(ctx, mode, *, message):
     global key, cipher
     res = message.encode()
     if mode == "en":
-        embed = discord.Embed(title="Message Encrpyted", description=cipher.encrypt(res), color=color)
+        embed = discord.Embed(title="Message Encrpyted", description="```{}```".format(cipher.encrypt(res)), color=color)
         embed.set_thumbnail(url=url_en_dec)
         await ctx.send(embed=embed)
     if mode == "dec":
-        embed = discord.Embed(title="Message Decrypted", description=cipher.decrypt(res), color=color)
+        embed = discord.Embed(title="Message Decrypted", description="```{}```".format(cipher.decrypt(res)), color=color)
         embed.set_thumbnail(url=url_en_dec)
         await ctx.send(embed=embed)
 

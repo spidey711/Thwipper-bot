@@ -1,25 +1,26 @@
 try:
-    from important import token, sql_pass
     import discord
     from discord.utils import get
     from discord.ext import commands, tasks
+    from links import *
+    from important import token, sql_pass
+    import mysql.connector as ms
     import os
     import sys
-    import pytz
     import random
-    import asyncio
     import calendar
+    import pytz
     import datetime
     import regex
-    import ffmpeg
-    import requests
     import pytube
-    import youtube_dl 
+    import ffmpeg
+    import asyncio
+    import requests
     import wikipedia
+    import youtube_dl 
     import urllib.request
-    from cryptography.fernet import Fernet
     from googlesearch import search
-    import mysql.connector as ms
+    from cryptography.fernet import Fernet
     print("All modules successfully imported")
 except Exception as e:
     print(str(e))
@@ -56,18 +57,9 @@ dialogue_list = []
 # SQL
 conn = ms.connect(host="localhost", user="root", passwd=sql_pass, database="discord")
 cursor = conn.cursor()
-# EXTRAS
-hello_urls = ["https://d1lss44hh2trtw.cloudfront.net/assets/article/2018/09/07/how-to-greet-citizens-marvels-spider-man-about-town-trophy_feature.jpg","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_abBUARSNVkp-RQ2_gkcgVfa3N6t82VB0kA&usqp=CAU","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0v0ClnfyO_GOAIzCFRsBFS-OAfcRxRyViXTExPXk3v82_X6BWjqejoWJLm0UT_4m9anU&usqp=CAU","https://geekerhertz.com/images/5ba364c97ea1d.jpg","https://www.clickondetroit.com/resizer/UXG-vEgiShoNSebt4F22ATC4zEY=/640x360/smart/filters:format(jpeg):strip_exif(true):strip_icc(true):no_upscale(true):quality(65)/arc-anglerfish-arc2-prod-gmg.s3.amazonaws.com/public/C2F65R6EKZERHMDNGLI3MRIXGQ.jpg","https://d1lss44hh2trtw.cloudfront.net/assets/editorial/2018/09/how-to-take-selfies-marvels-spider-man-ps4.jpg","https://pbs.twimg.com/media/DmeykRmU0AAvsQ3.jpg","https://www.mandatory.com/assets/uploads/2018/09/Screen-Shot-2018-09-10-at-7.10.56-PM.png"]
-url_en_dec = "https://149351115.v2.pressablecdn.com/wp-content/uploads/2021/01/blog-security-4.png"
-url_wiki = "https://upload.wikimedia.org/wikipedia/commons/6/61/Wikipedia-logo-transparent.png"
-url_author_python = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/1200px-Python.svg.png"
-url_date_time = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKxv6EIh3VisynQX9TNkA7l15CvR0eJ8nWMA&usqp=CAU"
-url_calendar = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsb98d6ZOyxwxLUf1Y97yWFKW0Pz6JzuyBww&usqp=CAU"
-url_thumbnails = ["https://i.pinimg.com/236x/31/fc/50/31fc5099e24775b613a69fa5bf4f8064.jpg","https://i.pinimg.com/236x/e5/f5/54/e5f55401dfb0588daaa0c3baad528ae8.jpg","https://i.pinimg.com/236x/be/80/cf/be80cf957b028e16083d534f3890cda1.jpg","https://i.pinimg.com/236x/02/6c/7d/026c7d47fd43ff30180fdc7c91e155c2.jpg","https://i.pinimg.com/236x/14/ca/dc/14cadcf0d437fe2d670bff20254e3422.jpg","https://i.pinimg.com/236x/3d/dd/ec/3dddecd82efb45026771dba7287aa010.jpg","https://i.pinimg.com/236x/4d/16/7e/4d167e9a51166d0ce955c4eac6b26d7c.jpg","https://i.pinimg.com/236x/46/56/8c/46568c65f50f4cd5dce76c1ea1833258.jpg","https://i.pinimg.com/236x/74/e6/d8/74e6d846301bd4e3722ed465240b894f.jpg","https://i.pinimg.com/236x/4f/ef/67/4fef67d2a553dba286ab311354370d28.jpg","https://i.pinimg.com/236x/f4/7d/1b/f47d1b34c2988f10a33f77c33e966d4c.jpg","https://i.pinimg.com/236x/4b/5e/bf/4b5ebfaba10beb08d3cae0a4ed684bdb.jpg","https://i.pinimg.com/236x/87/df/c7/87dfc7f867d4afff7c73923664a560af.jpg","https://i.pinimg.com/236x/b4/79/69/b47969fdf761ee63bf60adfdf7ba6554.jpg","https://i.pinimg.com/236x/48/0f/17/480f17eaaf087d44e540ee0a2d512297.jpg","https://i.pinimg.com/236x/4f/ab/0e/4fab0e67c4ba300f03bb5f03421ea7db.jpg","https://i.pinimg.com/236x/f6/06/ef/f606efe1e45c96ee6585cadebc6c8f74.jpg","https://c4.wallpaperflare.com/wallpaper/42/823/767/spiderman-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/517/160/840/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/107/848/913/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://wallpapercave.com/wp/AVIUso6.jpg","https://wallpapercave.com/wp/n9L3kJf.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-man-miles-morales-minimal-art-4k-43.jpg","https://images.hdqwalls.com/wallpapers/thumb/northern-spider-5k-f3.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-and-deadpool-4k-ys.jpg","https://images.hdqwalls.com/wallpapers/thumb/spiderman-into-the-spider-verse-y7.jpg","https://wallpapercave.com/wp/wp2018132.png","https://wallpapercave.com/wp/wp2018145.jpg","https://wallpapercave.com/wp/wp2018203.jpg","https://images3.alphacoders.com/593/thumbbig-593562.webp","https://images6.alphacoders.com/107/thumbbig-1071152.webp","https://images6.alphacoders.com/107/thumbbig-1070974.webp","https://i.pinimg.com/236x/38/a4/f6/38a4f62d74d7aeb2ae2396c991fcde52.jpg","https://i.pinimg.com/236x/ed/76/cc/ed76cc8bfe41347d979c93e23fbe51a0.jpg","https://i.pinimg.com/236x/91/87/2d/91872d5c92e8339036106bc832656a49.jpg","https://i.pinimg.com/236x/e3/94/05/e39405072916bb996caee3a4045f573a.jpg","https://i.pinimg.com/236x/36/2c/42/362c4298860d79a4b49acd9370cabe04.jpg","https://i.pinimg.com/236x/cf/3c/f4/cf3cf4ef7239868b1abc243168c41647.jpg","https://i.pinimg.com/236x/b1/3e/e7/b13ee7a8a8d72fbe39153569b5618c21.jpg","https://i.pinimg.com/236x/d9/ef/b8/d9efb89361f4a8d04f2e4e8d8d8067e8.jpg","https://i.pinimg.com/236x/d7/1c/9a/d71c9a5f09e61fcea6ffc3d61f7d5011.jpg","https://i.pinimg.com/236x/3b/cc/8c/3bcc8cde6be346db7c84eaa52e8f9072.jpg","https://i.pinimg.com/236x/ea/0c/ca/ea0ccaa55471689fda39043d80bc7a07.jpg","https://i.pinimg.com/236x/0a/7e/41/0a7e413a95d88ae13487a796d40237ef.jpg","https://i.pinimg.com/236x/d5/ea/83/d5ea830dee3385bfe9fa9871e3190b40.jpg","https://i.pinimg.com/236x/3d/d6/6c/3dd66c95df0b377767bf24e16d77b5ee.jpg"]
-url_author_sql = "https://miro.medium.com/max/361/1*WzqoTtRUpmJR26dzlKdIwg.png"
-url_author_music = "https://image.freepik.com/free-vector/cute-astronaut-playing-dj-electronic-music-with-headphone-cartoon-icon-illustration-science-technology-icon-concept_138676-2113.jpg"
-url_thumbnail_music = ["https://img1.goodfon.com/wallpaper/nbig/1/67/spider-man-chelovek-pauk-pank.jpg","https://images.hdqwalls.com/wallpapers/spiderman-listening-music-4k-2019-fi.jpg","https://cdn.vox-cdn.com/thumbor/m_ZHHA2iEH0WH-8WlX3VQ_pbEZ4=/0x0:1496x727/1570x883/filters:focal(747x258:985x496):format(webp)/cdn.vox-cdn.com/uploads/chorus_image/image/63096914/Screen_Shot_2019_02_12_at_4.38.43_PM.0.png","https://i.pinimg.com/originals/27/82/21/278221c49efc0426cb4976c598d473a2.jpg","https://i.pinimg.com/736x/43/4a/98/434a987f19fcc4566eeb2f7256ba430e.jpg","https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/39613bc3-140c-41fd-97e6-fcaa0d2690c9/dcms5i5-fa43588f-f74f-4e4d-a32c-f92fd411fd80.png/v1/fill/w_1024,h_485,q_80,strp/marvel_s_spider_man_spider_punk_2_by_jcrprints_dcms5i5-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NDg1IiwicGF0aCI6IlwvZlwvMzk2MTNiYzMtMTQwYy00MWZkLTk3ZTYtZmNhYTBkMjY5MGM5XC9kY21zNWk1LWZhNDM1ODhmLWY3NGYtNGU0ZC1hMzJjLWY5MmZkNDExZmQ4MC5wbmciLCJ3aWR0aCI6Ijw9MTAyNCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.fN-6-HCnyWgLGYW2WfKEAD8zREmA9n7enfR4qKWRa-Y","https://cdnb.artstation.com/p/assets/images/images/031/120/033/large/jyerps-spider-man-miles-morales-cyberpunk.jpg?1602664632"]
 
+# //////////////////////////////////////// NON ASYNC FUNCTIONS /////////////////////////////////////
+ 
 def time_converter(seconds):
     mins, secs = divmod(seconds, 60)
     hours, mins = divmod(mins, 60)
@@ -88,14 +80,26 @@ def number_of_requests():
     global num # num = 0
     num += 1
     requests_query()
+async def statuses():
+        movies = ["The Amazing Spider-Man", "Spider-Man", "Spider-Man 2", "Spider-Man 3", "The Amazing Spider-Man 2"," Spider-Man Homecoming","Spider-Man Far From Home"]
+        games = ["Marvel's Spider-Man", "Marvel's Spider-Man Miles Morales", "Spider-Man Web Of Shadows", "Ultimate Spider-Man"]
+        shows = ["The Ultimate Spider-Man","The Spectacular Spider-Man", "Fairly Rad Videos"]
+        while True:    
+            await bot.change_presence(activity=discord.Game(name=random.choice(games), type=3))
+            await asyncio.sleep(100)
+            await bot.change_presence(activity=discord.ActivityType.watching(name=random.choice(movies), type=3))
+            await asyncio.sleep(100)
+            await bot.change_presence(activity=discord.Streaming(name=random.choice(shows), type=3))
+            await asyncio.sleep(100)
+
+# /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 @bot.event
 async def on_ready():
     print("{0.user} is now online...".format(bot))
     stop = 0
     # STATUS
-    activity = discord.Game(name="Spider-Man (2018)", type=3)
-    await bot.change_presence(activity=activity)
+    bot.loop.create_task(statuses())
     # WITS
     global plot_list
     x = requests.get("https://www.cbr.com/greatest-spider-man-stories/").content.decode().replace("<em>"," ").replace("</em>"," ")
@@ -247,7 +251,7 @@ async def embed_help(ctx):
     embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; <query> to use SQL Shell\npy for python shell\npinfo to get use of that python function", inline=False)
     embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="w <topic> for wikipedia\ng <topic> to google\nl <song> to get lyrics",inline=False)
     embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
-    embed.add_field(name="𝗣𝗹𝗮𝘆𝗲𝗿",value="p <name> or <index> to play songs\nres to resume a song\npause to pause a song\nst to stop a song\nbit to set quality of bitrate", inline=False)
+    embed.add_field(name="𝗣𝗹𝗮𝘆𝗲𝗿",value="p <name> or <index> to play songs\nres to resume a song\npause to pause a song\nst to stop a song\nbit to set quality of bitrate\nloop ON/OFF to toggle autoplay with queue looping", inline=False)
     embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nq to view queue\nskip to skip song\nprev for previous song\nthis to get current song\nrem <index> to remove song from queue\ncq to clear queue", inline=False)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text="New Features Coming Soon! [🛠]\n3)Loop Queue  4)Repeat Song 5)Volume")
@@ -426,12 +430,14 @@ async def encrypt_data(ctx, mode, *, message):
     res = message.encode()
     try:
         if mode == "en":
-            embed = discord.Embed(title="Message Encrpyted", description="```{}```".format(str(cipher.encrypt(res))).replace("b'"," ").replace("'"," "), color=color)
+            embed = discord.Embed(title="Message Encrpyted", description="```{}```".format(str(cipher.encrypt(res))).replace("b'","").replace("'",""), color=color)
             embed.set_thumbnail(url=url_en_dec)
+            await ctx.channel.purge(limit=1)
             await ctx.send(embed=embed)
         if mode == "dec":
-            embed = discord.Embed(title="Message Decrypted", description="```{}```".format(str(cipher.decrypt(res))).replace("b'"," ").replace("'"," "), color=color)
+            embed = discord.Embed(title="Message Decrypted", description="```{}```".format(str(cipher.decrypt(res))).replace("b'","").replace("'",""), color=color)
             embed.set_thumbnail(url=url_en_dec)
+            await ctx.channel.purge(limit=1)
             await ctx.send(embed=embed)
     except Exception as e:
             embed = discord.Embed(title="Error", description=str(e), color=color)
@@ -649,8 +655,8 @@ async def queue_song(ctx, *, name=None):
             await ctx.send(embed=embed)
 
 
-@bot.command(aliases=["auto"])
-async def autoplay(ctx, toggle):
+@bot.command(aliases=["rep","repeat"])
+async def repeat_song(ctx, toggle):
     number_of_requests()
     global cursor
     global FFMPEG_OPTS
@@ -658,38 +664,18 @@ async def autoplay(ctx, toggle):
     operation_queue = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
     cursor.execute(operation_queue)
     songs = cursor.fetchall()
-    num = 0
     if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
-        if toggle == "on":
-            while num <= len(songs):
-                if ctx.voice_client.is_playing() == True:
-                    voice.stop()
-                    embed = discord.Embed(description="**Song: **{}".format(songs[num][0]).replace(" - YouTube", " "), color=color)
-                    embed.set_author(name="Now playing", icon_url=url_author_music)
-                    embed.set_thumbnail(url=pytube.YouTube(url=songs[num][1]).thumbnail_url)
-                    embed.add_field(name="Artist", value=pytube.YouTube(url=songs[num][1]).author, inline=True)
-                    embed.add_field(name="Duration", value=pytube.YouTube(url=songs[num][1]).length, inline=True)
-                    await ctx.send(embed=embed)
-                    voice.play(discord.FFmpegPCMAudio(songs[num][1], **FFMPEG_OPTS))
-                    duration = pytube.YouTube(url=songs[num][1]).length
-                    await asyncio.sleep(duration)
-                    num += 1
-                    continue
-                if ctx.voice_client.is_playing() == False:
-                    embed = discord.Embed(description="**Song: **{}".format(songs[num][0]).replace(" - YouTube", " "), color=color)
-                    embed.set_author(name="Now playing", icon_url=url_author_music)
-                    embed.set_thumbnail(url=pytube.YouTube(url=songs[num][1]).thumbnail_url)
-                    embed.add_field(name="Artist", value=pytube.YouTube(url=songs[num][1]).author, inline=True)
-                    embed.add_field(name="Duration", value=pytube.YouTube(url=songs[num][1]).length, inline=True)
-                    await ctx.send(embed=embed)
-                    voice.play(discord.FFmpegPCMAudio(songs[num][1], **FFMPEG_OPTS))
-                    duration = pytube.YouTube(url=songs[num][1]).length
-                    await asyncio.sleep(duration)
-                    num += 1
-                    continue
-        if toggle == "off":
+        if toggle == "ON":
+            embed = discord.Embed(description="Repeat : ON", color=color)
+            embed.set_thumbnail(url=random.choice(url_thumbnail_music))
+            embed.set_author(name="Music Player", icon_url=url_author_music)
+            await ctx.send(embed=embed)
+            voice.play(discord.FFmpegPCMAudio(songs[server_index[str(ctx.guild.id)]][1], **FFMPEG_OPTS))
+            # await asyncio.sleep(delay=pytube.Youtube(url=songs[server_index[str(ctx.guild.id)]][1]).length)
             voice.stop()
-            embed = discord.Embed(description="Autoplay : OFF", color=color)
+        if toggle == "OFF":
+            voice.stop()
+            embed = discord.Embed(description="Repeat : OFF", color=color)
             embed.set_author(name="Music Player", icon_url=url_author_music)
             await ctx.send(embed=embed)
     else:
@@ -726,7 +712,7 @@ async def play_music(ctx, *, char):
                     # duration_direct = pytube.YouTube(url=url).length/60
                     if ctx.voice_client.is_playing() != True:
                         embed = discord.Embed(description="**Song: **{}".format(name_of_the_song).replace(" - YouTube", " "), color=color)
-                        embed.set_author(name="Now playing", icon_url=url_author_music)
+                        embed.set_author(name="Now playing", url=url, icon_url=url_author_music)
                         embed.set_thumbnail(url=pytube.YouTube(url=url).thumbnail_url)
                         embed.add_field(name="Uploader", value=pytube.YouTube(url=url).author, inline=True)
                         embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=url).length), inline=True)
@@ -736,7 +722,7 @@ async def play_music(ctx, *, char):
                     else:
                         voice.stop()
                         embed = discord.Embed(description="**Song: **{}".format(name_of_the_song).replace(" - YouTube", " "), color=color)
-                        embed.set_author(name="Now playing", icon_url=url_author_music)
+                        embed.set_author(name="Now playing", url=url, icon_url=url_author_music)
                         embed.set_thumbnail(url=pytube.YouTube(url=url).thumbnail_url)
                         embed.add_field(name="Uploader", value=pytube.YouTube(url=url).author, inline=True)
                         embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=url).length), inline=True)
@@ -755,7 +741,7 @@ async def play_music(ctx, *, char):
                         URL_queue = youtube_download(ctx, server_queue[int(char)][1])
                         if ctx.voice_client.is_playing() != True:
                             embed = discord.Embed(description="**Song: **{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=color)
-                            embed.set_author(name="Now playing", icon_url=url_author_music)
+                            embed.set_author(name="Now playing", url=URL_queue, icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[int(char)][1]).thumbnail_url)
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[int(char)][1]).author, inline=True)
                             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length), inline=True)
@@ -765,7 +751,7 @@ async def play_music(ctx, *, char):
                         else:
                             voice.stop()
                             embed = discord.Embed(description="**Song: **{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=color)
-                            embed.set_author(name="Now playing", icon_url=url_author_music)
+                            embed.set_author(name="Now playing", url=URL_queue, icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[int(char)][1]).thumbnail_url)
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[int(char)][1]).author, inline=True)
                             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length), inline=True)
@@ -797,15 +783,20 @@ async def fetch_current_song(ctx):
     operation = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
     cursor.execute(operation)
     server_queue = cursor.fetchall()
-    try:
-        embed = discord.Embed(description="**Song: **{a}\n**Index: **{b}".format(a=server_queue[server_index[str(ctx.guild.id)]][0], b=server_index[str(ctx.guild.id)]).replace(" - YouTube", " "), color=color)
-        embed.set_author(name="Currently Playing", icon_url=url_author_music)
-        embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
+    if len(server_queue) <= 0:
+        embed = discord.Embed(description="There are no songs in the queue currently 🤔")
+        embed.set_author(name="Uh oh...", icon_url=url_author_music)
         await ctx.send(embed=embed)
-    except Exception as e:
-        embed = discord.Embed(description=str(e), color=color)
-        embed.set_author(name="Error", icon_url=url_author_music)
-        await ctx.send(embed=embed)
+    else:
+        try:
+            embed = discord.Embed(description="**Song: **{a}\n**Index: **{b}".format(a=server_queue[server_index[str(ctx.guild.id)]][0], b=server_index[str(ctx.guild.id)]).replace(" - YouTube", " "), color=color)
+            embed.set_author(name="Currently Playing", url=server_queue[server_index[str(ctx.guild.id)]][1], icon_url=url_author_music)
+            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
+            await ctx.send(embed=embed)
+        except Exception as e:
+            embed = discord.Embed(description=str(e), color=color)
+            embed.set_author(name="Error", icon_url=url_author_music)
+            await ctx.send(embed=embed)
 
 
 @bot.command(aliases=["prev","previous"])
@@ -822,7 +813,7 @@ async def previous_song(ctx):
             URL_queue = youtube_download(ctx, server_queue[server_index[str(ctx.guild.id)]][1])
             if ctx.voice_client.is_playing() != True:
                 embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-                embed.set_author(name="Now playing", icon_url=url_author_music)
+                embed.set_author(name="Now playing", url=URL_queue, icon_url=url_author_music)
                 embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
                 embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
                 embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
@@ -832,7 +823,7 @@ async def previous_song(ctx):
             else:
                 voice.stop()
                 embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-                embed.set_author(name="Now playing", icon_url=url_author_music)
+                embed.set_author(name="Now playing", url=URL_queue, icon_url=url_author_music)
                 embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
                 embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
                 embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
@@ -863,7 +854,7 @@ async def skip_song(ctx):
             URL_queue = youtube_download(ctx, server_queue[server_index[str(ctx.guild.id)]][1])
             if ctx.voice_client.is_playing() != True:
                 embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-                embed.set_author(name="Now playing", icon_url=url_author_music)
+                embed.set_author(name="Now playing", url=URL_queue, icon_url=url_author_music)
                 embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
                 embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
                 embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
@@ -873,7 +864,7 @@ async def skip_song(ctx):
             else:
                 voice.stop()
                 embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-                embed.set_author(name="Now playing", icon_url=url_author_music)
+                embed.set_author(name="Now playing", url=URL_queue, icon_url=url_author_music)
                 embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
                 embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
                 embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)

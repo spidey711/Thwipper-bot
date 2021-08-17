@@ -57,6 +57,7 @@ dialogue_list = []
 conn = ms.connect(host="localhost", user="root", passwd=sql_pass, database="discord")
 cursor = conn.cursor()
 # EXTRAS
+hello_urls = ["https://d1lss44hh2trtw.cloudfront.net/assets/article/2018/09/07/how-to-greet-citizens-marvels-spider-man-about-town-trophy_feature.jpg","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_abBUARSNVkp-RQ2_gkcgVfa3N6t82VB0kA&usqp=CAU","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0v0ClnfyO_GOAIzCFRsBFS-OAfcRxRyViXTExPXk3v82_X6BWjqejoWJLm0UT_4m9anU&usqp=CAU","https://geekerhertz.com/images/5ba364c97ea1d.jpg","https://www.clickondetroit.com/resizer/UXG-vEgiShoNSebt4F22ATC4zEY=/640x360/smart/filters:format(jpeg):strip_exif(true):strip_icc(true):no_upscale(true):quality(65)/arc-anglerfish-arc2-prod-gmg.s3.amazonaws.com/public/C2F65R6EKZERHMDNGLI3MRIXGQ.jpg","https://d1lss44hh2trtw.cloudfront.net/assets/editorial/2018/09/how-to-take-selfies-marvels-spider-man-ps4.jpg","https://pbs.twimg.com/media/DmeykRmU0AAvsQ3.jpg","https://www.mandatory.com/assets/uploads/2018/09/Screen-Shot-2018-09-10-at-7.10.56-PM.png"]
 url_en_dec = "https://149351115.v2.pressablecdn.com/wp-content/uploads/2021/01/blog-security-4.png"
 url_wiki = "https://upload.wikimedia.org/wikipedia/commons/6/61/Wikipedia-logo-transparent.png"
 url_author_python = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/1200px-Python.svg.png"
@@ -65,7 +66,7 @@ url_calendar = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsb98d6ZOy
 url_thumbnails = ["https://i.pinimg.com/236x/31/fc/50/31fc5099e24775b613a69fa5bf4f8064.jpg","https://i.pinimg.com/236x/e5/f5/54/e5f55401dfb0588daaa0c3baad528ae8.jpg","https://i.pinimg.com/236x/be/80/cf/be80cf957b028e16083d534f3890cda1.jpg","https://i.pinimg.com/236x/02/6c/7d/026c7d47fd43ff30180fdc7c91e155c2.jpg","https://i.pinimg.com/236x/14/ca/dc/14cadcf0d437fe2d670bff20254e3422.jpg","https://i.pinimg.com/236x/3d/dd/ec/3dddecd82efb45026771dba7287aa010.jpg","https://i.pinimg.com/236x/4d/16/7e/4d167e9a51166d0ce955c4eac6b26d7c.jpg","https://i.pinimg.com/236x/46/56/8c/46568c65f50f4cd5dce76c1ea1833258.jpg","https://i.pinimg.com/236x/74/e6/d8/74e6d846301bd4e3722ed465240b894f.jpg","https://i.pinimg.com/236x/4f/ef/67/4fef67d2a553dba286ab311354370d28.jpg","https://i.pinimg.com/236x/f4/7d/1b/f47d1b34c2988f10a33f77c33e966d4c.jpg","https://i.pinimg.com/236x/4b/5e/bf/4b5ebfaba10beb08d3cae0a4ed684bdb.jpg","https://i.pinimg.com/236x/87/df/c7/87dfc7f867d4afff7c73923664a560af.jpg","https://i.pinimg.com/236x/b4/79/69/b47969fdf761ee63bf60adfdf7ba6554.jpg","https://i.pinimg.com/236x/48/0f/17/480f17eaaf087d44e540ee0a2d512297.jpg","https://i.pinimg.com/236x/4f/ab/0e/4fab0e67c4ba300f03bb5f03421ea7db.jpg","https://i.pinimg.com/236x/f6/06/ef/f606efe1e45c96ee6585cadebc6c8f74.jpg","https://c4.wallpaperflare.com/wallpaper/42/823/767/spiderman-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/517/160/840/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/107/848/913/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://wallpapercave.com/wp/AVIUso6.jpg","https://wallpapercave.com/wp/n9L3kJf.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-man-miles-morales-minimal-art-4k-43.jpg","https://images.hdqwalls.com/wallpapers/thumb/northern-spider-5k-f3.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-and-deadpool-4k-ys.jpg","https://images.hdqwalls.com/wallpapers/thumb/spiderman-into-the-spider-verse-y7.jpg","https://wallpapercave.com/wp/wp2018132.png","https://wallpapercave.com/wp/wp2018145.jpg","https://wallpapercave.com/wp/wp2018203.jpg","https://images3.alphacoders.com/593/thumbbig-593562.webp","https://images6.alphacoders.com/107/thumbbig-1071152.webp","https://images6.alphacoders.com/107/thumbbig-1070974.webp","https://i.pinimg.com/236x/38/a4/f6/38a4f62d74d7aeb2ae2396c991fcde52.jpg","https://i.pinimg.com/236x/ed/76/cc/ed76cc8bfe41347d979c93e23fbe51a0.jpg","https://i.pinimg.com/236x/91/87/2d/91872d5c92e8339036106bc832656a49.jpg","https://i.pinimg.com/236x/e3/94/05/e39405072916bb996caee3a4045f573a.jpg","https://i.pinimg.com/236x/36/2c/42/362c4298860d79a4b49acd9370cabe04.jpg","https://i.pinimg.com/236x/cf/3c/f4/cf3cf4ef7239868b1abc243168c41647.jpg","https://i.pinimg.com/236x/b1/3e/e7/b13ee7a8a8d72fbe39153569b5618c21.jpg","https://i.pinimg.com/236x/d9/ef/b8/d9efb89361f4a8d04f2e4e8d8d8067e8.jpg","https://i.pinimg.com/236x/d7/1c/9a/d71c9a5f09e61fcea6ffc3d61f7d5011.jpg","https://i.pinimg.com/236x/3b/cc/8c/3bcc8cde6be346db7c84eaa52e8f9072.jpg","https://i.pinimg.com/236x/ea/0c/ca/ea0ccaa55471689fda39043d80bc7a07.jpg","https://i.pinimg.com/236x/0a/7e/41/0a7e413a95d88ae13487a796d40237ef.jpg","https://i.pinimg.com/236x/d5/ea/83/d5ea830dee3385bfe9fa9871e3190b40.jpg","https://i.pinimg.com/236x/3d/d6/6c/3dd66c95df0b377767bf24e16d77b5ee.jpg"]
 url_author_sql = "https://miro.medium.com/max/361/1*WzqoTtRUpmJR26dzlKdIwg.png"
 url_author_music = "https://image.freepik.com/free-vector/cute-astronaut-playing-dj-electronic-music-with-headphone-cartoon-icon-illustration-science-technology-icon-concept_138676-2113.jpg"
-url_thumbnail_music = ["https://i.pinimg.com/236x/10/06/35/100635a268123393a208b3e6efb5ec0d.jpg","https://i.pinimg.com/236x/d8/a1/fc/d8a1fcbc9482a9ae7a9352620dd3e4ea.jpg"]
+url_thumbnail_music = ["https://img1.goodfon.com/wallpaper/nbig/1/67/spider-man-chelovek-pauk-pank.jpg","https://images.hdqwalls.com/wallpapers/spiderman-listening-music-4k-2019-fi.jpg","https://cdn.vox-cdn.com/thumbor/m_ZHHA2iEH0WH-8WlX3VQ_pbEZ4=/0x0:1496x727/1570x883/filters:focal(747x258:985x496):format(webp)/cdn.vox-cdn.com/uploads/chorus_image/image/63096914/Screen_Shot_2019_02_12_at_4.38.43_PM.0.png","https://i.pinimg.com/originals/27/82/21/278221c49efc0426cb4976c598d473a2.jpg","https://i.pinimg.com/736x/43/4a/98/434a987f19fcc4566eeb2f7256ba430e.jpg","https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/39613bc3-140c-41fd-97e6-fcaa0d2690c9/dcms5i5-fa43588f-f74f-4e4d-a32c-f92fd411fd80.png/v1/fill/w_1024,h_485,q_80,strp/marvel_s_spider_man_spider_punk_2_by_jcrprints_dcms5i5-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NDg1IiwicGF0aCI6IlwvZlwvMzk2MTNiYzMtMTQwYy00MWZkLTk3ZTYtZmNhYTBkMjY5MGM5XC9kY21zNWk1LWZhNDM1ODhmLWY3NGYtNGU0ZC1hMzJjLWY5MmZkNDExZmQ4MC5wbmciLCJ3aWR0aCI6Ijw9MTAyNCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.fN-6-HCnyWgLGYW2WfKEAD8zREmA9n7enfR4qKWRa-Y","https://cdnb.artstation.com/p/assets/images/images/031/120/033/large/jyerps-spider-man-miles-morales-cyberpunk.jpg?1602664632"]
 
 def time_converter(seconds):
     mins, secs = divmod(seconds, 60)
@@ -227,6 +228,8 @@ async def stop_program(ctx):
 async def greet_bot(ctx):
     number_of_requests()
     greetings = ["Hey {}!".format(ctx.author.name), "Hi {}!".format(ctx.author.name), "How's it going {}?".format(ctx.author.name), "What can I do for you {}?".format(ctx.author.name), "What's up {}?".format(ctx.author.name), "Hello {}!".format(ctx.author.name)]
+    embed = discord.Embed(title=random.choice(greetings), color=color)
+    embed.set_image(url=random.choice(urls))
     await ctx.send(random.choice(greetings))
 
 
@@ -237,7 +240,7 @@ async def embed_help(ctx):
     embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
                         description="Prefixes => `[t!] [ _ ] [thwip] [thwipper]`",
                         color=color)
-    embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nuse to get this embed\nwit to get a famous dialogue or plot\n@Thwipper to get more info about thwipper", inline=False)
+    embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nuse to get this embed\nquips to get a famous dialogue or plot\n@Thwipper to get more info about thwipper", inline=False)
     embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nsnipe to see deleted message", inline=False)
     embed.add_field(name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush en <text> to encrypt message\nhush dec <text> to decrypt message\n", inline=False)
     embed.add_field(name="𝗗𝗧𝗖", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
@@ -251,23 +254,23 @@ async def embed_help(ctx):
     await ctx.send(embed=embed)
 
 
-@bot.command(aliases=["wit"])
-async def get_wit(ctx):
+@bot.command(aliases=["quips"])
+async def get_quips(ctx):
     number_of_requests()
     global plot_list
     global dialogue_list
-    wit_list = []
+    quips_list = []
     for plot in plot_list:
         for dialogue in dialogue_list:
-            wit_list.append(plot)
-            wit_list.append(dialogue)
+            quips_list.append(plot)
+            quips_list.append(dialogue)
     titles = ["Oh man, I remember this one!","Here you go...","I gotta say, this still holds up today..."]
     footers = ["Man, this is killer material!","Now this is what I call a good wit!","Oh boy, this is one of my favorites!"]
-    embed = discord.Embed(title=random.choice(titles), description=random.choice(wit_list), color=color)
+    embed = discord.Embed(title=random.choice(titles), description=random.choice(quips_list), color=color)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text=random.choice(footers), icon_url=bot.user.avatar_url)
     await ctx.send(embed=embed)
-    print("Wit successfully sent!")
+    print("Quip successfully sent!")
 
 # //////////////////////////////////// INTERNET //////////////////////////////////////////////
 
@@ -421,14 +424,19 @@ async def encrypt_data(ctx, mode, *, message):
     number_of_requests()
     global key, cipher
     res = message.encode()
-    if mode == "en":
-        embed = discord.Embed(title="Message Encrpyted", description="```{}```".format(cipher.encrypt(res)), color=color)
-        embed.set_thumbnail(url=url_en_dec)
-        await ctx.send(embed=embed)
-    if mode == "dec":
-        embed = discord.Embed(title="Message Decrypted", description="```{}```".format(cipher.decrypt(res)), color=color)
-        embed.set_thumbnail(url=url_en_dec)
-        await ctx.send(embed=embed)
+    try:
+        if mode == "en":
+            embed = discord.Embed(title="Message Encrpyted", description="```{}```".format(str(cipher.encrypt(res))).replace("b'"," ").replace("'"," "), color=color)
+            embed.set_thumbnail(url=url_en_dec)
+            await ctx.send(embed=embed)
+        if mode == "dec":
+            embed = discord.Embed(title="Message Decrypted", description="```{}```".format(str(cipher.decrypt(res))).replace("b'"," ").replace("'"," "), color=color)
+            embed.set_thumbnail(url=url_en_dec)
+            await ctx.send(embed=embed)
+    except Exception as e:
+            embed = discord.Embed(title="Error", description=str(e), color=color)
+            embed.set_thumbnail(url=url_en_dec)
+            await ctx.send(embed=embed)
 
 # /////////////////////////////////////// DATE & TIME /////////////////////////////////////////
 
@@ -791,13 +799,87 @@ async def fetch_current_song(ctx):
     server_queue = cursor.fetchall()
     try:
         embed = discord.Embed(description="**Song: **{a}\n**Index: **{b}".format(a=server_queue[server_index[str(ctx.guild.id)]][0], b=server_index[str(ctx.guild.id)]).replace(" - YouTube", " "), color=color)
-        embed.set_author(name="Current Song", icon_url=url_author_music)
+        embed.set_author(name="Currently Playing", icon_url=url_author_music)
         embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
         await ctx.send(embed=embed)
     except Exception as e:
         embed = discord.Embed(description=str(e), color=color)
         embed.set_author(name="Error", icon_url=url_author_music)
         await ctx.send(embed=embed)
+
+
+@bot.command(aliases=["prev","previous"])
+async def previous_song(ctx):
+    number_of_requests()
+    global server_index
+    server_index[str(ctx.guild.id)] -= 1
+    operation = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
+    cursor.execute(operation)
+    server_queue = cursor.fetchall()
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
+        try:  
+            URL_queue = youtube_download(ctx, server_queue[server_index[str(ctx.guild.id)]][1])
+            if ctx.voice_client.is_playing() != True:
+                embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+                embed.set_author(name="Now playing", icon_url=url_author_music)
+                embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
+                embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
+                embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
+                await ctx.send(embed=embed)
+                voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                print("Now playing: {}...".format(server_queue[server_index[str(ctx.guild.id)]][0]))
+            else:
+                voice.stop()
+                embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+                embed.set_author(name="Now playing", icon_url=url_author_music)
+                embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
+                embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
+                embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
+                await ctx.send(embed=embed)
+                voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                print("Now playing: {}...".format(server_queue[server_index[str(ctx.guild.id)]][0]))
+        except IndexError:
+            embed = discord.Embed(description="Looks like there is no song at this index", color=color)
+            embed.set_author(name="Oops...", icon_url=url_author_music)
+            await ctx.send(embed=embed)
+
+
+@bot.command(aliases=["skip","next"])
+async def skip_song(ctx):
+    number_of_requests()
+    global server_index
+    server_index[str(ctx.guild.id)] += 1
+    operation = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
+    cursor.execute(operation)
+    server_queue = cursor.fetchall()
+    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
+        try:  
+            URL_queue = youtube_download(ctx, server_queue[server_index[str(ctx.guild.id)]][1])
+            if ctx.voice_client.is_playing() != True:
+                embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+                embed.set_author(name="Now playing", icon_url=url_author_music)
+                embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
+                embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
+                embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
+                await ctx.send(embed=embed)
+                voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                print("Now playing: {}...".format(server_queue[server_index[str(ctx.guild.id)]][0]))
+            else:
+                voice.stop()
+                embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+                embed.set_author(name="Now playing", icon_url=url_author_music)
+                embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
+                embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
+                embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
+                await ctx.send(embed=embed)
+                voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                print("Now playing: {}...".format(server_queue[server_index[str(ctx.guild.id)]][0]))
+        except IndexError:
+            embed = discord.Embed(description="Looks like there is no song at this index", color=color)
+            embed.set_author(name="Oops...", icon_url=url_author_music)
+            await ctx.send(embed=embed)
 
 
 @bot.command(aliases=["pause"])

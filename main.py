@@ -229,7 +229,7 @@ async def greet_bot(ctx):
     number_of_requests()
     greetings = ["Hey {}!".format(ctx.author.name), "Hi {}!".format(ctx.author.name), "How's it going {}?".format(ctx.author.name), "What can I do for you {}?".format(ctx.author.name), "What's up {}?".format(ctx.author.name), "Hello {}!".format(ctx.author.name)]
     embed = discord.Embed(title=random.choice(greetings), color=color)
-    embed.set_image(url=random.choice(urls))
+    embed.set_image(url=random.choice(hello_urls))
     await ctx.send(random.choice(greetings))
 
 

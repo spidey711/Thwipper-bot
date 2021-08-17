@@ -843,6 +843,10 @@ async def previous_song(ctx):
             embed = discord.Embed(description="Looks like there is no song at this index", color=color)
             embed.set_author(name="Oops...", icon_url=url_author_music)
             await ctx.send(embed=embed)
+    else:
+        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+        embed.set_author(name="Music Player", icon_url=url_author_music)
+        await ctx.send(embed=embed)
 
 
 @bot.command(aliases=["skip","next"])
@@ -880,6 +884,10 @@ async def skip_song(ctx):
             embed = discord.Embed(description="Looks like there is no song at this index", color=color)
             embed.set_author(name="Oops...", icon_url=url_author_music)
             await ctx.send(embed=embed)
+    else:
+        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+        embed.set_author(name="Music Player", icon_url=url_author_music)
+        await ctx.send(embed=embed)
 
 
 @bot.command(aliases=["pause"])

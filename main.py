@@ -926,6 +926,16 @@ async def play_music(ctx, *, char):
                         embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=url).length), inline=True)
                         await ctx.send(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
+                        await queue.add_reaction("⏮") # previous track
+                        await queue.add_reaction("▶")  # resume
+                        await queue.add_reaction("⏸") # pause
+                        await queue.add_reaction("⏭") # next
+                        await queue.add_reaction("🔂") # repeat
+                        await queue.add_reaction("⏹") # stop
+                        await queue.add_reaction("🔀") # shuffle
+                        await queue.add_reaction("#️⃣") # current song
+                        await queue.add_reaction("🔼") # move up
+                        await queue.add_reaction("🔽") # move down
                         print("Now playing: {}...".format(name_of_the_song))
                     else:
                         voice.stop()
@@ -936,6 +946,16 @@ async def play_music(ctx, *, char):
                         embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=url).length), inline=True)
                         await ctx.send(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
+                        await queue.add_reaction("⏮") # previous track
+                        await queue.add_reaction("▶")  # resume
+                        await queue.add_reaction("⏸") # pause
+                        await queue.add_reaction("⏭") # next
+                        await queue.add_reaction("🔂") # repeat
+                        await queue.add_reaction("⏹") # stop
+                        await queue.add_reaction("🔀") # shuffle
+                        await queue.add_reaction("#️⃣") # current song
+                        await queue.add_reaction("🔼") # move up
+                        await queue.add_reaction("🔽") # move down
                         print("Now playing: {}...".format(name_of_the_song))
                 if char.isdigit() == True:
                     if str(ctx.guild.id) not in server_index:
@@ -953,6 +973,7 @@ async def play_music(ctx, *, char):
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[int(char)][1]).thumbnail_url)
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[int(char)][1]).author, inline=True)
                             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length), inline=True)
+                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                             player = await ctx.send(embed=embed)
                             await player.add_reaction("⏮") # previous track
                             await player.add_reaction("▶")  # resume
@@ -964,7 +985,6 @@ async def play_music(ctx, *, char):
                             await player.add_reaction("#️⃣") # current song
                             await player.add_reaction("🔼") # move up
                             await player.add_reaction("🔽") # move down
-                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                         else:
                             voice.stop()
                             embed = discord.Embed(description="**Song: **{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=color)
@@ -973,6 +993,7 @@ async def play_music(ctx, *, char):
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[int(char)][1]).author, inline=True)
                             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length), inline=True)
                             player = await ctx.send(embed=embed)
+                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                             await player.add_reaction("⏮") # previous track
                             await player.add_reaction("▶")  # resume
                             await player.add_reaction("⏸") # pause
@@ -983,7 +1004,6 @@ async def play_music(ctx, *, char):
                             await player.add_reaction("#️⃣") # current song
                             await player.add_reaction("🔼") # move up
                             await player.add_reaction("🔽") # move down
-                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                     except IndexError:
                         embed = discord.Embed(description="Looks like there is no song at this index", color=color)
                         embed.set_author(name="Oops...", icon_url=url_author_music)

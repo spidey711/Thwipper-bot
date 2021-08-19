@@ -1032,7 +1032,7 @@ async def fetch_current_song(ctx):
         await ctx.send(embed=embed)
     else:
         try:
-            embed = discord.Embed(description="**Song: **{a}\n**Index: **{b}\n**Views: **{c}\n**Description: **\n{d}".format(a=server_queue[server_index[str(ctx.guild.id)]][0], b=server_index[str(ctx.guild.id)], c=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).views, d=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).description), color=color)
+            embed = discord.Embed(description="**Song: **{a}\n**Index: **{b}\n**Views: **{c}".format(a=server_queue[server_index[str(ctx.guild.id)]][0], b=server_index[str(ctx.guild.id)], c=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).views), color=color)
             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
             embed.set_author(name="Currently Playing", icon_url=url_author_music)
             player = await ctx.send(embed=embed)

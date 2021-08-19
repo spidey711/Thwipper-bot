@@ -561,51 +561,6 @@ async def google_results(ctx, *, thing_to_search):
     await ctx.send(results)
     print("Results for google search sent...")
 
-
-@bot.command(aliases=["lyrics","l"])
-async def song_lyrics(ctx, *, song_name=""):
-    try:
-        number_of_requests()
-        search_url = ("https://search.azlyrics.com/search.php?q=" + song_name.replace(" ","+"))
-        url = ""
-        markup = urllib.request.urlopen(search_url).read().decode()
-        a = markup.find("text-left visitedlyr")
-        b = int(int(markup.find('href="', a)) + len('href="'))
-        c = markup.find('"', b)
-        url = markup[b:c]
-        if len(url) > 3:
-            lyric_1 = urllib.request.urlopen(url).read().decode()
-            lyric_2 = lyric_1[int(lyric_1.find("Sorry about that. -->") + len("Sorry about that. -->")):lyric_1.find("</div>", int(lyric_1.find("Sorry about that. -->") + 10))].replace("<br>"," ").replace("<i>", "_").replace("</i>", "_")
-            song_title = lyric_1[lyric_1.find("<title>") + len("<title>"):lyric_1.find("</title>")] + "\n"
-            if len(lyric_1) <= 1900:
-                embed1 = discord.Embed(title=song_title, description=lyric_2.replace("&quot;", '"'), color=color)
-                embed1.set_author(name="Song Lyrics", icon_url=url_author_music)
-                embed1.set_thumbnail(url=random.choice(url_thumbnail_music))
-                embed1.set_footer(text="Seached by: {}".format(ctx.author.name), icon_url=ctx.author.avatar_url)
-                await ctx.send(embed=embed1)
-                pass
-            else:
-                embed1 = discord.Embed(title=song_title, description=lyric_2[0:1900].replace("&quot;", '"'), color=color)
-                embed1.set_author(name="Song Lyrics", icon_url=url_author_music)
-                embed1.set_thumbnail(url=random.choice(url_thumbnail_music))
-                embed2 = discord.Embed(description=lyric_2[1900:].replace("&quot;", '"'), color=color)
-                embed2.set_author(name="Continued...", icon_url=url_author_music)
-                embed2.set_thumbnail(url=random.choice(url_thumbnail_music))
-                embed2.set_footer(text="Seached by: {}".format(ctx.author.name), icon_url=ctx.author.avatar_url)
-                await ctx.send(embed=embed1)
-                await ctx.send(embed=embed2)
-            print("Lyrics sent successfully...")
-        else:
-            embed = discord.Embed(description="Couldn't find song...\nMake sure the song name is correct 🤔", color=color)
-            embed.set_author(name="Song Lyrics", icon_url=url_author_music)
-            await ctx.send(embed=embed)
-            print("Song not found...")
-    except Exception as e:
-        embed = discord.Embed(description=str(e), color=color)
-        embed.set_author(name="Error", icon_url=url_author_music)
-        await ctx.send(embed=embed)
-        print("Error", str(e))
-
 #///////////////////////////////////// UTILITY ///////////////////////////////////////////////        
 
 @bot.command(aliases=['req','requests'])

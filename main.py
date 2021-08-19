@@ -354,7 +354,7 @@ async def on_reaction_add(reaction, user):
                     try:
                         embed = discord.Embed(description="**Song: **{a}\n**Index: **{b}\n**Views: **{c}\n**Description: **\n{d}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)], c=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).views, d=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).description), color=color)
                         embed.set_author(name="Currently Playing", url=server_queue[server_index[str(reaction.message.guild.id)]][1], icon_url=url_author_music)
-                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
+                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
                         embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
                         await reaction.message.edit(embed=embed)
                     except Exception as e:

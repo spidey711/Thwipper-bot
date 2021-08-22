@@ -21,3 +21,6 @@ Make sure you have all the dependencies installed that are required for this bot
 Especially `ffmpeg` as it is required to play music.
 <a href="https://ffmpeg.org/download.html">Install ffmpeg here</a><br>
 To install other dependencies required, use `pip install [dependency]`.
+
+P.S. Thanks to Alvin for helping out with web scraping <br>
+https://github.com/alvinbengeorge

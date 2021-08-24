@@ -246,7 +246,6 @@ async def on_reaction_add(reaction, user):
                             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
                             await reaction.message.edit(embed=embed)
                             voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
-                            print("Now playing: {}...".format(server_queue[server_index[str(reaction.message.guild.id)]][0]))
                         else:
                             voice.stop()
                             embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(reaction.message.guild.id)]][0]).replace(" - YouTube", " "), color=color)
@@ -257,7 +256,6 @@ async def on_reaction_add(reaction, user):
                             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
                             await reaction.message.edit(embed=embed)
                             voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
-                            print("Now playing: {}...".format(server_queue[server_index[str(reaction.message.guild.id)]][0]))
                     except IndexError:
                         embed = discord.Embed(description="Looks like there is no song at this index", color=color)
                         embed.set_author(name="Oops...", icon_url=url_author_music)
@@ -936,10 +934,7 @@ async def play_music(ctx, *, char):
                         else:
                             voice.stop()
                             embed = discord.Embed(description="**Song: **{}".format(server_queue[int(char)][0]).replace(" - YouTube", " "), color=color)
-                            if server_index[str(ctx.guild.id)] == len(server_queue):
-                                embed.set_author(name="Last Song", icon_url=url_author_music)
-                            else:
-                                embed.set_author(name="Last Song", icon_url=url_author_music)
+                            embed.set_author(name="Last Song", icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[int(char)][1]).thumbnail_url)
                             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[int(char)][1]).author, inline=True)
@@ -1133,10 +1128,7 @@ async def skip_song(ctx):
             URL_queue = youtube_download(ctx, server_queue[server_index[str(ctx.guild.id)]][1])
             if ctx.voice_client.is_playing() != True:
                 embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-                if server_index[str(ctx.guild.id)] == len(server_queue):
-                    embed.set_author(name="Last Song", icon_url=url_author_music)
-                else:
-                    embed.set_author(name="Now Playing", icon_url=url_author_music)
+                embed.set_author(name="Now Playing", icon_url=url_author_music)
                 embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
                 embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
                 embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)

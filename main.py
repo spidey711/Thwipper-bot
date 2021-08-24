@@ -1,7 +1,8 @@
 import discord
 from discord.utils import get
 from discord.ext import commands, tasks
-from important import token, sql_pass
+from important import *
+from links import *
 import mysql.connector as ms
 import os
 import sys
@@ -10,6 +11,7 @@ import calendar
 import pytz
 import datetime
 import regex
+import praw
 import pytube
 import ffmpeg
 import asyncio
@@ -25,7 +27,7 @@ prefixes = ["t!","_","thwip ", "thwipper "]
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents, case_insensitive=True)
-color = discord.Color.from_rgb(217,226,231)
+color = discord.Color.from_rgb(10, 43, 78)
 # Channel IDs
 thwipper_logs = 877394070115336192
 announcements = 868085346867490866
@@ -61,17 +63,6 @@ operation = "SELECT * FROM birthdays"
 cursor.execute(operation)
 data = cursor.fetchall()
 WHEN = datetime.time(0, 0, 0)
-# LINKS
-url_en_dec = "https://149351115.v2.pressablecdn.com/wp-content/uploads/2021/01/blog-security-4.png"
-url_wiki = "https://upload.wikimedia.org/wikipedia/commons/6/61/Wikipedia-logo-transparent.png"
-url_author_python = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/1200px-Python.svg.png"
-url_dtc = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKxv6EIh3VisynQX9TNkA7l15CvR0eJ8nWMA&usqp=CAU"
-url_author_sql = "https://miro.medium.com/max/361/1*WzqoTtRUpmJR26dzlKdIwg.png"
-url_author_music = "https://image.freepik.com/free-vector/cute-astronaut-playing-dj-electronic-music-with-headphone-cartoon-icon-illustration-science-technology-icon-concept_138676-2113.jpg"
-hello_urls = ["https://d1lss44hh2trtw.cloudfront.net/assets/article/2018/09/07/how-to-greet-citizens-marvels-spider-man-about-town-trophy_feature.jpg","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_abBUARSNVkp-RQ2_gkcgVfa3N6t82VB0kA&usqp=CAU","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0v0ClnfyO_GOAIzCFRsBFS-OAfcRxRyViXTExPXk3v82_X6BWjqejoWJLm0UT_4m9anU&usqp=CAU","https://geekerhertz.com/images/5ba364c97ea1d.jpg","https://www.clickondetroit.com/resizer/UXG-vEgiShoNSebt4F22ATC4zEY=/640x360/smart/filters:format(jpeg):strip_exif(true):strip_icc(true):no_upscale(true):quality(65)/arc-anglerfish-arc2-prod-gmg.s3.amazonaws.com/public/C2F65R6EKZERHMDNGLI3MRIXGQ.jpg","https://d1lss44hh2trtw.cloudfront.net/assets/editorial/2018/09/how-to-take-selfies-marvels-spider-man-ps4.jpg","https://pbs.twimg.com/media/DmeykRmU0AAvsQ3.jpg","https://www.mandatory.com/assets/uploads/2018/09/Screen-Shot-2018-09-10-at-7.10.56-PM.png","https://c.tenor.com/R7nkgC8muZMAAAAC/bye-spider-man.gif","https://c.tenor.com/jFKRQRFlYgcAAAAC/spiderman-ps4.gif","https://c.tenor.com/SqfEr4k3P7EAAAAC/spider-man-ps4-miles-morales-ps5.gif","https://c.tenor.com/LgR60DYRUqMAAAAC/spiderman-ps4.gif","https://c.tenor.com/lMpQtKyaCVMAAAAM/spidey-spiderman.gif","https://c.tenor.com/BZSciTA5mm4AAAAM/spiderman-amazing-spiderman.gif","https://c.tenor.com/xo5Z5uT560sAAAAC/the-amazing-spider-man-spider-man.gif","https://c.tenor.com/R7iiutVHD_QAAAAM/marvel-spiderman.gif","https://c.tenor.com/0zJyb3pll54AAAAM/spider-spiderman.gif","https://c.tenor.com/nD9VKwHB4TYAAAAM/spider-man-tobey-maguire.gif","https://c.tenor.com/NjRtY_xiWc8AAAAM/spiderman-texting.gif","https://c.tenor.com/UC1_BE_cCSQAAAAM/tobey-maguire-spider-man.gif","https://c.tenor.com/BrnE66IHQQsAAAAM/spider-man-miles-morales-spider-man.gif","https://c.tenor.com/HoGaQIxyZo0AAAAC/spider-man-whatever.gif","https://c.tenor.com/gTPoQY4dHdQAAAAC/spider-man-here-we-go.gif","https://c.tenor.com/7lAJS0sttxkAAAAM/ps5-spiderman.gif","https://c.tenor.com/4l-6HErWOIoAAAAM/real-spidey.gif","https://c.tenor.com/FkKE0QKQNTQAAAAM/spiderman-peter-parker.gif","https://c.tenor.com/1akicleWkLwAAAAC/spider-man-ps4.gif","https://c.tenor.com/1xVRVwlbveEAAAAM/ps4-miles.gif","https://c.tenor.com/KndPXpunylcAAAAM/thismuch-bernie.gif","https://c.tenor.com/vDSdVu7pAXwAAAAC/spider-man-miles-morales.gif","https://c.tenor.com/xk8qnVQ_GH4AAAAM/spider-man-spider-man-into-the-spider-verse.gif","https://c.tenor.com/o8hl45jpZHQAAAAM/spider-man-miles-morales.gif","https://c.tenor.com/Q1KNpbhxwK4AAAAM/miles-morales-spiderman.gif"]
-url_thumbnails = ["https://i.pinimg.com/236x/31/fc/50/31fc5099e24775b613a69fa5bf4f8064.jpg","https://i.pinimg.com/236x/e5/f5/54/e5f55401dfb0588daaa0c3baad528ae8.jpg","https://i.pinimg.com/236x/be/80/cf/be80cf957b028e16083d534f3890cda1.jpg","https://i.pinimg.com/236x/02/6c/7d/026c7d47fd43ff30180fdc7c91e155c2.jpg","https://i.pinimg.com/236x/14/ca/dc/14cadcf0d437fe2d670bff20254e3422.jpg","https://i.pinimg.com/236x/3d/dd/ec/3dddecd82efb45026771dba7287aa010.jpg","https://i.pinimg.com/236x/4d/16/7e/4d167e9a51166d0ce955c4eac6b26d7c.jpg","https://i.pinimg.com/236x/46/56/8c/46568c65f50f4cd5dce76c1ea1833258.jpg","https://i.pinimg.com/236x/74/e6/d8/74e6d846301bd4e3722ed465240b894f.jpg","https://i.pinimg.com/236x/4f/ef/67/4fef67d2a553dba286ab311354370d28.jpg","https://i.pinimg.com/236x/f4/7d/1b/f47d1b34c2988f10a33f77c33e966d4c.jpg","https://i.pinimg.com/236x/4b/5e/bf/4b5ebfaba10beb08d3cae0a4ed684bdb.jpg","https://i.pinimg.com/236x/87/df/c7/87dfc7f867d4afff7c73923664a560af.jpg","https://i.pinimg.com/236x/b4/79/69/b47969fdf761ee63bf60adfdf7ba6554.jpg","https://i.pinimg.com/236x/48/0f/17/480f17eaaf087d44e540ee0a2d512297.jpg","https://i.pinimg.com/236x/4f/ab/0e/4fab0e67c4ba300f03bb5f03421ea7db.jpg","https://i.pinimg.com/236x/f6/06/ef/f606efe1e45c96ee6585cadebc6c8f74.jpg","https://c4.wallpaperflare.com/wallpaper/42/823/767/spiderman-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/517/160/840/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://c4.wallpaperflare.com/wallpaper/107/848/913/spiderman-ps4-spiderman-games-hd-wallpaper-preview.jpg","https://wallpapercave.com/wp/AVIUso6.jpg","https://wallpapercave.com/wp/n9L3kJf.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-man-miles-morales-minimal-art-4k-43.jpg","https://images.hdqwalls.com/wallpapers/thumb/northern-spider-5k-f3.jpg","https://images.hdqwalls.com/wallpapers/thumb/spider-and-deadpool-4k-ys.jpg","https://images.hdqwalls.com/wallpapers/thumb/spiderman-into-the-spider-verse-y7.jpg","https://wallpapercave.com/wp/wp2018132.png","https://wallpapercave.com/wp/wp2018145.jpg","https://wallpapercave.com/wp/wp2018203.jpg","https://images3.alphacoders.com/593/thumbbig-593562.webp","https://images6.alphacoders.com/107/thumbbig-1071152.webp","https://images6.alphacoders.com/107/thumbbig-1070974.webp","https://i.pinimg.com/236x/38/a4/f6/38a4f62d74d7aeb2ae2396c991fcde52.jpg","https://i.pinimg.com/236x/ed/76/cc/ed76cc8bfe41347d979c93e23fbe51a0.jpg","https://i.pinimg.com/236x/91/87/2d/91872d5c92e8339036106bc832656a49.jpg","https://i.pinimg.com/236x/e3/94/05/e39405072916bb996caee3a4045f573a.jpg","https://i.pinimg.com/236x/36/2c/42/362c4298860d79a4b49acd9370cabe04.jpg","https://i.pinimg.com/236x/cf/3c/f4/cf3cf4ef7239868b1abc243168c41647.jpg","https://i.pinimg.com/236x/b1/3e/e7/b13ee7a8a8d72fbe39153569b5618c21.jpg","https://i.pinimg.com/236x/d9/ef/b8/d9efb89361f4a8d04f2e4e8d8d8067e8.jpg","https://i.pinimg.com/236x/d7/1c/9a/d71c9a5f09e61fcea6ffc3d61f7d5011.jpg","https://i.pinimg.com/236x/3b/cc/8c/3bcc8cde6be346db7c84eaa52e8f9072.jpg","https://i.pinimg.com/236x/ea/0c/ca/ea0ccaa55471689fda39043d80bc7a07.jpg","https://i.pinimg.com/236x/0a/7e/41/0a7e413a95d88ae13487a796d40237ef.jpg","https://i.pinimg.com/236x/d5/ea/83/d5ea830dee3385bfe9fa9871e3190b40.jpg","https://i.pinimg.com/236x/3d/d6/6c/3dd66c95df0b377767bf24e16d77b5ee.jpg"]
-url_thumbnail_music = ["https://img1.goodfon.com/wallpaper/nbig/1/67/spider-man-chelovek-pauk-pank.jpg","https://images.hdqwalls.com/wallpapers/spiderman-listening-music-4k-2019-fi.jpg","https://cdn.vox-cdn.com/thumbor/m_ZHHA2iEH0WH-8WlX3VQ_pbEZ4=/0x0:1496x727/1570x883/filters:focal(747x258:985x496):format(webp)/cdn.vox-cdn.com/uploads/chorus_image/image/63096914/Screen_Shot_2019_02_12_at_4.38.43_PM.0.png","https://i.pinimg.com/originals/27/82/21/278221c49efc0426cb4976c598d473a2.jpg","https://i.pinimg.com/736x/43/4a/98/434a987f19fcc4566eeb2f7256ba430e.jpg","https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/39613bc3-140c-41fd-97e6-fcaa0d2690c9/dcms5i5-fa43588f-f74f-4e4d-a32c-f92fd411fd80.png/v1/fill/w_1024,h_485,q_80,strp/marvel_s_spider_man_spider_punk_2_by_jcrprints_dcms5i5-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NDg1IiwicGF0aCI6IlwvZlwvMzk2MTNiYzMtMTQwYy00MWZkLTk3ZTYtZmNhYTBkMjY5MGM5XC9kY21zNWk1LWZhNDM1ODhmLWY3NGYtNGU0ZC1hMzJjLWY5MmZkNDExZmQ4MC5wbmciLCJ3aWR0aCI6Ijw9MTAyNCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.fN-6-HCnyWgLGYW2WfKEAD8zREmA9n7enfR4qKWRa-Y","https://cdnb.artstation.com/p/assets/images/images/031/120/033/large/jyerps-spider-man-miles-morales-cyberpunk.jpg?1602664632"]
-url_bdays_spiderman = ["https://c.tenor.com/tjf-gcKVNXAAAAAC/spiderman-happy-birthday.gif","https://memegenerator.net/img/instances/50065035/i-can-see-its-your-birthday-happy-birthday.jpg","https://i.pinimg.com/originals/10/5b/11/105b1109a72f460ce6cba9c9f69cbcf1.jpg","https://memegenerator.net/img/instances/40104852/hey-happy-birthday-from-your-friendly-neighbor-spider-man.jpg","http://nicewishes.com/wp-content/uploads/2016/09/Fantastic-Funny-Spiderman-Happy-Birthday-Wishes.jpg","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRedgy5nNE8Z3CwscJzVWg12Ks4Q9ccQmOvMCpYI-be3r1oKof0hr8LG9ycazlxZVD75E0&usqp=CAU","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQELIJWByAy2OHZ3veV4ZnELt_p6ZxizdqaJQ&usqp=CAU","https://i.imgflip.com/xraqi.jpg","https://i.pinimg.com/originals/b2/1b/00/b21b0014e2f7c7e6254ee2ccfbd9fba6.gif","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWzUHDIM02O_DPeTSipJePnmrj7wzgzfxM6A&usqp=CAU"]
 
 # //////////////////////////////////////// NON ASYNC FUNCTIONS /////////////////////////////////////
 
@@ -280,10 +271,7 @@ async def on_reaction_add(reaction, user):
                         URL_queue = youtube_download(reaction.message, server_queue[server_index[str(reaction.message.guild.id)]][1])
                         if playing != True:
                             embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(reaction.message.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-                            if server_index[str(reaction.message.guild.id)] == len(server_queue):
-                                embed.set_author(name="Last Song", icon_url=url_author_music)   
-                            else:
-                                embed.set_author(name="Now Playing", icon_url=url_author_music)
+                            embed.set_author(name="Now Playing", icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
                             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
@@ -293,10 +281,7 @@ async def on_reaction_add(reaction, user):
                         else:
                             voice.stop()
                             embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(reaction.message.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-                            if server_index[str(reaction.message.guild.id)] == len(server_queue):
-                                embed.set_author(name="Last Song", icon_url=url_author_music)
-                            else:
-                                embed.set_author(name="Last Song", icon_url=url_author_music)
+                            embed.set_author(name="Now Playing", icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
                             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
@@ -334,7 +319,6 @@ async def on_reaction_add(reaction, user):
                     if len(server_queue) <= 0:
                         embed = discord.Embed(description="There are no songs in the queue currently 🤔")
                         embed.set_author(name="Uh oh...", icon_url=url_author_music)
-                        
                         await reaction.message.edit(embed=embed)
                     else:
                         try:
@@ -344,7 +328,7 @@ async def on_reaction_add(reaction, user):
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
                             await reaction.message.edit(embed=embed)
                         except Exception as e:
-                            embed = discord.Embed(description=str(e), color=color)
+                            embed = discord.Embed(description="Looks like you weren't playing anything before this so there is no current song. Use _p <name> / <index> to set a current song", color=color)
                             embed.set_author(name="Error", icon_url=url_author_music)
                             await reaction.message.edit(embed=embed)
             
@@ -399,7 +383,6 @@ async def allow_access(ctx, member:discord.Member):
     else:
         embed = discord.Embed(description="Access Denied", color=color)
 
-
 @bot.command(aliases=["restrict","rstr"])
 async def remove_access(ctx, member:discord.Member):
     number_of_requests()
@@ -412,9 +395,8 @@ async def remove_access(ctx, member:discord.Member):
         await ctx.send(embed=embed)
     else:
         embed = discord.Embed(description="Access Denied", color=color)    
-        
 
-@bot.command()
+@bot.command(aliases=["delete", "del"])
 async def clear(ctx, text, num=10000000000000):
     number_of_requests()
     op_dev = "SELECT * FROM dev_users"
@@ -422,13 +404,12 @@ async def clear(ctx, text, num=10000000000000):
     dev_list = cursor.fetchall()
     if str(ctx.author.id) in str(dev_list) or ctx.author.id == 622497106657148939:
         await ctx.channel.purge(limit=1)
-        if str(text) == "OK":
+        if str(text) == "WEB":
             await ctx.channel.purge(limit=num)
         else:
             await ctx.send("Incorrect Password")
     else:
-        await ctx.send("Access Denied")
-    
+        await ctx.send("Access Denied")    
 
 @bot.command(aliases=["[X]"])
 async def stop_program(ctx):
@@ -455,11 +436,10 @@ async def stop_program(ctx):
 @bot.command(aliases=['hello', 'hi', 'hey', 'hey there', 'salut',"kon'nichiwa","hola","aloha"])
 async def greet_bot(ctx):
     number_of_requests()
-    greetings = ["Hey {}!".format(ctx.author.name), "Hi {}!".format(ctx.author.name), "How's it going {}?".format(ctx.author.name), "What can I do for you {}?".format(ctx.author.name), "What's up {}?".format(ctx.author.name), "Hello {}!".format(ctx.author.name)]
+    greetings = ["Hey {}!".format(ctx.author.name), "Incoming....", "Hi {}!".format(ctx.author.name), "How's it going {}?".format(ctx.author.name), "What can I do for you {}?".format(ctx.author.name), "What's up {}?".format(ctx.author.name), "Hello {}!".format(ctx.author.name), "You called, {}?".format(ctx.author.name)]
     embed = discord.Embed(title=random.choice(greetings), color=color)
     embed.set_image(url=random.choice(hello_urls))
     await ctx.send(embed=embed)
-
 
 @bot.command(aliases=['use','h'])
 async def embed_help(ctx):
@@ -471,15 +451,14 @@ async def embed_help(ctx):
     embed.add_field(name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush en <text> to encrypt message\nhush dec <text> to decrypt message\n", inline=False)
     embed.add_field(name="𝗗𝗧𝗖", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
     embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; <query> to use SQL Shell\npy for python shell\npinfo to get use of that python function", inline=False)
-    embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="w <topic> for wikipedia\ng <topic> to google\nl <song> to get lyrics",inline=False)
+    embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="w <topic> for wikipedia\ng <topic> to google\nreddit <topic> to get reddit memes",inline=False)
     embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
     embed.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="p <name> or <index> to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ this to get current song", inline=False)
     embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nq to view queue\nrem <index> to remove song from queue\ncq to clear queue", inline=False)
-    embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\nweb <number> to see deleted message(s)\naddbday <mention> <date> to add a user's birthday and get wished. The date must be in month-date format", inline=False)
+    embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\nweb to see deleted message\naddbday <mention> <date> to add a user's birthday and get wished. The date must be in month-date format", inline=False)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text="New Features Coming Soon 🛠")
     await ctx.send(embed=embed)
-
 
 @bot.command(aliases=["quips"])
 async def get_quips(ctx):
@@ -492,7 +471,7 @@ async def get_quips(ctx):
             quips_list.append(plot)
             quips_list.append(dialogue)
     titles = ["Oh man, I remember this one!","Here you go...","I gotta say, this still holds up today..."]
-    footers = ["Man, this is killer material!","Now this is what I call a good wit!","Oh boy, this is one of my favorites!"]
+    footers = ["Man, this is killer material!","Now this is entertaining!","Oh boy, this is one of my favorites!"]
     embed = discord.Embed(title=random.choice(titles), description=random.choice(quips_list), color=color)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text=random.choice(footers), icon_url=bot.user.avatar_url)
@@ -500,6 +479,29 @@ async def get_quips(ctx):
     print("Quip successfully sent!")
 
 # //////////////////////////////////// INTERNET //////////////////////////////////////////////
+
+@bot.command(aliases=["reddit","rd"])
+async def reddit_memes(ctx, *, topic):
+    number_of_requests()
+    reddit = praw.Reddit(
+            client_id = reddit_client_id,
+            client_secret = reddit_client_secret,
+            user_agent = reddit_user_agent,
+            username = reddit_user_name,
+            password = reddit_user_pass
+        )
+    sub = reddit.subreddit(topic).random()
+    try:
+        embed = discord.Embed(description="", color=color)
+        embed.set_author(name=sub.title, icon_url=url_reddit_author) 
+        embed.set_thumbnail(url=url_reddit_thumbnail)
+        embed.set_image(url=sub.url)
+        embed.set_footer(text="🔺: {}   🔻: {}".format(sub.ups, sub.downs))
+        await ctx.send(embed=embed)
+    except Exception:
+        embed = discord.Embed(description="Looks like the subreddit is either banned or does not exist 🤔", color=color)
+        embed.set_author(name="Subreddit Not Found", icon_url=url_reddit_author)
+        await ctx.send(embed=embed)
 
 @bot.command(aliases=['wiki','w'])
 async def wikipedia_results(ctx, *, thing_to_search):
@@ -519,7 +521,6 @@ async def wikipedia_results(ctx, *, thing_to_search):
         embed = discord.Embed(description=str(de), color=color)
         embed.set_author(name='Hmm...', icon_url=url_wiki)   
         await ctx.send(embed=embed)
-
 
 @bot.command(aliases=['google','g'])
 async def google_results(ctx, *, thing_to_search):
@@ -543,7 +544,6 @@ async def total_requests(ctx):
     embed = discord.Embed(description= "**Requests made: **" + str(total).replace("[(", " ").replace(",)]", " "), color=color)
     await ctx.send(embed=embed)
 
-
 @bot.command(aliases=["web"])
 async def snipe(ctx):
     number_of_requests()
@@ -557,11 +557,10 @@ async def snipe(ctx):
     except KeyError:
         await ctx.send("There is nothing to web up 🕸")
 
-
 @bot.command(aliases=["pfp"])
 async def user_pfp(ctx, member:discord.Member=None):
     number_of_requests()
-    compliments = ["Man, the daily bugle would pay a lot for this 🤩", "This is nice one! I like it 😎", "Oh Boy! JJJ is gonna be real happy 😃", "🔥🔥🔥","Great Profile Picture, I must say","Damn, where'd you get this? 💙"]
+    compliments = ["Man, the daily bugle would pay a lot for this 🤩", "This is nice one! I like it 😎", "Oh Boy! JJJ is gonna be real happy 😃", "🔥🔥🔥","Great Profile Picture, I must say","Damn, where'd you get this? 💙", "Solid 8/10 😎"]
     if member is None:
         embed = discord.Embed(title="Profile Picture : {}".format(ctx.author.name), color=color)
         embed.set_image(url=ctx.author.avatar_url)
@@ -571,12 +570,10 @@ async def user_pfp(ctx, member:discord.Member=None):
     embed.set_footer(text=random.choice(compliments), icon_url="https://i.pinimg.com/236x/9f/9c/11/9f9c11d4eaa3d99bc9a8ece092f5e979.jpg")
     await ctx.send(embed=embed)
 
-
 @bot.command(aliases=["ping"])
 async def get_ping(ctx):
     number_of_requests()
     await ctx.send(embed=discord.Embed(description="**Latency:** {} ms".format(round(bot.latency * 1000)), color=color))
-
 
 @bot.command(aliases=["serverinfo","si"])
 async def server_information(ctx):
@@ -637,7 +634,6 @@ async def date_time_ist(ctx):
     embed.set_thumbnail(url=url_dtc)
     await ctx.send(embed=embed)   
 
-
 @bot.command(aliases=["cal.m"])
 async def get_calendar(ctx, year, month):
     number_of_requests()
@@ -676,7 +672,6 @@ async def sql_shell(ctx, *, expression):
     else:
         embed = discord.Embed(description="Access Denied", color=color)
 
-
 @bot.command(aliases=["py"])
 async def python_shell(ctx, *, expression):
     number_of_requests()
@@ -684,9 +679,8 @@ async def python_shell(ctx, *, expression):
     op_dev = "SELECT * FROM dev_users"
     cursor.execute(op_dev)
     dev_list = cursor.fetchall()
-    denied = ["sys.exit()", "eval(sys.exit)", "token", "sql_pass", 'eval("token")', "eval('token')",'eval("sql_pass")',"key","cipher","eval('cipher')",'eval("cipher")',"eval('key')",'eval("key")']
     if str(ctx.author.id) in str(dev_list) or ctx.author.id == 622497106657148939:
-        if expression == [msg for msg in denied]:
+        if expression in denied:
             embed = discord.Embed(description="This function will not be executed", color=color)
             embed.set_author(name="Access Denied", icon_url=url_author_python)
             await ctx.send(embed=embed)
@@ -703,7 +697,6 @@ async def python_shell(ctx, *, expression):
         embed_dc = discord.Embed(title="Access Denied", color=color)
         embed_dc.set_author(name="Python Shell",icon_url=url_author_python)
         await ctx.send(embed=embed_dc)
-
 
 @bot.command(aliases=["pinfo"])
 async def function_info(ctx, func):
@@ -749,7 +742,6 @@ async def join_vc(ctx):
         embed = discord.Embed(description="Error:\n" + str(e), color=color)
         embed.set_author(name='Voice', icon_url=url_author_music)
 
-
 @bot.command(aliases=["dc","disconnect"])
 async def leave_vc(ctx):
     number_of_requests()
@@ -776,7 +768,6 @@ async def leave_vc(ctx):
         embed.set_author(name="Walkman™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
-
 @bot.command(aliases=["setbit","bit"])
 async def set_bitrate(ctx, kbps):
     number_of_requests()
@@ -792,7 +783,6 @@ async def set_bitrate(ctx, kbps):
             await ctx.send(embed=embed)
     else:
         await ctx.send(title="Access Denied", description="{}, only dev users can edit bitrate".format(ctx.author.name))
-    
 
 @bot.command(aliases=["queue","q"])
 async def queue_song(ctx, *, name=None):
@@ -846,7 +836,6 @@ async def queue_song(ctx, *, name=None):
                 embed = discord.Embed(description="No songs in queue...\nUse t!q <song name>", color=color)
                 embed.set_author(name="{}'s Queue".format(ctx.guild.name), icon_url=url_author_music)
                 await ctx.send(embed=embed)
-
 
 @bot.command(aliases=['play','p'])
 async def play_music(ctx, *, char):
@@ -984,7 +973,6 @@ async def play_music(ctx, *, char):
         embed.set_author(name="Voice", icon_url=url_author_music)
         await ctx.send(embed=embed)  
 
-
 @bot.command(aliases=["this","song","ts"])
 async def fetch_current_song(ctx):
     number_of_requests()
@@ -1013,11 +1001,10 @@ async def fetch_current_song(ctx):
             await player.add_reaction("*️⃣") # current song
             await player.add_reaction("🔼") # move up
             await player.add_reaction("🔽") # move down
-        except Exception as e:
-            embed = discord.Embed(description=str(e), color=color)
-            embed.set_author(name="Error", icon_url=url_author_music)
+        except Exception:
+            embed = discord.Embed(description="Looks like you weren't playing anything before this so there is no current song. Use _p <name> / <index> to set a current song", color=color)
+            embed.set_author(name="Uh oh...", icon_url=url_author_music)
             await ctx.send(embed=embed)
-
 
 @bot.command(aliases=["prev","previous"])
 async def previous_song(ctx):
@@ -1080,7 +1067,6 @@ async def previous_song(ctx):
         embed.set_author(name="Walkman™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
-
 @bot.command(aliases=["rep","repeat"])
 async def repeat_song(ctx):
     operation = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
@@ -1132,7 +1118,6 @@ async def repeat_song(ctx):
         embed = discord.Embed(description=str(e), color=color)
         embed.set_author(name="Error", icon_url=url_author_music)
         await ctx.send(embed=embed)
-
 
 @bot.command(aliases=["skip","next"])
 async def skip_song(ctx):
@@ -1198,7 +1183,6 @@ async def skip_song(ctx):
         embed.set_author(name="Walkman™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
-
 @bot.command(aliases=["pause"])
 async def pause_song(ctx):
     number_of_requests()
@@ -1228,7 +1212,6 @@ async def pause_song(ctx):
         embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
         embed.set_author(name="Walkman™", icon_url=url_author_music)
         await ctx.send(embed=embed)
-
 
 @bot.command(aliases=["resume","res"])
 async def resume_song(ctx):
@@ -1262,7 +1245,6 @@ async def resume_song(ctx):
         embed.set_author(name="Walkman™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
-
 @bot.command(aliases=["stop","st"])
 async def stop_song(ctx):
     number_of_requests()
@@ -1289,7 +1271,6 @@ async def stop_song(ctx):
         embed.set_author(name="Walkman™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
-
 @bot.command(aliases=["rem","remove"])
 async def remove_song(ctx, index):
     global cursor
@@ -1302,7 +1283,6 @@ async def remove_song(ctx, index):
     await ctx.send(embed=embed)
     operation_remove = "DELETE FROM music_queue WHERE song_url = '{a}' AND server='{b}'".format(a=songs[int(index)][1], b=str(ctx.guild.id))
     cursor.execute(operation_remove)
-
 
 @bot.command(aliases=["clear_queue","cq"])
 async def clear_song_queue(ctx):

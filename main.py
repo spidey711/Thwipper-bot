@@ -490,11 +490,11 @@ async def reddit_memes(ctx, *, topic):
         )
     sub = reddit.subreddit(topic).random()
     try:
-        embed = discord.Embed(description="", color=color)
-        embed.set_author(name=sub.title, icon_url=url_reddit_author) 
+        embed = discord.Embed(description=sub.title, color=color)
+        embed.set_author(name=sub.author, icon_url=url_reddit_author) 
         embed.set_thumbnail(url=url_reddit_thumbnail)
         embed.set_image(url=sub.url)
-        embed.set_footer(text="🔺: {}   🔻: {}".format(sub.ups, sub.downs))
+        embed.set_footer(text="🔺: {}   🔻: {}   💬: {}".format(sub.ups, sub.downs, sub.num_comments))
         await ctx.send(embed=embed)
     except Exception:
         embed = discord.Embed(description="Looks like the subreddit is either banned or does not exist 🤔", color=color)

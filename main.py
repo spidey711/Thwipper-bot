@@ -151,7 +151,7 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
-    if f"<@!{bot.user.id}>" in message.content:
+    if f"<@!{bot.user.id}>" == message.content:
             number_of_requests()
             embed = discord.Embed(title="About", description="Hey there! My name is `THWIPPER`.\nI was made by Spider-Man to tend to people's needs on discord while he is out in the city protecting the innocent from harm.", color=color)
             embed.set_thumbnail(url=bot.user.avatar_url)

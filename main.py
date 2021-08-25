@@ -178,8 +178,8 @@ async def on_reaction_add(reaction, user):
             await reaction.remove(user)
         try:
             sub = reddit.subreddit(default_topic[str(reaction.message.guild.id)]).random()
-            embed = discord.Embed(description=sub.title, color=color)
-            embed.set_author(name=sub.author, icon_url=url_reddit_author) 
+            embed = discord.Embed(description="**Caption:\n**{}".format(sub.title), color=color)
+            embed.set_author(name="Post by: {}".format(sub.author), icon_url=url_reddit_author) 
             embed.set_thumbnail(url=url_reddit_thumbnail)
             embed.set_image(url=sub.url)
             embed.set_footer(text="🔺: {}   🔻: {}   💬: {}".format(sub.ups, sub.downs, sub.num_comments))
@@ -515,8 +515,8 @@ async def reddit_memes(ctx, *, topic):
         default_topic[str(ctx.guild.id)] = str(topic)
     sub = reddit.subreddit(topic).random()
     try:
-        embed = discord.Embed(description=sub.title, color=color)
-        embed.set_author(name=sub.author, icon_url=url_reddit_author) 
+        embed = discord.Embed(description="**Caption:\n**{}".format(sub.title), color=color)
+        embed.set_author(name="Post by: {}".format(sub.author), icon_url=url_reddit_author) 
         embed.set_thumbnail(url=url_reddit_thumbnail)
         embed.set_image(url=sub.url)
         embed.set_footer(text="🔺: {}   🔻: {}   💬: {}".format(sub.ups, sub.downs, sub.num_comments))

@@ -27,8 +27,7 @@ prefixes = ["t!","_","thwip ", "thwipper "]
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents, case_insensitive=True)
-color = discord.Color.from_rgb(10, 43, 78)
-# Channel IDs
+color = discord.Color.from_rgb(200, 38, 59)
 thwipper_logs = 877394070115336192
 announcements = 868085346867490866
 # SNIPE
@@ -133,6 +132,7 @@ async def on_ready():
     async def multiple_statuses():
         status_list = ["The Amazing Spider-Man", "The Amazing Spider-Man 2", "Spider-Man", "Spider-Man 2", "Spider-Man 3", "TASM Duology", "Raimi Trilogy", "Spider-Man Homecoming", "Spider-Man Far From Home", "Spectacular Spider-Man", "Ultimate Spider-Man", "Fairly Rad Videos", "Marvel's Spider-Man", "Marvel's Spider-Man Miles Morales", "Chrome", "Firefox Developer Edition", "Visual Studio Code", "Music", "Discord"]
         for status in status_list:
+            await asyncio.sleep(180)
             await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=status))
     multiple_statuses.start()
     # UPDATION

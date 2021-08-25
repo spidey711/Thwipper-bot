@@ -52,6 +52,15 @@ ydl_op = {
 # ENCRYPTER DECRYPTER
 key = Fernet.generate_key()
 cipher = Fernet(key)
+# REDDIT
+reddit = praw.Reddit(
+            client_id = reddit_client_id,
+            client_secret = reddit_client_secret,
+            user_agent = reddit_user_agent,
+            username = reddit_user_name,
+            password = reddit_user_pass
+        )
+default_topic = {}
 # QUIPS
 plot_list = []
 dialogue_list = []
@@ -162,8 +171,24 @@ async def on_message_delete(message):
 
 @bot.event
 async def on_reaction_add(reaction, user):
-    global server_index
     number_of_requests()
+
+    if reaction.emoji == "🖱":
+        if str(user) != str(bot.user) and reaction.message.author == bot.user:
+            await reaction.remove(user)
+        try:
+            sub = reddit.subreddit(default_topic[str(reaction.message.guild.id)]).random()
+            embed = discord.Embed(description=sub.title, color=color)
+            embed.set_author(name=sub.author, icon_url=url_reddit_author) 
+            embed.set_thumbnail(url=url_reddit_thumbnail)
+            embed.set_image(url=sub.url)
+            embed.set_footer(text="🔺: {}   🔻: {}   💬: {}".format(sub.ups, sub.downs, sub.num_comments))
+            await reaction.message.edit(embed=embed)
+        except Exception:
+            embed = discord.Embed(description="Default topic is not set", color=color)
+            embed.set_author(name="Uh oh...", icon_url=url_reddit_author)
+            await reaction.message.edit(embed=embed)
+
     voice = discord.utils.get(bot.voice_clients, guild=reaction.message.guild)
     voice_client = reaction.message.guild.voice_client
     playing = reaction.message.guild.voice_client.is_playing()
@@ -175,6 +200,7 @@ async def on_reaction_add(reaction, user):
         string = ""
         song_index = server_index[str(reaction.message.guild.id)]
         members_in_vc = [str(names) for names in reaction.message.guild.voice_client.channel.members]
+        
         if members_in_vc.count(str(user)) > 0:
             if reaction.emoji == "▶":
                 if str(user) != str(bot.user) and reaction.message.author == bot.user:
@@ -366,7 +392,7 @@ async def on_reaction_add(reaction, user):
             embed = discord.Embed(description="Buddy, connect to a voice channel first 🔊", color=color)
             embed.set_author(name="Walkman™", icon_url=url_author_music)
             await reaction.message.edit(embed=embed)
-
+        
 # //////////////////////////////////// SPECIAL ACCESS /////////////////////////////////////////
 
 @bot.command(aliases=["allow","alw"])
@@ -481,13 +507,12 @@ async def get_quips(ctx):
 @bot.command(aliases=["reddit","rd"])
 async def reddit_memes(ctx, *, topic):
     number_of_requests()
-    reddit = praw.Reddit(
-            client_id = reddit_client_id,
-            client_secret = reddit_client_secret,
-            user_agent = reddit_user_agent,
-            username = reddit_user_name,
-            password = reddit_user_pass
-        )
+    if str(ctx.guild.id) not in default_topic:
+        default_topic[str(ctx.guild.id)] = str(topic)
+    else:
+        pass
+    if str(ctx.guild.id) in default_topic:
+        default_topic[str(ctx.guild.id)] = str(topic)
     sub = reddit.subreddit(topic).random()
     try:
         embed = discord.Embed(description=sub.title, color=color)
@@ -495,8 +520,10 @@ async def reddit_memes(ctx, *, topic):
         embed.set_thumbnail(url=url_reddit_thumbnail)
         embed.set_image(url=sub.url)
         embed.set_footer(text="🔺: {}   🔻: {}   💬: {}".format(sub.ups, sub.downs, sub.num_comments))
-        await ctx.send(embed=embed)
+        message = await ctx.send(embed=embed)
+        await message.add_reaction("🖱")
     except Exception:
+        default_topic[str(ctx.guild.id)] = ""
         embed = discord.Embed(description="Looks like the subreddit is either banned or does not exist 🤔", color=color)
         embed.set_author(name="Subreddit Not Found", icon_url=url_reddit_author)
         await ctx.send(embed=embed)

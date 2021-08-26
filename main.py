@@ -6,6 +6,7 @@ from links import *
 import mysql.connector as ms
 import os
 import sys
+import imdb
 import random
 import calendar
 import pytz
@@ -130,9 +131,9 @@ async def on_ready():
     # STATUSES
     @tasks.loop(minutes=10)
     async def multiple_statuses():
-        status_list = ["The Amazing Spider-Man", "The Amazing Spider-Man 2", "Spider-Man", "Spider-Man 2", "Spider-Man 3", "TASM Duology", "Raimi Trilogy", "Spider-Man Homecoming", "Spider-Man Far From Home", "Spectacular Spider-Man", "Ultimate Spider-Man", "Fairly Rad Videos", "Marvel's Spider-Man", "Marvel's Spider-Man Miles Morales", "Chrome", "Firefox Developer Edition", "Visual Studio Code", "Music", "Discord"]
-        for status in status_list:
-            await asyncio.sleep(180)
+        status_list = ["The Amazing Spider-Man", "The Amazing Spider-Man 2", "Spider-Man", "Spider-Man 2", "Spider-Man 3", "TASM Duology", "Raimi Trilogy", "Spider-Man Homecoming", "Spider-Man Far From Home", "Spectacular Spider-Man", "Ultimate Spider-Man", "Fairly Rad Videos", "Marvel's Spider-Man", "Marvel's Spider-Man Miles Morales", "Chrome", "Firefox Developer Edition", "Visual Studio Code", "Music", "Discord", "Dying Light", "Ezio Trilogy", "Prototype(2009)", "Dead Space(2008)", "Need For Speed: Most Wanted"]
+        for status in status_list:     
+            await asyncio.sleep(300)
             await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=status))
     multiple_statuses.start()
     # UPDATION
@@ -476,7 +477,7 @@ async def embed_help(ctx):
     embed.add_field(name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush en <text> to encrypt message\nhush dec <text> to decrypt message\n", inline=False)
     embed.add_field(name="𝗗𝗧𝗖", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
     embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; <query> to use SQL Shell\npy for python shell\npinfo to get use of that python function", inline=False)
-    embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="w <topic> for wikipedia\ng <topic> to google\nreddit <topic> to get reddit memes",inline=False)
+    embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="imdb <movie> to get movie details from IMDb\nreddit <topic> to get reddit memes\nw <topic> for wikipedia\ng <topic> to google",inline=False)
     embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
     embed.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="p <name> or <index> to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ this to get current song", inline=False)
     embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nq to view queue\nrem <index> to remove song from queue\ncq to clear queue", inline=False)
@@ -504,6 +505,28 @@ async def get_quips(ctx):
     print("Quip successfully sent!")
 
 # //////////////////////////////////// INTERNET //////////////////////////////////////////////
+
+@bot.command(aliases=["imdb"])
+async def IMDb_movies(ctx, *, movie_name):
+    if movie_name is not None:
+        try:
+            db = imdb.IMDb()
+            movie = db.search_movie(movie_name)
+            title = movie[0]['title']
+            movie_summary = db.get_movie(movie[0].getID()).summary()
+            movie_cover = movie[0]['full-size cover url']
+            embed = discord.Embed(title=title, description=movie_summary, color=color)
+            embed.set_thumbnail(url=url_imdb_thumbnail)
+            embed.set_image(url=movie_cover)
+            await ctx.send(embed=embed)
+        except Exception as e:
+            embed = discord.Embed(description=str(e), color=color)
+            embed.set_author(name="Error", icon_url=url_imdb_author)
+            await ctx.send(embed=embed)
+    if movie_name is None:
+        embed = discord.Embed(description="I don't think there is a movie with no name, is there?", color=color)
+        embed.set_author(name="Ahem ahem", icon_url=url_imdb_author)
+        await ctx.send(embed=embed)
 
 @bot.command(aliases=["reddit","rd"])
 async def reddit_memes(ctx, *, topic):

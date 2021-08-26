@@ -506,26 +506,26 @@ async def get_quips(ctx):
  
 # //////////////////////////////////// INTERNET //////////////////////////////////////////////
 
-@bot.command(aliases=["imdb","i"])
+@bot.command(aliases=["imdb"])
 async def IMDb_movies(ctx, *, movie_name):
-    if movie_name is not None:
-        try:
-            db = imdb.IMDb()
-            movie = db.search_movie(movie_name)
-            title = movie[0]['title']
-            movie_summary = db.get_movie(movie[0].getID()).summary()
-            movie_cover = movie[0]['full-size cover url']
-            embed = discord.Embed(title=title, description=movie_summary, color=color)
-            embed.set_thumbnail(url=url_imdb_thumbnail)
-            embed.set_image(url=movie_cover)
-            await ctx.send(embed=embed)
-        except Exception as e:
-            embed = discord.Embed(description=str(e), color=color)
-            embed.set_author(name="Error", icon_url=url_imdb_author)
-            await ctx.send(embed=embed)
-    if movie_name is None:
-        embed = discord.Embed(description="I don't think there is a movie with no name, is there?", color=color)
-        embed.set_author(name="Ahem ahem", icon_url=url_imdb_author)
+    number_of_requests()
+    # if movie_name == "":
+    #     embed = discord.Embed(description="I don't think there is a movie with no name, is there?", color=color)
+    #     embed.set_author(name="Ahem ahem", icon_url=url_imdb_author)
+    #     await ctx.send(embed=embed)
+    try:
+        db = imdb.IMDb()
+        movie = db.search_movie(movie_name)
+        title = movie[0]['title']
+        movie_summary = db.get_movie(movie[0].getID()).summary().replace("=","").replace("Title","**Title**").replace("Movie","").replace("Genres","**Genres**").replace("Director","**Director**").replace("Writer","**Writer(s)**").replace("Cast","**Cast**").replace("Country","**Country**").replace("Language","**Language**").replace("Rating","**Rating**").replace("Plot","**Plot**").replace("Runtime","**Runtime**")
+        movie_cover = movie[0]['full-size cover url']
+        embed = discord.Embed(title="🎬 {} 🍿".format(title), description=movie_summary, color=color)
+        embed.set_thumbnail(url=url_imdb_thumbnail) # 🎥 🎬 📽
+        embed.set_image(url=movie_cover)
+        await ctx.send(embed=embed)
+    except Exception as e:
+        embed = discord.Embed(description="I couldn't find `{}`.\nTry again and make sure you enter the correct movie name.".format(movie_name), color=color)
+        embed.set_author(name="Movie Not Found 💬", icon_url=url_imdb_author)
         await ctx.send(embed=embed)
 
 @bot.command(aliases=["reddit","rd"])

@@ -503,10 +503,10 @@ async def get_quips(ctx):
     embed.set_footer(text=random.choice(footers), icon_url=bot.user.avatar_url)
     await ctx.send(embed=embed)
     print("Quip successfully sent!")
-
+ 
 # //////////////////////////////////// INTERNET //////////////////////////////////////////////
 
-@bot.command(aliases=["imdb"])
+@bot.command(aliases=["imdb","i"])
 async def IMDb_movies(ctx, *, movie_name):
     if movie_name is not None:
         try:

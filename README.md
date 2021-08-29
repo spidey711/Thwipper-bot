@@ -5,7 +5,7 @@ Everything you need to keep the members of the server entertained, this bot has 
 Thwipper is inspired from my favorite fictional character Spider-Man. Its name is the onomatopoeia of Spider-Man using his web-shooters. Thwip!<br>
 Prefixes => `[t!], [ _ ], [thwip] [thwipper]`<br>
 
-<img src="spiderman.png"></img>
+<img src="\spiderman.png"></img>
 <!-- <img src="https://wallpapercave.com/wp/wp2513595.png"></img> -->
 
 _<h2>Features:-</h2>_

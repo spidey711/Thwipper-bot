@@ -5,6 +5,9 @@ Everything you need to keep the members of the server entertained, this bot has 
 Thwipper is inspired from my favorite fictional character Spider-Man. Its name is the onomatopoeia of Spider-Man using his web-shooters. Thwip!<br>
 Prefixes => `[t!], [ _ ], [thwip] [thwipper]`<br>
 
+<img src="spiderman.png"></img>
+<!-- <img src="https://wallpapercave.com/wp/wp2513595.png"></img> -->
+
 _<h2>Features:-</h2>_
 _IMDb_<br>
 _Quips_<br>
@@ -22,8 +25,6 @@ Make sure you have all the dependencies installed that are required for this bot
 Especially `ffmpeg` as it is required to play music.
 <a href="https://ffmpeg.org/download.html">Install ffmpeg here</a><br>
 To install other dependencies required, use `pip install [dependency]`.<br>
-
-<img src="https://wallpapercave.com/wp/wp2513595.png"></img>
 
 P.S. Thanks to Alvin for helping out with web scraping.<br>
 https://github.com/alvinbengeorge

@@ -49,6 +49,8 @@ ydl_op = {
         'preferredcodec':'mp3',
         'preferredquality':'128',
         }],}
+# CHANNELS
+announcements = 868085346867490866
 # ENCRYPTER DECRYPTER
 key = Fernet.generate_key()
 cipher = Fernet(key)
@@ -147,6 +149,10 @@ async def on_ready():
         req1 = cursor.fetchall()
         req2 = str(req1).replace("[("," ").replace(",)]"," ")
         num = int(req2)
+        # BDAY CHECK
+        # op_check = "SELECT * FROM birthdays"
+        # cursor.execute(op_check)
+        # bdays = cursor.fetchall()
         conn.commit()
     updation.start()
 
@@ -189,6 +195,45 @@ async def on_reaction_add(reaction, user):
         except Exception:
             embed = discord.Embed(description="Default topic is not set", color=color)
             embed.set_author(name="Uh oh...", icon_url=url_reddit_author)
+            await reaction.message.edit(embed=embed)
+
+    if reaction.emoji == "➡":
+        if str(user) != str(bot.user)and reaction.message.author == bot.user:
+            await reaction.remove(user)
+            embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
+                        description="Prefixes => `[t!] [ _ ] [thwip] [thwipper]`",
+                        color=color)
+            embed.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="p <name> or <index> to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ this to get current song", inline=False)
+            embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nq to view queue\nrem <index> to remove song from queue\ncq to clear queue", inline=False)
+            embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\nweb to see deleted message\nbday to wish a member if their birthday is today\naddbday <mention> <date> to add a user's birthday and get wished. The date must be in month-date format", inline=False)
+            embed.set_thumbnail(url=random.choice(url_thumbnails))
+            embed.set_footer(text="New Features Coming Soon 🛠")
+            await reaction.message.edit(embed=embed)
+    
+    if reaction.emoji == "⬅":
+        if str(user) != str(bot.user)and reaction.message.author == bot.user:
+            await reaction.remove(user)
+            embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
+                        description="Prefixes => `[t!] [ _ ] [thwip] [thwipper]`",
+                        color=color)
+            embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nuse to get this embed\nquips to get a famous dialogue or plot\n@Thwipper to get more info about thwipper", inline=False)
+            embed.add_field(name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush en <text> to encrypt message\nhush dec <text> to decrypt message\n", inline=False)
+            embed.add_field(name="𝗗𝗧𝗖", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
+            embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; <query> to use SQL Shell\npy for python shell\npinfo to get use of that python function", inline=False)
+            embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="imdb <movie> to get movie details from IMDb\nreddit <topic> to get reddit memes\nw <topic> for wikipedia\ng <topic> to google",inline=False)
+            embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
+            embed.set_thumbnail(url=random.choice(url_thumbnails))
+            embed.set_footer(text="New Features Coming Soon 🛠")
+            await reaction.message.edit(embed=embed)
+    
+    if reaction.emoji == "🕸":
+        if str(user) != str(bot.user) and reaction.message.author == bot.user:
+            await reaction.remove(user)
+            embed = discord.Embed(title="🕸Mutual Guilds🕸",
+                        description="",
+                        color=color)
+            embed.set_thumbail(url=random.choice(url_thumbnail))
+            embed.set_footer(text="New Features Coming Soon 🛠")
             await reaction.message.edit(embed=embed)
 
     voice = discord.utils.get(bot.voice_clients, guild=reaction.message.guild)
@@ -421,12 +466,9 @@ async def on_reaction_add(reaction, user):
         
 # //////////////////////////////////// SPECIAL ACCESS /////////////////////////////////////////
 
-@bot.command()
-async def something(ctx):
-    op = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
-    cursor.execute(op)
-    songs = cursor.fetchall()
-    await ctx.send([song for song in songs[:5]])
+@bot.command(aliases=['test'])
+async def mutual_servers(ctx):
+    await ctx.send(ctx.author.mutual_guilds())
 
 @bot.command(aliases=["allow","alw"])
 async def allow_access(ctx, member:discord.Member):
@@ -510,12 +552,15 @@ async def embed_help(ctx):
     embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; <query> to use SQL Shell\npy for python shell\npinfo to get use of that python function", inline=False)
     embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="imdb <movie> to get movie details from IMDb\nreddit <topic> to get reddit memes\nw <topic> for wikipedia\ng <topic> to google",inline=False)
     embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
-    embed.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="p <name> or <index> to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ this to get current song", inline=False)
-    embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nq to view queue\nrem <index> to remove song from queue\ncq to clear queue", inline=False)
-    embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\nweb to see deleted message\naddbday <mention> <date> to add a user's birthday and get wished. The date must be in month-date format", inline=False)
+    # embed.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="p <name> or <index> to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ this to get current song", inline=False)
+    # embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nq to view queue\nrem <index> to remove song from queue\ncq to clear queue", inline=False)
+    # embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\nweb to see deleted message\nbday to wish a member if their birthday is today\naddbday <mention> <date> to add a user's birthday and get wished. The date must be in month-date format", inline=False)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text="New Features Coming Soon 🛠")
-    await ctx.send(embed=embed)
+    message = await ctx.send(embed=embed)
+    await message.add_reaction("⬅")
+    await message.add_reaction("➡")
+    await message.add_reaction("🕸")
 
 @bot.command(aliases=["quips"])
 async def get_quips(ctx):
@@ -1386,5 +1431,26 @@ async def add_user_bday(ctx, member:discord.Member, month, day):
     except Exception as e:
         await ctx.send(str(e))
 
-# if int(datetime.date.today().month) == month and int(datetime.date.today().day) == day :
+@bot.command(aliases=["bday"])
+async def check_user_bdays_and_wish(ctx):
+    number_of_requests()
+    await ctx.channel.purge(limit=1)
+    op_check = "SELECT * FROM birthdays"
+    cursor.execute(op_check)
+    bdays = cursor.fetchall()
+    channel = bot.get_channel(int(announcements))
+    for bday in bdays: # bday[0]   bday[1]  bday[2]
+        if datetime.datetime.today().month == bday[1] and datetime.datetime.today().day == bday[2]:
+            name = bot.get_user(int(bday[0])).name
+            wishes = [f"🎊 Happy Birthday {name} 🎊", f"🎉 Happy Birthday {name} 🎉", f"✨ Happy Birthday {name} ✨", f"🎇 Happy Birthday {name} 🎇"]
+            footers = [f"Make the most out of your day {name}!", f"I am invited to the party, right {name}?", f"Enjoy the cake {name} 🎂!", f"Here is a present for you {name} 🎁"]
+            embed = discord.Embed(title=random.choice(wishes), color=color)
+            embed.set_image(url=random.choice(url_bdays_spiderman))
+            embed.set_footer(text=random.choice(footers))
+            embed.set_thumbnail(url=bot.get_user(int(bday[0])).avatar_url)
+            await channel.send(embed=embed)
+            await ctx.send("Wish Sent 😎")
+        else:
+            pass
+
 bot.run(token)

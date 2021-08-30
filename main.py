@@ -204,7 +204,7 @@ async def on_reaction_add(reaction, user):
                         color=color)
             embed.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="p <name> or <index> to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ this to get current song", inline=False)
             embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nq to view queue\nrem <index> to remove song from queue\ncq to clear queue", inline=False)
-            embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\nweb to see deleted message\nbday to wish a member if their birthday is today\naddbday <mention> <date> to add a user's birthday and get wished. The date must be in month-date format", inline=False)
+            embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\nweb to see deleted message\nbday to wish a member if their birthday is today\naddbday <mention> <date> to add a user's birthday from DB\nbday to get thwipper to wish the members\nrembday <mention> to remove a member's birthday from DB.\n`Note: The date must be in month-date format`", inline=False)
             embed.set_thumbnail(url=random.choice(url_thumbnails))
             embed.set_footer(text="New Features Coming Soon 🛠")
             await reaction.message.edit(embed=embed)
@@ -581,9 +581,6 @@ async def embed_help(ctx):
     embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; <query> to use SQL Shell\npy for python shell\npinfo to get use of that python function", inline=False)
     embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="imdb <movie> to get movie details from IMDb\nreddit <topic> to get reddit memes\nw <topic> for wikipedia\ng <topic> to google",inline=False)
     embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
-    # embed.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="p <name> or <index> to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ this to get current song", inline=False)
-    # embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nq to view queue\nrem <index> to remove song from queue\ncq to clear queue", inline=False)
-    # embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\nweb to see deleted message\nbday to wish a member if their birthday is today\naddbday <mention> <date> to add a user's birthday and get wished. The date must be in month-date format", inline=False)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text="New Features Coming Soon 🛠")
     message = await ctx.send(embed=embed)
@@ -1454,6 +1451,23 @@ async def add_user_bday(ctx, member:discord.Member, month, day):
             await ctx.send(embed=discord.Embed(description="{}'s birthday added to database".format(member.display_name), color=color))
         else:
             await ctx.send(embed=discord.Embed(description="{}'s birthday is already added in my database".format(member.display_name), color=color))
+    except Exception as e:
+        await ctx.send(str(e))
+
+@bot.command(aliases=["rembday"])
+async def remove_user_bday(ctx, member:discord.Member):
+    number_of_requests()
+    op_check = "SELECT mem_id FROM birthdays"
+    cursor.execute(op_check)
+    memIDs = cursor.fetchall()
+    try:
+        a = str([memID for memID in memIDs]).replace("('","").replace("',)","")
+        if str(member.id) in a:
+            op_insert = "DELETE FROM birthdays WHERE mem_id={}".format(member.id)
+            cursor.execute(op_insert)
+            await ctx.send(embed=discord.Embed(description="{}'s birthday removed from database".format(member.display_name), color=color))
+        else:
+            await ctx.send(embed=discord.Embed(description="{}'s birthday does not exist in my database".format(member.display_name), color=color))
     except Exception as e:
         await ctx.send(str(e))
 

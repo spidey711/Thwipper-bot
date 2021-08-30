@@ -941,13 +941,12 @@ async def set_bitrate(ctx, kbps):
 @bot.command(aliases=["queue","q"])
 async def queue_song(ctx, *, name=None):
     number_of_requests()
-    global cursor
-    if ctx.author.id not in [member.id for member in ctx.voice_client.channel.members]:
-        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
-        embed.set_author(name="Walkman™", icon_url=url_author_music)
-        await ctx.send(embed=embed)
-    else:
-        if name is not None:
+    if name is not None:
+        if ctx.author.id not in [member.id for member in ctx.guild.voice_client.channel.members]:
+            embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+            embed.set_author(name="Walkman™", icon_url=url_author_music)
+            await ctx.send(embed=embed)
+        else:
             name = name.replace(" ", "+")
             htm = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + name) # the 11 lettered string which is like an ID for videos is stored inside the variable video
             video = regex.findall(r"watch\?v=(\S{11})", htm.read().decode())
@@ -961,35 +960,35 @@ async def queue_song(ctx, *, name=None):
             embed.set_author(name="Song added", icon_url=url_author_music)
             await ctx.send(embed=embed)
             print("Song added to {}'s queue successfully...".format(ctx.guild.name))
-        if name is None:
-            operation_view = "SELECT song_name FROM music_queue WHERE server={}".format(str(ctx.guild.id))
-            cursor.execute(operation_view)
-            songs = cursor.fetchall()
-            string = ""
-            song_index = 0
-            if len(songs) > 0:
-                for song in songs:
-                    string += str(song_index) + ". " + str(song).replace('("'," ").replace('",)'," ") + "\n"
-                    song_index += 1
-                embed = discord.Embed(description="{a}\n**Number of songs:** {b}".format(a=string.replace(" - YouTube"," ").replace("('", " ").replace("',)"," "), b=len(songs)), color=color)
-                embed.set_author(name="{}'s Queue".format(ctx.guild.name), icon_url=url_author_music)
-                embed.set_thumbnail(url=random.choice(url_thumbnail_music))
-                embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
-                queue = await ctx.send(embed=embed)
-                await queue.add_reaction("⏮") # previous track
-                await queue.add_reaction("▶")  # resume
-                await queue.add_reaction("⏸") # pause
-                await queue.add_reaction("⏭") # next
-                await queue.add_reaction("🔂") # repeat
-                await queue.add_reaction("⏹") # stop
-                await queue.add_reaction("🔀") # shuffle
-                await queue.add_reaction("*️⃣") # current song
-                await queue.add_reaction("🔼") # move up
-                await queue.add_reaction("🔽") # move down
-            else:
-                embed = discord.Embed(description="No songs in queue...\nUse t!q <song name>", color=color)
-                embed.set_author(name="{}'s Queue".format(ctx.guild.name), icon_url=url_author_music)
-                await ctx.send(embed=embed)
+    if name is None:
+        operation_view = "SELECT song_name FROM music_queue WHERE server={}".format(str(ctx.guild.id))
+        cursor.execute(operation_view)
+        songs = cursor.fetchall()
+        string = ""
+        song_index = 0
+        if len(songs) > 0:
+            for song in songs:
+                string += str(song_index) + ". " + str(song).replace('("'," ").replace('",)'," ") + "\n"
+                song_index += 1
+            embed = discord.Embed(description="{a}\n**Number of songs:** {b}".format(a=string.replace(" - YouTube"," ").replace("('", " ").replace("',)"," "), b=len(songs)), color=color)
+            embed.set_author(name="{}'s Queue".format(ctx.guild.name), icon_url=url_author_music)
+            embed.set_thumbnail(url=random.choice(url_thumbnail_music))
+            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
+            queue = await ctx.send(embed=embed)
+            await queue.add_reaction("⏮") # previous track
+            await queue.add_reaction("▶")  # resume
+            await queue.add_reaction("⏸") # pause
+            await queue.add_reaction("⏭") # next
+            await queue.add_reaction("🔂") # repeat
+            await queue.add_reaction("⏹") # stop
+            await queue.add_reaction("🔀") # shuffle
+            await queue.add_reaction("*️⃣") # current song
+            await queue.add_reaction("🔼") # move up
+            await queue.add_reaction("🔽") # move down
+        else:
+            embed = discord.Embed(description="No songs in queue...\nUse t!q <song name>", color=color)
+            embed.set_author(name="{}'s Queue".format(ctx.guild.name), icon_url=url_author_music)
+            await ctx.send(embed=embed)
 
 @bot.command(aliases=['play','p'])
 async def play_music(ctx, *, char):

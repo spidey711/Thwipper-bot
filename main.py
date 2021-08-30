@@ -180,7 +180,6 @@ async def on_message_delete(message):
 @bot.event
 async def on_reaction_add(reaction, user):
     number_of_requests()
-
     if reaction.emoji == "🖱":
         if str(user) != str(bot.user) and reaction.message.author == bot.user:
             await reaction.remove(user)
@@ -197,7 +196,7 @@ async def on_reaction_add(reaction, user):
             embed.set_author(name="Uh oh...", icon_url=url_reddit_author)
             await reaction.message.edit(embed=embed)
 
-    if reaction.emoji == "➡":
+    elif reaction.emoji == "➡":
         if str(user) != str(bot.user)and reaction.message.author == bot.user:
             await reaction.remove(user)
             embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
@@ -210,7 +209,7 @@ async def on_reaction_add(reaction, user):
             embed.set_footer(text="New Features Coming Soon 🛠")
             await reaction.message.edit(embed=embed)
     
-    if reaction.emoji == "⬅":
+    elif reaction.emoji == "⬅":
         if str(user) != str(bot.user)and reaction.message.author == bot.user:
             await reaction.remove(user)
             embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
@@ -226,7 +225,7 @@ async def on_reaction_add(reaction, user):
             embed.set_footer(text="New Features Coming Soon 🛠")
             await reaction.message.edit(embed=embed)
     
-    if reaction.emoji == "🕸":
+    elif reaction.emoji == "🕸":
         if str(user) != str(bot.user) and reaction.message.author == bot.user:
             await reaction.remove(user)
             embed = discord.Embed(title="🕸Mutual Guilds🕸",
@@ -235,6 +234,8 @@ async def on_reaction_add(reaction, user):
             embed.set_thumbnail(url=random.choice(url_thumbnails))
             embed.set_footer(text="New Features Coming Soon 🛠")
             await reaction.message.edit(embed=embed)
+    else:
+        pass
 
     voice = discord.utils.get(bot.voice_clients, guild=reaction.message.guild)
     voice_client = reaction.message.guild.voice_client
@@ -1439,13 +1440,18 @@ async def check_user_bdays_and_wish(ctx):
         if datetime.datetime.today().month == bday[1] and datetime.datetime.today().day == bday[2]:
             name = bot.get_user(int(bday[0])).name
             wishes = [f"🎊 Happy Birthday {name} 🎊", f"🎉 Happy Birthday {name} 🎉", f"✨ Happy Birthday {name} ✨", f"🎇 Happy Birthday {name} 🎇"]
-            descriptions = [f"Make the most out of your day {name}!", f"I am invited to the party, right {name}?", f"Enjoy the cake {name} 🎂!", f"Here is a present for you {name} 🎁"]
+            descriptions = [f"Make the most out of your day!", f"I am invited to the party, right? I hope I am 😎", f"Enjoy the cake 🎂!", f"Here is a present for you 🎁", "Party hard dude! Tis' your day 🤟🏻"]
             embed = discord.Embed(title=random.choice(wishes), description=random.choice(descriptions), color=color)
             embed.set_image(url=random.choice(url_bdays_spiderman))
             embed.set_thumbnail(url=bot.get_user(int(bday[0])).avatar_url)
-            await channel.send(embed=embed)
+            message = await channel.send(embed=embed)
             await ctx.send(embed=discord.Embed(description="Wish Sent 🥳", color=color))
+            await message.add_reaction("🎁")
+            await message.add_reaction("🎈")
+            await message.add_reaction("🎂")
+            await message.add_reaction("🎆")
+            await message.add_reaction("🎉")
         else:
-            await ctx.send(embed=discord.Embed(description="I just checked from my DB, no one's birthday today", color=color))
+            pass
 
 bot.run(token)

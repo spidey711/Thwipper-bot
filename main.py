@@ -230,9 +230,9 @@ async def on_reaction_add(reaction, user):
         if str(user) != str(bot.user) and reaction.message.author == bot.user:
             await reaction.remove(user)
             embed = discord.Embed(title="🕸Mutual Guilds🕸",
-                        description="",
+                        description="\n".join([servers.name for servers in user.mutual_guilds]),
                         color=color)
-            embed.set_thumbail(url=random.choice(url_thumbnail))
+            embed.set_thumbnail(url=random.choice(url_thumbnails))
             embed.set_footer(text="New Features Coming Soon 🛠")
             await reaction.message.edit(embed=embed)
 
@@ -465,10 +465,6 @@ async def on_reaction_add(reaction, user):
             await reaction.message.edit(embed=embed)
         
 # //////////////////////////////////// SPECIAL ACCESS /////////////////////////////////////////
-
-@bot.command(aliases=['test'])
-async def mutual_servers(ctx):
-    await ctx.send(ctx.author.mutual_guilds())
 
 @bot.command(aliases=["allow","alw"])
 async def allow_access(ctx, member:discord.Member):
@@ -1443,14 +1439,13 @@ async def check_user_bdays_and_wish(ctx):
         if datetime.datetime.today().month == bday[1] and datetime.datetime.today().day == bday[2]:
             name = bot.get_user(int(bday[0])).name
             wishes = [f"🎊 Happy Birthday {name} 🎊", f"🎉 Happy Birthday {name} 🎉", f"✨ Happy Birthday {name} ✨", f"🎇 Happy Birthday {name} 🎇"]
-            footers = [f"Make the most out of your day {name}!", f"I am invited to the party, right {name}?", f"Enjoy the cake {name} 🎂!", f"Here is a present for you {name} 🎁"]
-            embed = discord.Embed(title=random.choice(wishes), color=color)
+            descriptions = [f"Make the most out of your day {name}!", f"I am invited to the party, right {name}?", f"Enjoy the cake {name} 🎂!", f"Here is a present for you {name} 🎁"]
+            embed = discord.Embed(title=random.choice(wishes), description=random.choice(descriptions), color=color)
             embed.set_image(url=random.choice(url_bdays_spiderman))
-            embed.set_footer(text=random.choice(footers))
             embed.set_thumbnail(url=bot.get_user(int(bday[0])).avatar_url)
             await channel.send(embed=embed)
-            await ctx.send("Wish Sent 😎")
+            await ctx.send(embed=discord.Embed(description="Wish Sent 🥳", color=color))
         else:
-            pass
+            await ctx.send(embed=discord.Embed(description="I just checked from my DB, no one's birthday today", color=color))
 
 bot.run(token)

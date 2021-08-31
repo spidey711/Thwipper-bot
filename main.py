@@ -102,7 +102,7 @@ def number_of_requests():
 
 @bot.event
 async def on_ready():
-    print("{0.user} is now online...".format(bot))
+    print("{0.user} is now online...\nHey Tamonud! How's it going?".format(bot))
     stop = 0
     # QUIPS
     global plot_list
@@ -1495,6 +1495,6 @@ async def check_user_bdays_and_wish(ctx):
             await message.add_reaction("🎆")
             await message.add_reaction("🎉")
         else:
-            pass
+            print("According to my dataabase, no one's birthday today")
 
 bot.run(token)

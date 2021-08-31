@@ -176,8 +176,7 @@ async def on_message_delete(message):
         deleted_messages[message.channel.id].append((str(message.author), message.content))
     else:
         deleted_messages[message.channel.id].append((str(message.author), message.embeds[0], True))
-
-@bot.event
+@bot.event 
 async def on_reaction_add(reaction, user):
     number_of_requests()
     if reaction.emoji == "🖱":
@@ -196,7 +195,7 @@ async def on_reaction_add(reaction, user):
             embed.set_author(name="Uh oh...", icon_url=url_reddit_author)
             await reaction.message.edit(embed=embed)
 
-    elif reaction.emoji == "➡":
+    if reaction.emoji == "➡":
         if str(user) != str(bot.user)and reaction.message.author == bot.user:
             await reaction.remove(user)
             embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
@@ -204,12 +203,12 @@ async def on_reaction_add(reaction, user):
                         color=color)
             embed.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="p <name> or <index> to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ this to get current song", inline=False)
             embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nq to view queue\nrem <index> to remove song from queue\ncq to clear queue", inline=False)
-            embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\nweb to see deleted message\nbday to wish a member if their birthday is today\naddbday <mention> <date> to add a user's birthday from DB\nbday to get thwipper to wish the members\nrembday <mention> to remove a member's birthday from DB.\n`Note: The date must be in month-date format`", inline=False)
+            embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\nweb to see deleted message\naddbday <mention> <date> to add a user's birthday from DB\nbday to get thwipper to wish the members\nrembday <mention> to remove a member's birthday from DB.\n`Note: The date must be in month-date format`", inline=False)
             embed.set_thumbnail(url=random.choice(url_thumbnails))
             embed.set_footer(text="New Features Coming Soon 🛠")
             await reaction.message.edit(embed=embed)
     
-    elif reaction.emoji == "⬅":
+    if reaction.emoji == "⬅":
         if str(user) != str(bot.user)and reaction.message.author == bot.user:
             await reaction.remove(user)
             embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
@@ -225,7 +224,7 @@ async def on_reaction_add(reaction, user):
             embed.set_footer(text="New Features Coming Soon 🛠")
             await reaction.message.edit(embed=embed)
     
-    elif reaction.emoji == "🕸":
+    if reaction.emoji == "🕸":
         if str(user) != str(bot.user) and reaction.message.author == bot.user:
             await reaction.remove(user)
             embed = discord.Embed(title="🕸Mutual Guilds🕸",
@@ -234,9 +233,10 @@ async def on_reaction_add(reaction, user):
             embed.set_thumbnail(url=random.choice(url_thumbnails))
             embed.set_footer(text="New Features Coming Soon 🛠")
             await reaction.message.edit(embed=embed)
-    else:
-        pass
 
+@bot.event
+async def on_reaction_add(reaction, user):
+    number_of_requests()
     voice = discord.utils.get(bot.voice_clients, guild=reaction.message.guild)
     voice_client = reaction.message.guild.voice_client
     playing = reaction.message.guild.voice_client.is_playing()

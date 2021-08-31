@@ -1495,6 +1495,7 @@ async def check_user_bdays_and_wish(ctx):
             await message.add_reaction("🎆")
             await message.add_reaction("🎉")
         else:
-            print("According to my dataabase, no one's birthday today")
+            print("According to my database...")
+            print(f"{int(bday[0])} isn't today")
 
 bot.run(token)

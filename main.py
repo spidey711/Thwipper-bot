@@ -160,7 +160,7 @@ async def on_ready():
 async def on_message(message):
     if f"<@!{bot.user.id}>" == message.content:
             number_of_requests()
-            embed = discord.Embed(title="About", description=f"Hey {message.author.name}!\nI was made by Spider-Man to tend to people's needs on discord while he is out in the city protecting the innocent from harm.", color=color)
+            embed = discord.Embed(title="About", description=f"Hey {message.author.name}!\nI was made by `Spider-Man#0711` to tend to people's needs on discord while he is out in the city protecting the innocent from harm.", color=color)
             embed.set_thumbnail(url=bot.user.avatar_url)
             embed.set_image(url="https://txt.1001fonts.net/img/txt/dHRmLjcyLjAwMDAwMC5WRWhYU1ZCUVJWSSwuMA,,/lazenby-computer.liquid.png")
             embed.set_footer(text="𝗧𝘆𝗽𝗲 _𝘂𝘀𝗲 𝗳𝗼𝗿 𝗰𝗼𝗺𝗺𝗮𝗻𝗱 𝗺𝗲𝗻𝘂", icon_url=message.author.avatar_url)

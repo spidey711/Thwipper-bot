@@ -176,9 +176,26 @@ async def on_message_delete(message):
         deleted_messages[message.channel.id].append((str(message.author), message.content))
     else:
         deleted_messages[message.channel.id].append((str(message.author), message.embeds[0], True))
-@bot.event 
+
+
+@bot.event
 async def on_reaction_add(reaction, user):
     number_of_requests()
+    
+    # QUEUE
+    op = f"SELECT * FROM music_queue WHERE server={str(reaction.message.guild.id)}"
+    cursor.execute(op)
+    server_queue = cursor.fetchall()
+    string = ""
+    start = 0
+    stop = start + 7
+
+    # MUSIC PLAYER
+    voice = discord.utils.get(bot.voice_clients, guild=reaction.message.guild)
+    voice_client = reaction.message.guild.voice_client
+    playing = reaction.message.guild.voice_client.is_playing()
+    pause = reaction.message.guild.voice_client.is_paused()
+
     if reaction.emoji == "🖱":
         if str(user) != str(bot.user) and reaction.message.author == bot.user:
             await reaction.remove(user)
@@ -234,13 +251,6 @@ async def on_reaction_add(reaction, user):
             embed.set_footer(text="New Features Coming Soon 🛠")
             await reaction.message.edit(embed=embed)
 
-@bot.event
-async def on_reaction_add(reaction, user):
-    number_of_requests()
-    voice = discord.utils.get(bot.voice_clients, guild=reaction.message.guild)
-    voice_client = reaction.message.guild.voice_client
-    playing = reaction.message.guild.voice_client.is_playing()
-    pause = reaction.message.guild.voice_client.is_paused()
     if not user.bot:
         operation_view = "SELECT * FROM music_queue WHERE server={}".format(str(reaction.message.guild.id))
         cursor.execute(operation_view)
@@ -250,6 +260,51 @@ async def on_reaction_add(reaction, user):
         members_in_vc = [str(names) for names in reaction.message.guild.voice_client.channel.members]
         
         if members_in_vc.count(str(user)) > 0:
+
+            if reaction.emoji == "🔼":
+                if str(user) != str(user.bot) and reaction.message.author == bot.user:
+                    await reaction.remove(user)
+                    try:
+                        if start > 0:
+                            start -= 5
+                            stop = start + 7
+                        else:
+                            start = 0
+                            stop = 7
+                        for song in server_queue[start:stop]:
+                            string += str(song_index) + ". " + str(song[0]).replace('("'," ").replace('",)'," ") + "\n"
+                        embed = discord.Embed(description="{a}\n**Number of songs:** {b}".format(a=string.replace(" - YouTube"," ").replace("('", " ").replace("',)"," "), b=len(server_queue)), color=color)
+                        embed.set_author(name="{}'s Queue".format(reaction.message.guild.name), icon_url=url_author_music)
+                        embed.set_thumbnail(url=random.choice(url_thumbnail_music))
+                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                        await reaction.message.edit(embed=embed)
+                    except Exception as e:
+                        embed = discord.Embed(description=str(e), color=color)
+                        embed.set_author(name="Error", icon_url=url_author_music)
+                        await reaction.message.edit(embed=embed)
+
+            if reaction.emoji == "🔽":
+                if str(user) != str(user.bot) and reaction.message.author == bot.user:
+                    await reaction.remove(user)
+                    try:
+                        if start < len(server_queue) - 7:
+                            start += 5
+                            stop = start + 7
+                        else:
+                            start = len(server_queue - 7)
+                            stop = len(server_queue)
+                        for song in server_queue[start:stop]:
+                            string += str(song_index) + ". " + str(song[0]).replace('("'," ").replace('",)'," ") + "\n"
+                        embed = discord.Embed(description="{a}\n**Number of songs:** {b}".format(a=string.replace(" - YouTube"," ").replace("('", " ").replace("',)"," "), b=len(server_queue)), color=color)
+                        embed.set_author(name="{}'s Queue".format(reaction.message.guild.name), icon_url=url_author_music)
+                        embed.set_thumbnail(url=random.choice(url_thumbnail_music))
+                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                        await reaction.message.edit(embed=embed)
+                    except Exception as e:
+                        embed = discord.Embed(description=str(e), color=color)
+                        embed.set_author(name="Error", icon_url=url_author_music)
+                        await reaction.message.edit(embed=embed)
+
             if reaction.emoji == "▶":
                 if str(user) != str(bot.user) and reaction.message.author == bot.user:
                     await reaction.remove(user)
@@ -483,21 +538,6 @@ async def on_reaction_add(reaction, user):
             await reaction.message.edit(embed=embed)
         
 # //////////////////////////////////// SPECIAL ACCESS /////////////////////////////////////////
-
-@bot.command()
-async def test(ctx):
-    op = "SELECT * FROM music_queue"
-    cursor.execute(op)
-    songs = cursor.fetchall()
-    random_song = random.choice(songs)
-    for song in songs:
-        try:
-            if random_song == song:
-                await ctx.send(song)
-            else:
-                pass
-        except Exception as e:
-            await ctx.send(str(e)) 
 
 @bot.command(aliases=["allow","alw"])
 async def allow_access(ctx, member:discord.Member):

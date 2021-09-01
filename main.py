@@ -177,25 +177,10 @@ async def on_message_delete(message):
     else:
         deleted_messages[message.channel.id].append((str(message.author), message.embeds[0], True))
 
-
 @bot.event
 async def on_reaction_add(reaction, user):
     number_of_requests()
     
-    # QUEUE
-    op = f"SELECT * FROM music_queue WHERE server={str(reaction.message.guild.id)}"
-    cursor.execute(op)
-    server_queue = cursor.fetchall()
-    string = ""
-    start = 0
-    stop = start + 7
-
-    # MUSIC PLAYER
-    voice = discord.utils.get(bot.voice_clients, guild=reaction.message.guild)
-    voice_client = reaction.message.guild.voice_client
-    playing = reaction.message.guild.voice_client.is_playing()
-    pause = reaction.message.guild.voice_client.is_paused()
-
     if reaction.emoji == "🖱":
         if str(user) != str(bot.user) and reaction.message.author == bot.user:
             await reaction.remove(user)
@@ -250,29 +235,37 @@ async def on_reaction_add(reaction, user):
             embed.set_thumbnail(url=random.choice(url_thumbnails))
             embed.set_footer(text="New Features Coming Soon 🛠")
             await reaction.message.edit(embed=embed)
+   
+    # MUSIC PLAYER
+    voice = discord.utils.get(bot.voice_clients, guild=reaction.message.guild)
+    voice_client = reaction.message.guild.voice_client
+    playing = reaction.message.guild.voice_client.is_playing()
+    pause = reaction.message.guild.voice_client.is_paused()
 
     if not user.bot:
+        # SERVER QUEUE
         operation_view = "SELECT * FROM music_queue WHERE server={}".format(str(reaction.message.guild.id))
         cursor.execute(operation_view)
         server_queue = cursor.fetchall()
         string = ""
         song_index = server_index[str(reaction.message.guild.id)]
         members_in_vc = [str(names) for names in reaction.message.guild.voice_client.channel.members]
+         # RANGE
+        start = server_index[str(reaction.message.guild.id)] # stop = start + 10
         
         if members_in_vc.count(str(user)) > 0:
-
             if reaction.emoji == "🔼":
+                start -= 7
+                stop = start + 10
                 if str(user) != str(user.bot) and reaction.message.author == bot.user:
                     await reaction.remove(user)
                     try:
-                        if start > 0:
-                            start -= 5
-                            stop = start + 7
-                        else:
-                            start = 0
-                            stop = 7
+                        # if start > start - 10:
+                        #     start = start - 10
+                        # else:
+                        #     pass
                         for song in server_queue[start:stop]:
-                            string += str(song_index) + ". " + str(song[0]).replace('("'," ").replace('",)'," ") + "\n"
+                        string += str(song_index) + ". " + str(song[0]).replace('("'," ").replace('",)'," ") + "\n"
                         embed = discord.Embed(description="{a}\n**Number of songs:** {b}".format(a=string.replace(" - YouTube"," ").replace("('", " ").replace("',)"," "), b=len(server_queue)), color=color)
                         embed.set_author(name="{}'s Queue".format(reaction.message.guild.name), icon_url=url_author_music)
                         embed.set_thumbnail(url=random.choice(url_thumbnail_music))
@@ -467,9 +460,9 @@ async def on_reaction_add(reaction, user):
                             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
                             await reaction.message.edit(embed=embed)
-                        except Exception as e:
-                            embed = discord.Embed(description="Looks like you weren't playing anything before this so there is no current song. Use _p <name> / <index> to set a current song", color=color)
-                            embed.set_author(name="Error", icon_url=url_author_music)
+                        except KeyError:
+                            embed = discord.Embed(description="Looks like you weren't playing anything before this so there is no current song. Play song from queue to set a current song", color=color)
+                            embed.set_author(name="Uh oh...", icon_url=url_author_music)
                             await reaction.message.edit(embed=embed)
             
             if reaction.emoji == "🔂":
@@ -1002,26 +995,32 @@ async def queue_song(ctx, *, name=None):
         cursor.execute(operation_view)
         songs = cursor.fetchall()
         string = ""
+        queue_range = 0
         song_index = 0
         if len(songs) > 0:
-            for song in songs:
-                string += str(song_index) + ". " + str(song).replace('("'," ").replace('",)'," ") + "\n"
-                song_index += 1
-            embed = discord.Embed(description="{a}\n**Number of songs:** {b}".format(a=string.replace(" - YouTube"," ").replace("('", " ").replace("',)"," "), b=len(songs)), color=color)
-            embed.set_author(name="{}'s Queue".format(ctx.guild.name), icon_url=url_author_music)
-            embed.set_thumbnail(url=random.choice(url_thumbnail_music))
-            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
-            queue = await ctx.send(embed=embed)
-            await queue.add_reaction("⏮") # previous track
-            await queue.add_reaction("▶")  # resume
-            await queue.add_reaction("⏸") # pause
-            await queue.add_reaction("⏭") # next
-            await queue.add_reaction("🔂") # repeat
-            await queue.add_reaction("⏹") # stop
-            await queue.add_reaction("🔀") # shuffle
-            await queue.add_reaction("*️⃣") # current song
-            await queue.add_reaction("🔼") # move up
-            await queue.add_reaction("🔽") # move down
+            try:
+                for song in songs[server_index[str(ctx.guild.id)]:server_index[str(ctx.guild.id)] + 10]:
+                    string += str(song_index) + ". " + str(song).replace('("'," ").replace('",)'," ") + "\n"
+                    song_index += 1
+                embed = discord.Embed(description="{a}\n**Number of songs:** {b}".format(a=string.replace(" - YouTube"," ").replace("('", " ").replace("',)"," "), b=len(songs)), color=color)
+                embed.set_author(name="{}'s Queue".format(ctx.guild.name), icon_url=url_author_music)
+                embed.set_thumbnail(url=random.choice(url_thumbnail_music))
+                embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
+                queue = await ctx.send(embed=embed)
+                await queue.add_reaction("⏮") # previous track
+                await queue.add_reaction("▶")  # resume
+                await queue.add_reaction("⏸") # pause
+                await queue.add_reaction("⏭") # next
+                await queue.add_reaction("🔂") # repeat
+                await queue.add_reaction("⏹") # stop
+                await queue.add_reaction("🔀") # shuffle
+                await queue.add_reaction("*️⃣") # current song
+                await queue.add_reaction("🔼") # move up
+                await queue.add_reaction("🔽") # move down
+            except KeyError:
+                embed = discord.Embed(description="Looks like you weren't playing anything before this so there is no current song. Play song from queue to set a current song", color=color)
+                embed.set_author(name="Uh oh...", icon_url=url_author_music)
+                await reaction.message.edit(embed=embed)
         else:
             embed = discord.Embed(description="No songs in queue...\nUse t!q <song name>", color=color)
             embed.set_author(name="{}'s Queue".format(ctx.guild.name), icon_url=url_author_music)

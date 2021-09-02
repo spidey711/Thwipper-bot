@@ -160,7 +160,7 @@ async def on_ready():
 async def on_message(message):
     if f"<@!{bot.user.id}>" == message.content:
             number_of_requests()
-            embed = discord.Embed(title="About", description=f"Hey {message.author.name}!\nI was made by `Spider-Man#0711` to tend to people's needs on discord while he is out in the city protecting the innocent from harm.", color=color)
+            embed = discord.Embed(title="About", description=f"Hey {message.author.name}!\nI was made by `Fairly Rad#0711` to tend to people's needs on discord while he is out in the city protecting the innocent from harm.", color=color)
             embed.set_thumbnail(url=bot.user.avatar_url)
             embed.set_image(url="https://txt.1001fonts.net/img/txt/dHRmLjcyLjAwMDAwMC5WRWhYU1ZCUVJWSSwuMA,,/lazenby-computer.liquid.png")
             embed.set_footer(text="𝗧𝘆𝗽𝗲 _𝘂𝘀𝗲 𝗳𝗼𝗿 𝗰𝗼𝗺𝗺𝗮𝗻𝗱 𝗺𝗲𝗻𝘂", icon_url=message.author.avatar_url)
@@ -265,7 +265,7 @@ async def on_reaction_add(reaction, user):
                         # else:
                         #     pass
                         for song in server_queue[start:stop]:
-                        string += str(song_index) + ". " + str(song[0]).replace('("'," ").replace('",)'," ") + "\n"
+                            string += str(song_index) + ". " + str(song[0]).replace('("'," ").replace('",)'," ") + "\n"
                         embed = discord.Embed(description="{a}\n**Number of songs:** {b}".format(a=string.replace(" - YouTube"," ").replace("('", " ").replace("',)"," "), b=len(server_queue)), color=color)
                         embed.set_author(name="{}'s Queue".format(reaction.message.guild.name), icon_url=url_author_music)
                         embed.set_thumbnail(url=random.choice(url_thumbnail_music))

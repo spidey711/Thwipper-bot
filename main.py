@@ -173,9 +173,9 @@ async def on_message_delete(message):
     if not message.channel.id in list(deleted_messages.keys()):
         deleted_messages[message.channel.id] = []
     if len(message.embeds) <= 0:
-        deleted_messages[message.channel.id].append((str(message.author), message.content))
+        deleted_messages[message.channel.id].append((str(message.author.id), message.content))
     else:
-        deleted_messages[message.channel.id].append((str(message.author), message.embeds[0], True))
+        deleted_messages[message.channel.id].append((str(message.author.id), message.embeds[0], True))
 
 @bot.event
 async def on_reaction_add(reaction, user):
@@ -734,12 +734,17 @@ async def snipe(ctx):
     try:
         message = deleted_messages[ctx.channel.id][-1]
         if len(message) <  3:
-            await ctx.send("**Sender:** {first}\n**Message:** {last}".format(first=message[0], last=message[1]))
+            embed=discord.Embed(title="Deleted Message", description=message[1], color=color)
+            # embed.set_author(name=bot.get_user(int(message[0])), icon_url=bot.get_user(int(message[0])).avatar_url)
+            embed.set_footer(text=f"Sent by: {bot.get_user(int(message[0]))}", icon_url=bot.get_user(int(message[0])).avatar_url)
+            await ctx.send(embed=embed)
         else:
-            await ctx.send("**Sender:** {}\n**Message:**".format(message[0]))
+            embed = discord.Embed(description="Embed deleted 👇🏻", color=color)
+            embed.set_author(name=bot.get_user(int(message[0])), icon_url=bot.get_user(int(message[0])).avatar_url)
+            await ctx.send(embed=embed)
             await ctx.send(embed=message[1])
     except KeyError:
-        await ctx.send("There is nothing to web up 🕸")
+        await ctx.send(embed=discord.Embed(description="There is nothing to web up 🕸", color=color))
 
 @bot.command(aliases=["pfp"])
 async def user_pfp(ctx, member:discord.Member=None):

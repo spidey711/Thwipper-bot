@@ -254,50 +254,7 @@ async def on_reaction_add(reaction, user):
         start = server_index[str(reaction.message.guild.id)] # stop = start + 10
         
         if members_in_vc.count(str(user)) > 0:
-            if reaction.emoji == "🔼":
-                start -= 7
-                stop = start + 10
-                if str(user) != str(user.bot) and reaction.message.author == bot.user:
-                    await reaction.remove(user)
-                    try:
-                        # if start > start - 10:
-                        #     start = start - 10
-                        # else:
-                        #     pass
-                        for song in server_queue[start:stop]:
-                            string += str(song_index) + ". " + str(song[0]).replace('("'," ").replace('",)'," ") + "\n"
-                        embed = discord.Embed(description="{a}\n**Number of songs:** {b}".format(a=string.replace(" - YouTube"," ").replace("('", " ").replace("',)"," "), b=len(server_queue)), color=color)
-                        embed.set_author(name="{}'s Queue".format(reaction.message.guild.name), icon_url=url_author_music)
-                        embed.set_thumbnail(url=random.choice(url_thumbnail_music))
-                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
-                        await reaction.message.edit(embed=embed)
-                    except Exception as e:
-                        embed = discord.Embed(description=str(e), color=color)
-                        embed.set_author(name="Error", icon_url=url_author_music)
-                        await reaction.message.edit(embed=embed)
-
-            if reaction.emoji == "🔽":
-                if str(user) != str(user.bot) and reaction.message.author == bot.user:
-                    await reaction.remove(user)
-                    try:
-                        if start < len(server_queue) - 7:
-                            start += 5
-                            stop = start + 7
-                        else:
-                            start = len(server_queue - 7)
-                            stop = len(server_queue)
-                        for song in server_queue[start:stop]:
-                            string += str(song_index) + ". " + str(song[0]).replace('("'," ").replace('",)'," ") + "\n"
-                        embed = discord.Embed(description="{a}\n**Number of songs:** {b}".format(a=string.replace(" - YouTube"," ").replace("('", " ").replace("',)"," "), b=len(server_queue)), color=color)
-                        embed.set_author(name="{}'s Queue".format(reaction.message.guild.name), icon_url=url_author_music)
-                        embed.set_thumbnail(url=random.choice(url_thumbnail_music))
-                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
-                        await reaction.message.edit(embed=embed)
-                    except Exception as e:
-                        embed = discord.Embed(description=str(e), color=color)
-                        embed.set_author(name="Error", icon_url=url_author_music)
-                        await reaction.message.edit(embed=embed)
-
+            
             if reaction.emoji == "▶":
                 if str(user) != str(bot.user) and reaction.message.author == bot.user:
                     await reaction.remove(user)
@@ -403,7 +360,7 @@ async def on_reaction_add(reaction, user):
                     try:  
                         URL_queue = youtube_download(reaction.message, server_queue[server_index[str(reaction.message.guild.id)]][1])
                         if playing != True:
-                            embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.guild.id)]).replace(" - YouTube", " "), color=color)
+                            embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)]).replace(" - YouTube", " "), color=color)
                             embed.set_author(name="Now Playing", icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
@@ -413,7 +370,7 @@ async def on_reaction_add(reaction, user):
                             voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                         else:
                             voice.stop()
-                            embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.guild.id)]).replace(" - YouTube", " "), color=color)
+                            embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)]).replace(" - YouTube", " "), color=color)
                             embed.set_author(name="Now Playing", icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
@@ -734,7 +691,7 @@ async def snipe(ctx):
     try:
         message = deleted_messages[ctx.channel.id][-1]
         if len(message) <  3:
-            embed=discord.Embed(title="Deleted Message", description=message[1], color=color)
+            embed = discord.Embed(title="Deleted Message", description=message[1], color=color)
             # embed.set_author(name=bot.get_user(int(message[0])), icon_url=bot.get_user(int(message[0])).avatar_url)
             embed.set_footer(text=f"Sent by: {bot.get_user(int(message[0]))}", icon_url=bot.get_user(int(message[0])).avatar_url)
             await ctx.send(embed=embed)
@@ -1025,7 +982,7 @@ async def queue_song(ctx, *, name=None):
             except KeyError:
                 embed = discord.Embed(description="Looks like you weren't playing anything before this so there is no current song. Play song from queue to set a current song", color=color)
                 embed.set_author(name="Uh oh...", icon_url=url_author_music)
-                await reaction.message.edit(embed=embed)
+                await ctx.send(embed=embed)
         else:
             embed = discord.Embed(description="No songs in queue...\nUse t!q <song name>", color=color)
             embed.set_author(name="{}'s Queue".format(ctx.guild.name), icon_url=url_author_music)

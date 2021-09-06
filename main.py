@@ -252,269 +252,269 @@ async def on_reaction_add(reaction, user):
                 embed.set_footer(text="New Features Coming Soon 🛠")
                 await reaction.message.edit(embed=embed)
             
-            if reaction.emoji == "▶":
-                if str(user) != str(bot.user) and reaction.message.author == bot.user:
-                    await reaction.remove(user)
-                    if members_in_vc.count(str(user)) > 0:
-                        try:
-                            if server_index[str(reaction.message.guild.id)] is not None:
-                                if pause == True:
-                                    voice_client.resume()
-                                    embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(reaction.message.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-                                    embed.set_author(name="Song Resumed", icon_url=url_author_music)
-                                    embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
-                                    embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
-                                    embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
-                                    embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
-                                    await reaction.message.edit(embed=embed)
-                                else:
-                                    if playing == True:
-                                        embed = discord.Embed(description="Song is not paused 🤔", color=color)
-                                        embed.set_author(name="Walkman™", icon_url=url_author_music)
-                                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
-                                        await reaction.message.edit(embed=embed)
-                                    else:
-                                        embed = discord.Embed(description="Nothing is playing right now ❗", color=color)
-                                        embed.set_author(name="Walkman™", icon_url=url_author_music)
-                                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
-                                        await reaction.message.edit(embed=embed)
-                            else:
-                                if playing != True:
-                                    voice_client.resume()
-                                    embed = discord.Embed(description="Song has resumed playing ▶", color=color)
-                                    embed.set_author(name="Walkman™", icon_url=url_author_music)
-                                    embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
-                                    await reaction.message.edit(embed=embed)
-                                else:
-                                    embed = discord.Embed(description="Song is already playing 🎸", color=color)
-                                    embed.set_author(name="Walkman™", icon_url=url_author_music)
-                                    embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
-                                    await reaction.message.edit(embed=embed)
-                        except Exception as e:
-                            embed = discord.Embed(description=str(e), color=color)
-                            embed.set_author(name="Error", icon_url=url_author_music)
-                            await reaction.message.edit(embed=embed)
-                    else:
-                        embed = discord.Embed(description="Buddy, connect to a voice channel first 🔊", color=color)
-                        embed.set_author(name="Walkman™", icon_url=url_author_music)
-                        await reaction.message.edit(embed=embed)
-                    
-            if reaction.emoji == "⏸":
-                if str(user) != str(bot.user) and reaction.message.author == bot.user:
-                    await reaction.remove(user)
-                    if members_in_vc.count(str(user)) > 0:
-                        try:
-                            if playing == True:    
-                                voice_client.pause()
-                                embed = discord.Embed(description="Song is paused ⏸", color=color)
-                                embed.set_author(name="Walkman™", icon_url=url_author_music)
+        if reaction.emoji == "▶":
+            if str(user) != str(bot.user) and reaction.message.author == bot.user:
+                await reaction.remove(user)
+                if members_in_vc.count(str(user)) > 0:
+                    try:
+                        if server_index[str(reaction.message.guild.id)] is not None:
+                            if pause == True:
+                                voice_client.resume()
+                                embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(reaction.message.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+                                embed.set_author(name="Song Resumed", icon_url=url_author_music)
+                                embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
+                                embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
+                                embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
                                 embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
                                 await reaction.message.edit(embed=embed)
                             else:
-                                if pause == True:
-                                    embed = discord.Embed(description="Song is already paused ⏸", color=color)
+                                if playing == True:
+                                    embed = discord.Embed(description="Song is not paused 🤔", color=color)
                                     embed.set_author(name="Walkman™", icon_url=url_author_music)
                                     embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
                                     await reaction.message.edit(embed=embed)
                                 else:
-                                    embed = discord.Embed(description="No song playing currently ❗", color=color)
+                                    embed = discord.Embed(description="Nothing is playing right now ❗", color=color)
                                     embed.set_author(name="Walkman™", icon_url=url_author_music)
                                     embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
                                     await reaction.message.edit(embed=embed)
-                        except Exception as e: 
-                            embed = discord.Embed(description=str(e), color=color)
-                            embed.set_author(name="Error", icon_url=url_author_music)
-                            await reaction.message.edit(embed=embed)
-                    else:
-                        embed = discord.Embed(description="Buddy, connect to a voice channel first 🔊", color=color)
-                        embed.set_author(name="Walkman™", icon_url=url_author_music)
-                        await reaction.message.edit(embed=embed)
-                    
-            if reaction.emoji == "⏮":
-                if str(user) != str(bot.user) and reaction.message.author == bot.user:
-                    await reaction.remove(user)
-                    server_index[str(reaction.message.guild.id)] -= 1
-                    if members_in_vc.count(str(user)) > 0:
-                        try:  
-                            URL_queue = youtube_download(reaction.message, server_queue[server_index[str(reaction.message.guild.id)]][1])
+                        else:
                             if playing != True:
-                                embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.guild.id)]).replace(" - YouTube", " "), color=color)
-                                embed.set_author(name="Now playing", icon_url=url_author_music)
-                                embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
-                                embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
-                                embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
-                                embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
-                                await reaction.message.edit(embed=embed)
-                                voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
-                            else:
-                                voice.stop()
-                                embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)]).replace(" - YouTube", " "), color=color)
-                                embed.set_author(name="Now playing", icon_url=url_author_music)
-                                embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
-                                embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
-                                embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
-                                embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
-                                await reaction.message.edit(embed=embed)
-                                voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
-                        except IndexError:
-                            embed = discord.Embed(description="Looks like there is no song at this index", color=color)
-                            embed.set_author(name="Oops...", icon_url=url_author_music)
-                            await reaction.message.edit(embed=embed)
-                    else:
-                        embed = discord.Embed(description="Buddy, connect to a voice channel first 🔊", color=color)
-                        embed.set_author(name="Walkman™", icon_url=url_author_music)
-                        await reaction.message.edit(embed=embed)
-                    
-            if reaction.emoji == "⏭":
-                if str(user) != str(bot.user) and reaction.message.author == bot.user:
-                    await reaction.remove(user)
-                    server_index[str(reaction.message.guild.id)] += 1
-                    if members_in_vc.count(str(user)) > 0:
-                        try:  
-                            URL_queue = youtube_download(reaction.message, server_queue[server_index[str(reaction.message.guild.id)]][1])
-                            if playing != True:
-                                embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)]).replace(" - YouTube", " "), color=color)
-                                embed.set_author(name="Now Playing", icon_url=url_author_music)
-                                embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
-                                embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
-                                embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
-                                embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
-                                await reaction.message.edit(embed=embed)
-                                voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
-                            else:
-                                voice.stop()
-                                embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)]).replace(" - YouTube", " "), color=color)
-                                embed.set_author(name="Now Playing", icon_url=url_author_music)
-                                embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
-                                embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
-                                embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
-                                embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
-                                await reaction.message.edit(embed=embed)
-                                voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
-                        except IndexError:
-                            embed = discord.Embed(description="Looks like there is no song at this index", color=color)
-                            embed.set_author(name="Oops...", icon_url=url_author_music)
-                            await reaction.message.edit(embed=embed)
-                            await reaction.message.edit(embed=embed)
-                    else:
-                        embed = discord.Embed(description="Buddy, connect to a voice channel first 🔊", color=color)
-                        embed.set_author(name="Walkman™", icon_url=url_author_music)
-                        await reaction.message.edit(embed=embed)
-                        
-            if reaction.emoji == "⏹":
-                if str(user) != str(bot.user) and reaction.message.author == bot.user:
-                    await reaction.remove(user)
-                    if members_in_vc.count(str(user)) > 0:
-                        try:
-                            if playing == True or pause == True:    
-                                voice_client.stop()
-                                embed = discord.Embed(description="Song has been stopped ⏹", color=color)
+                                voice_client.resume()
+                                embed = discord.Embed(description="Song has resumed playing ▶", color=color)
                                 embed.set_author(name="Walkman™", icon_url=url_author_music)
                                 embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
                                 await reaction.message.edit(embed=embed)
                             else:
-                                embed = discord.Embed(description="Nothing is playing at the moment ❗", color=color)
+                                embed = discord.Embed(description="Song is already playing 🎸", color=color)
                                 embed.set_author(name="Walkman™", icon_url=url_author_music)
                                 embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
                                 await reaction.message.edit(embed=embed)
-                        except Exception as e:
-                                embed = discord.Embed(description=str(e), color=color)
-                                embed.set_author(name="Error", icon_url=url_author_music)
-                                await reaction.message.edit(embed=embed)
-                    else:
-                        embed = discord.Embed(description="Buddy, connect to a voice channel first 🔊", color=color)
-                        embed.set_author(name="Walkman™", icon_url=url_author_music)
+                    except Exception as e:
+                        embed = discord.Embed(description=str(e), color=color)
+                        embed.set_author(name="Error", icon_url=url_author_music)
                         await reaction.message.edit(embed=embed)
+                else:
+                    embed = discord.Embed(description=f"{reaction.message.author.name}, connect to a voice channel first 🔊", color=color)
+                    embed.set_author(name="Walkman™", icon_url=url_author_music)
+                    await reaction.message.edit(embed=embed)
                     
-            if reaction.emoji == "*️⃣":
-                if str(user) != str(bot.user) and reaction.message.author == bot.user:
-                    await reaction.remove(user)
-                    if len(server_queue) <= 0:
-                        embed = discord.Embed(description="There are no songs in the queue currently 🤔")
-                        embed.set_author(name="Uh oh...", icon_url=url_author_music)
-                        await reaction.message.edit(embed=embed)
-                    else:
-                        try:
-                            embed = discord.Embed(description="**Song: **{a}\n**Index: **{b}\n**Views: **{c}\n**Description: **\n{d}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)], c=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).views, d=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).description), color=color)
-                            embed.set_author(name="Currently Playing", url=server_queue[server_index[str(reaction.message.guild.id)]][1], icon_url=url_author_music)
+        if reaction.emoji == "⏸":
+            if str(user) != str(bot.user) and reaction.message.author == bot.user:
+                await reaction.remove(user)
+                if members_in_vc.count(str(user)) > 0:
+                    try:
+                        if playing == True:    
+                            voice_client.pause()
+                            embed = discord.Embed(description="Song is paused ⏸", color=color)
+                            embed.set_author(name="Walkman™", icon_url=url_author_music)
                             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                            await reaction.message.edit(embed=embed)
+                        else:
+                            if pause == True:
+                                embed = discord.Embed(description="Song is already paused ⏸", color=color)
+                                embed.set_author(name="Walkman™", icon_url=url_author_music)
+                                embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                                await reaction.message.edit(embed=embed)
+                            else:
+                                embed = discord.Embed(description="No song playing currently ❗", color=color)
+                                embed.set_author(name="Walkman™", icon_url=url_author_music)
+                                embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                                await reaction.message.edit(embed=embed)
+                    except Exception as e: 
+                        embed = discord.Embed(description=str(e), color=color)
+                        embed.set_author(name="Error", icon_url=url_author_music)
+                        await reaction.message.edit(embed=embed)
+                else:
+                    embed = discord.Embed(description=f"{reaction.message.author.name}, connect to a voice channel first 🔊", color=color)
+                    embed.set_author(name="Walkman™", icon_url=url_author_music)
+                    await reaction.message.edit(embed=embed)
+                
+        if reaction.emoji == "⏮":
+            if str(user) != str(bot.user) and reaction.message.author == bot.user:
+                await reaction.remove(user)
+                server_index[str(reaction.message.guild.id)] -= 1
+                if members_in_vc.count(str(user)) > 0:
+                    try:  
+                        URL_queue = youtube_download(reaction.message, server_queue[server_index[str(reaction.message.guild.id)]][1])
+                        if playing != True:
+                            embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.guild.id)]).replace(" - YouTube", " "), color=color)
+                            embed.set_author(name="Now playing", icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
-                            await reaction.message.edit(embed=embed)
-                        except KeyError:
-                            embed = discord.Embed(description="Looks like you weren't playing anything before this so there is no current song. Play song from queue to set a current song", color=color)
-                            embed.set_author(name="Uh oh...", icon_url=url_author_music)
-                            await reaction.message.edit(embed=embed)
-            
-            if reaction.emoji == "🔂":
-                if str(user) != str(bot.user) and reaction.message.author == bot.user:
-                    await reaction.remove(user)
-                    if members_in_vc.count(str(user)) > 0:
-                        try:
-                            URL_queue = youtube_download(reaction.message, server_queue[server_index[str(reaction.message.guild.id)]][1])
-                            if reaction.message.guild.voice_client.is_playing() != True:
-                                embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(reaction.message.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-                                embed.set_author(name="Repeating Song", icon_url=url_author_music)
-                                embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
-                                embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
-                                embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
-                                embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
-                                await reaction.message.edit(embed=embed)
-                                voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
-                            else:
-                                voice.stop()
-                                embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(reaction.message.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-                                embed.set_author(name="Repeating Song", icon_url=url_author_music)
-                                embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
-                                embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
-                                embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
-                                embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
-                                await reaction.message.edit(embed=embed)
-                                voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
-                        except Exception as e:
-                            embed = discord.Embed(description=str(e), color=color)
-                            embed.set_author(name="Error", icon_url=url_author_music)
-                            await reaction.message.edit(embed=embed)
-                    else:
-                        embed = discord.Embed(description="Buddy, connect to a voice channel first 🔊", color=color)
-                        embed.set_author(name="Walkman™", icon_url=url_author_music)
-                        await reaction.message.edit(embed=embed)
-            
-            if reaction.emoji == "🔀":
-                if str(user) != str(bot.user) and reaction.message.author == bot.user:
-                    await reaction.remove(user)
-                    if members_in_vc.count(str(user)) > 0:
-                        random_song = random.choice(server_queue)
-                        queue_index = server_index[str(reaction.message.guild.id)]
-                        for index in range(len(server_queue)):
-                            if random_song == server_queue[index]:
-                                queue_index = int(index)
-                            else:
-                                pass 
-                        server_index[str(reaction.message.guild.id)] = queue_index
-                        URL_shuffle = youtube_download(reaction.message, random_song[1])
-                        if reaction.message.guild.voice_client.is_playing() == False:
-                            embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=random_song[0], b=queue_index).replace(" - YouTube", " "), color=color)
-                            embed.set_author(name="Shuffle Play", icon_url=url_author_music)
-                            embed.set_thumbnail(url=pytube.YouTube(url=random_song[1]).thumbnail_url)
-                            embed.add_field(name="Uploader", value=pytube.YouTube(url=random_song[1]).author, inline=True)
-                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=random_song[1]).length), inline=True)
+                            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
+                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
                             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
                             await reaction.message.edit(embed=embed)
-                            voice.play(discord.FFmpegPCMAudio(URL_shuffle, **FFMPEG_OPTS))
+                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                         else:
                             voice.stop()
-                            embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=random_song[0], b=queue_index).replace(" - YouTube", " "), color=color)
-                            embed.set_author(name="Shuffle Play", icon_url=url_author_music)
-                            embed.set_thumbnail(url=pytube.YouTube(url=random_song[1]).thumbnail_url)
-                            embed.add_field(name="Uploader", value=pytube.YouTube(url=random_song[1]).author, inline=True)
-                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=random_song[1]).length), inline=True)
+                            embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)]).replace(" - YouTube", " "), color=color)
+                            embed.set_author(name="Now playing", icon_url=url_author_music)
+                            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
+                            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
+                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
                             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
                             await reaction.message.edit(embed=embed)
-                            voice.play(discord.FFmpegPCMAudio(URL_shuffle, **FFMPEG_OPTS))
-                    else:
-                        embed = discord.Embed(description="Buddy, connect to a voice channel first 🔊", color=color)
-                        embed.set_author(name="Walkman™", icon_url=url_author_music)
+                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                    except IndexError:
+                        embed = discord.Embed(description="Looks like there is no song at this index", color=color)
+                        embed.set_author(name="Oops...", icon_url=url_author_music)
                         await reaction.message.edit(embed=embed)
+                else:
+                    embed = discord.Embed(description=f"{reaction.message.author.name}, connect to a voice channel first 🔊", color=color)
+                    embed.set_author(name="Walkman™", icon_url=url_author_music)
+                    await reaction.message.edit(embed=embed)
+                
+        if reaction.emoji == "⏭":
+            if str(user) != str(bot.user) and reaction.message.author == bot.user:
+                await reaction.remove(user)
+                server_index[str(reaction.message.guild.id)] += 1
+                if members_in_vc.count(str(user)) > 0:
+                    try:  
+                        URL_queue = youtube_download(reaction.message, server_queue[server_index[str(reaction.message.guild.id)]][1])
+                        if playing != True:
+                            embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)]).replace(" - YouTube", " "), color=color)
+                            embed.set_author(name="Now Playing", icon_url=url_author_music)
+                            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
+                            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
+                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
+                            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                            await reaction.message.edit(embed=embed)
+                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                        else:
+                            voice.stop()
+                            embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)]).replace(" - YouTube", " "), color=color)
+                            embed.set_author(name="Now Playing", icon_url=url_author_music)
+                            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
+                            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
+                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
+                            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                            await reaction.message.edit(embed=embed)
+                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                    except IndexError:
+                        embed = discord.Embed(description="Looks like there is no song at this index", color=color)
+                        embed.set_author(name="Oops...", icon_url=url_author_music)
+                        await reaction.message.edit(embed=embed)
+                        await reaction.message.edit(embed=embed)
+                else:
+                    embed = discord.Embed(description=f"{reaction.message.author.name}, connect to a voice channel first 🔊", color=color)
+                    embed.set_author(name="Walkman™", icon_url=url_author_music)
+                    await reaction.message.edit(embed=embed)
+                    
+        if reaction.emoji == "⏹":
+            if str(user) != str(bot.user) and reaction.message.author == bot.user:
+                await reaction.remove(user)
+                if members_in_vc.count(str(user)) > 0:
+                    try:
+                        if playing == True or pause == True:    
+                            voice_client.stop()
+                            embed = discord.Embed(description="Song has been stopped ⏹", color=color)
+                            embed.set_author(name="Walkman™", icon_url=url_author_music)
+                            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                            await reaction.message.edit(embed=embed)
+                        else:
+                            embed = discord.Embed(description="Nothing is playing at the moment ❗", color=color)
+                            embed.set_author(name="Walkman™", icon_url=url_author_music)
+                            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                            await reaction.message.edit(embed=embed)
+                    except Exception as e:
+                            embed = discord.Embed(description=str(e), color=color)
+                            embed.set_author(name="Error", icon_url=url_author_music)
+                            await reaction.message.edit(embed=embed)
+                else:
+                    embed = discord.Embed(description=f"{reaction.message.author.name}, connect to a voice channel first 🔊", color=color)
+                    embed.set_author(name="Walkman™", icon_url=url_author_music)
+                    await reaction.message.edit(embed=embed)
+                
+        if reaction.emoji == "*️⃣":
+            if str(user) != str(bot.user) and reaction.message.author == bot.user:
+                await reaction.remove(user)
+                if len(server_queue) <= 0:
+                    embed = discord.Embed(description="There are no songs in the queue currently 🤔")
+                    embed.set_author(name="Uh oh...", icon_url=url_author_music)
+                    await reaction.message.edit(embed=embed)
+                else:
+                    try:
+                        embed = discord.Embed(description="**Song: **{a}\n**Index: **{b}\n**Views: **{c}\n**Description: **\n{d}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)], c=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).views, d=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).description), color=color)
+                        embed.set_author(name="Currently Playing", url=server_queue[server_index[str(reaction.message.guild.id)]][1], icon_url=url_author_music)
+                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                        embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
+                        await reaction.message.edit(embed=embed)
+                    except KeyError:
+                        embed = discord.Embed(description="Looks like you weren't playing anything before this so there is no current song. Play song from queue to set a current song", color=color)
+                        embed.set_author(name="Uh oh...", icon_url=url_author_music)
+                        await reaction.message.edit(embed=embed)
+        
+        if reaction.emoji == "🔂":
+            if str(user) != str(bot.user) and reaction.message.author == bot.user:
+                await reaction.remove(user)
+                if members_in_vc.count(str(user)) > 0:
+                    try:
+                        URL_queue = youtube_download(reaction.message, server_queue[server_index[str(reaction.message.guild.id)]][1])
+                        if reaction.message.guild.voice_client.is_playing() != True:
+                            embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(reaction.message.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+                            embed.set_author(name="Repeating Song", icon_url=url_author_music)
+                            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
+                            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
+                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
+                            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                            await reaction.message.edit(embed=embed)
+                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                        else:
+                            voice.stop()
+                            embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(reaction.message.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+                            embed.set_author(name="Repeating Song", icon_url=url_author_music)
+                            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
+                            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
+                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
+                            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                            await reaction.message.edit(embed=embed)
+                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                    except Exception as e:
+                        embed = discord.Embed(description=str(e), color=color)
+                        embed.set_author(name="Error", icon_url=url_author_music)
+                        await reaction.message.edit(embed=embed)
+                else:
+                    embed = discord.Embed(description=f"{reaction.message.author.name}, connect to a voice channel first 🔊", color=color)
+                    embed.set_author(name="Walkman™", icon_url=url_author_music)
+                    await reaction.message.edit(embed=embed)
+        
+        if reaction.emoji == "🔀":
+            if str(user) != str(bot.user) and reaction.message.author == bot.user:
+                await reaction.remove(user)
+                if members_in_vc.count(str(user)) > 0:
+                    random_song = random.choice(server_queue)
+                    queue_index = server_index[str(reaction.message.guild.id)]
+                    for index in range(len(server_queue)):
+                        if random_song == server_queue[index]:
+                            queue_index = int(index)
+                        else:
+                            pass 
+                    server_index[str(reaction.message.guild.id)] = queue_index
+                    URL_shuffle = youtube_download(reaction.message, random_song[1])
+                    if reaction.message.guild.voice_client.is_playing() == False:
+                        embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=random_song[0], b=queue_index).replace(" - YouTube", " "), color=color)
+                        embed.set_author(name="Shuffle Play", icon_url=url_author_music)
+                        embed.set_thumbnail(url=pytube.YouTube(url=random_song[1]).thumbnail_url)
+                        embed.add_field(name="Uploader", value=pytube.YouTube(url=random_song[1]).author, inline=True)
+                        embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=random_song[1]).length), inline=True)
+                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                        await reaction.message.edit(embed=embed)
+                        voice.play(discord.FFmpegPCMAudio(URL_shuffle, **FFMPEG_OPTS))
+                    else:
+                        voice.stop()
+                        embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=random_song[0], b=queue_index).replace(" - YouTube", " "), color=color)
+                        embed.set_author(name="Shuffle Play", icon_url=url_author_music)
+                        embed.set_thumbnail(url=pytube.YouTube(url=random_song[1]).thumbnail_url)
+                        embed.add_field(name="Uploader", value=pytube.YouTube(url=random_song[1]).author, inline=True)
+                        embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=random_song[1]).length), inline=True)
+                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                        await reaction.message.edit(embed=embed)
+                        voice.play(discord.FFmpegPCMAudio(URL_shuffle, **FFMPEG_OPTS))
+                else:
+                    embed = discord.Embed(description=f"{reaction.message.author.name}, connect to a voice channel first 🔊", color=color)
+                    embed.set_author(name="Walkman™", icon_url=url_author_music)
+                    await reaction.message.edit(embed=embed)
         
 # //////////////////////////////////// SPECIAL ACCESS /////////////////////////////////////////
 
@@ -1034,8 +1034,7 @@ async def play_music(ctx, *, char):
                 if char.isdigit() == False:
                     if str(ctx.guild.id) not in server_index:
                         server_index[str(ctx.guild.id)] = None
-                    else:
-                        pass
+                    else: pass
                     # Web Scrape
                     char = char.replace(" ","+")
                     htm = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + char)

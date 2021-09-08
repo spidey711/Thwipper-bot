@@ -521,7 +521,6 @@ async def on_reaction_add(reaction, user):
 @bot.command(aliases=["allow","alw"])
 async def allow_access(ctx, member:discord.Member):
     number_of_requests()
-    global cursor
     if ctx.author.id == 622497106657148939:
         cursor.execute("INSERT INTO dev_users(dev_id)values({})".format(str(member.id)))
         embed = discord.Embed(description="{} has been allowed access".format(member), color=color)
@@ -533,8 +532,6 @@ async def allow_access(ctx, member:discord.Member):
 @bot.command(aliases=["restrict","rstr"])
 async def remove_access(ctx, member:discord.Member):
     number_of_requests()
-    global url_author_python
-    global cursor
     if ctx.author.id == 622497106657148939:    
         cursor.execute("DELETE FROM dev_users WHERE dev_id={}".format(str(member.id)))    
         embed = discord.Embed(description="{} is now restricted".format(str(member)), color=color)
@@ -1101,7 +1098,7 @@ async def play_music(ctx, *, char):
                         else:
                             voice.stop()
                             embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[int(char)][0], b=char).replace(" - YouTube", " "), color=color)
-                            embed.set_author(name="Last Song", icon_url=url_author_music)
+                            embed.set_author(name="Now playing", icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[int(char)][1]).thumbnail_url)
                             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[int(char)][1]).author, inline=True)

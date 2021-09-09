@@ -69,11 +69,6 @@ dialogue_list = []
 # SQL
 conn = ms.connect(host="localhost", user="root", passwd=sql_pass, database="discord")
 cursor = conn.cursor()
-# Birthday Wishes
-operation = "SELECT * FROM birthdays"
-cursor.execute(operation)
-data = cursor.fetchall()
-WHEN = datetime.time(0, 0, 0)
 
 # //////////////////////////////////////// NON ASYNC FUNCTIONS /////////////////////////////////////
 
@@ -182,21 +177,6 @@ async def on_reaction_add(reaction, user):
     number_of_requests()
     
     if not user.bot:
-        # MUSIC PLAYER
-        voice = discord.utils.get(bot.voice_clients, guild=reaction.message.guild)
-        voice_client = reaction.message.guild.voice_client
-        playing = reaction.message.guild.voice_client.is_playing()
-        pause = reaction.message.guild.voice_client.is_paused()
-        # SERVER QUEUE
-        operation_view = "SELECT * FROM music_queue WHERE server={}".format(str(reaction.message.guild.id))
-        cursor.execute(operation_view)
-        server_queue = cursor.fetchall()
-        string = ""
-        song_index = server_index[str(reaction.message.guild.id)]
-        members_in_vc = [str(names) for names in reaction.message.guild.voice_client.channel.members]
-         # RANGE
-        start = server_index[str(reaction.message.guild.id)] # stop = start + 10
-    
         if reaction.emoji == "🖱":
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
                 await reaction.remove(user)
@@ -251,6 +231,22 @@ async def on_reaction_add(reaction, user):
                 embed.set_thumbnail(url=random.choice(url_thumbnails))
                 embed.set_footer(text="New Features Coming Soon 🛠")
                 await reaction.message.edit(embed=embed)
+        
+        # MUSIC PLAYER
+        voice = discord.utils.get(bot.voice_clients, guild=reaction.message.guild)
+        voice_client = reaction.message.guild.voice_client
+        playing = reaction.message.guild.voice_client.is_playing()
+        pause = reaction.message.guild.voice_client.is_paused()
+        # SERVER QUEUE
+        operation_view = "SELECT * FROM music_queue WHERE server={}".format(str(reaction.message.guild.id))
+        cursor.execute(operation_view)
+        server_queue = cursor.fetchall()
+        string = ""
+        song_index = server_index[str(reaction.message.guild.id)]
+        members_in_vc = [str(names) for names in reaction.message.guild.voice_client.channel.members]
+         # RANGE
+        start = server_index[str(reaction.message.guild.id)] # stop = start + 10
+    
             
         if reaction.emoji == "▶":
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
@@ -394,7 +390,6 @@ async def on_reaction_add(reaction, user):
                     except IndexError:
                         embed = discord.Embed(description="Looks like there is no song at this index", color=color)
                         embed.set_author(name="Oops...", icon_url=url_author_music)
-                        await reaction.message.edit(embed=embed)
                         await reaction.message.edit(embed=embed)
                 else:
                     embed = discord.Embed(description=f"{reaction.message.author.name}, connect to a voice channel first 🔊", color=color)
@@ -959,70 +954,55 @@ async def set_bitrate(ctx, kbps):
 @bot.command(aliases=["queue","q"])
 async def queue_song(ctx, *, name=None):
     number_of_requests()
+    operation_view = "SELECT song_name, song_url FROM music_queue WHERE server={}".format(str(ctx.guild.id))
+    cursor.execute(operation_view)
+    songs = cursor.fetchall()
     if name is not None:
         if ctx.author.id not in [member.id for member in ctx.guild.voice_client.channel.members]:
             embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
             embed.set_author(name="Walkman™", icon_url=url_author_music)
             await ctx.send(embed=embed)
         else:
+            toggle = 0
+            # WEB SCRAPE
             name = name.replace(" ", "+")
-            htm = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + name) # the 11 lettered string which is like an ID for videos is stored inside the variable video
+            htm = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + name) 
             video = regex.findall(r"watch\?v=(\S{11})", htm.read().decode())
-            url = "https://www.youtube.com/watch?v=" + video[0] # we got the html code of the full search page
-            htm_code = str(urllib.request.urlopen(url).read().decode()) # htm_code contains the entire HTML code of the web page where we see the video
-            starting = htm_code.find("<title>") + len("<title>") # now we use .find method to find the title of the vid which is in between <title></title> tags
+            url = "https://www.youtube.com/watch?v=" + video[0] 
+            htm_code = str(urllib.request.urlopen(url).read().decode()) 
+            starting = htm_code.find("<title>") + len("<title>")
             ending = htm_code.find("</title>")        
-            name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&") # here we replace uncessary things like tags because we only want the title
-            cursor.execute("""INSERT INTO music_queue(song_name, song_url, server)VALUES("{name}","{url}","{id}")""".format(name=name_of_the_song, url=url, id=str(ctx.guild.id)))
-            embed = discord.Embed(description="{}".format(name_of_the_song).replace(" - YouTube", " "), color=color)
+            name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&") 
+            # FETCHING SONG DATA FROM DB
+            # operation_view = "SELECT song_name, song_url FROM music_queue WHERE server={}".format(str(ctx.guild.id))
+            operation_add_song = f"""INSERT INTO music_queue(song_name, song_url, server)VALUES("{name_of_the_song}","{url}","{str(ctx.guild.id)}")"""
+            # cursor.execute(operation_view)
+            # songs = cursor.fetchall()
+            cursor.execute(operation_add_song)
+            embed = discord.Embed(description=f"{name_of_the_song}".replace(" - YouTube"," "), color=color)
             embed.set_author(name="Song added", icon_url=url_author_music)
             await ctx.send(embed=embed)
-            print("Song added to {}'s queue successfully...".format(ctx.guild.name))
-    if name is None:
-        operation_view = "SELECT song_name FROM music_queue WHERE server={}".format(str(ctx.guild.id))
-        cursor.execute(operation_view)
-        songs = cursor.fetchall()
-        string = ""
-        queue_range = 0
-        song_index = 0
-        if len(songs) > 0:
-            try:
-                for song in songs[server_index[str(ctx.guild.id)]:server_index[str(ctx.guild.id)] + 10]:
-                    string += str(song_index) + ". " + str(song).replace('("'," ").replace('",)'," ") + "\n"
-                    song_index += 1
-                embed = discord.Embed(description="{a}\n**Number of songs:** {b}".format(a=string.replace(" - YouTube"," ").replace("('", " ").replace("',)"," "), b=len(songs)), color=color)
-                embed.set_author(name="{}'s Queue".format(ctx.guild.name), icon_url=url_author_music)
-                embed.set_thumbnail(url=random.choice(url_thumbnail_music))
-                embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
-                queue = await ctx.send(embed=embed)
-                await queue.add_reaction("⏮") # previous track
-                await queue.add_reaction("▶")  # resume
-                await queue.add_reaction("⏸") # pause
-                await queue.add_reaction("⏭") # next
-                await queue.add_reaction("🔂") # repeat
-                await queue.add_reaction("⏹") # stop
-                await queue.add_reaction("🔀") # shuffle
-                await queue.add_reaction("*️⃣") # current song
-                await queue.add_reaction("🔼") # move up
-                await queue.add_reaction("🔽") # move down
-            except KeyError:
-                embed = discord.Embed(description="Looks like you weren't playing anything before this so there is no current song. Play song from queue to set a current song", color=color)
-                embed.set_author(name="Uh oh...", icon_url=url_author_music)
-                await ctx.send(embed=embed)
-        else:
-            embed = discord.Embed(description="No songs in queue...\nUse t!q <song name>", color=color)
-            embed.set_author(name="{}'s Queue".format(ctx.guild.name), icon_url=url_author_music)
-            await ctx.send(embed=embed)
+
+            # for song in songs:
+            #     a = list(str(song[1]).split(","))
+            #     await ctx.send(a[:5])
+
+            # PERFORMING CHECK
+    #         for song in songs:
+    #             url_list = list(str(song[1]).split(','))
+    #             if url not in url_list:
+    #                 toggle = 1
+    #                 break
+    #         if toggle == 0:
+    #             embed = discord.Embed(description=f"Looks like {name_of_the_song} is already queued for {ctx.guild.name}", color=color)
+    #             embed.set_author(name="Couldn't add song", icon_url=url_author_music)
+    #             await ctx.send(embed=embed)
+    # else:
+    #     pass
 
 @bot.command(aliases=['play','p'])
 async def play_music(ctx, *, char):
     number_of_requests()
-    global server_index
-    global FFMPEG_OPTS
-    # Server Specific Queue
-    operation = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
-    cursor.execute(operation)
-    server_queue = cursor.fetchall()
     # Setup 
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     try:
@@ -1068,6 +1048,10 @@ async def play_music(ctx, *, char):
                         await player.add_reaction("⏸") # pause
                         await player.add_reaction("⏹") # stop
                 if char.isdigit() == True:
+                     # Server Specific Queue
+                    operation = f"SELECT * FROM music_queue WHERE server={str(ctx.guild.id)}"
+                    cursor.execute(operation)
+                    server_queue = cursor.fetchall()
                     if str(ctx.guild.id) not in server_index:
                         server_index[str(ctx.guild.id)] = int(char)
                     else:

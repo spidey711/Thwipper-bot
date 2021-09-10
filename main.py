@@ -1,31 +1,28 @@
-try:
-    import discord
-    from discord.utils import get
-    from discord.ext import commands, tasks
-    from important import *
-    from links import *
-    import mysql.connector as ms
-    import os
-    import sys
-    import imdb
-    import random
-    import calendar
-    import pytz
-    import datetime
-    import regex
-    import praw
-    import pytube
-    import ffmpeg
-    import asyncio
-    import requests
-    import wikipedia
-    import youtube_dl 
-    import urllib.request
-    from googlesearch import search
-    from cryptography.fernet import Fernet
-    print("All modules sucessfully imported...")
-except Exception as e:
-    print(e)
+import discord
+from discord.utils import get
+from discord.ext import commands, tasks
+from functioning import *
+from links import *
+import mysql.connector as ms
+import os
+import sys
+import imdb
+import random
+import calendar
+import pytz
+import datetime
+import regex
+import praw
+import pytube
+import ffmpeg
+import asyncio
+import requests
+import wikipedia
+import youtube_dl 
+import urllib.request
+from googlesearch import search
+from cryptography.fernet import Fernet
+print("All modules sucessfully imported...")
 
 # SETUP
 prefixes = ["t!","_","thwip ", "thwipper "]
@@ -53,7 +50,7 @@ ydl_op = {
         }],}
 # CHANNELS
 thwipper_logs = 877394070115336192
-announcements = 868085346867490866
+announcements = 849215252280770580
 # ENCRYPTER DECRYPTER
 key = Fernet.generate_key()
 cipher = Fernet(key)
@@ -62,8 +59,8 @@ reddit = praw.Reddit(
             client_id = reddit_client_id,
             client_secret = reddit_client_secret,
             user_agent = reddit_user_agent,
-            username = reddit_user_name,
-            password = reddit_user_pass
+            username = reddit_username,
+            password = reddit_userpass
         )
 default_topic = {}
 # QUIPS
@@ -1510,6 +1507,6 @@ async def check_user_bdays_and_wish(ctx):
             await message.add_reaction("🎉")
             toggle = 1
     if toggle == 0:
-        await ctx.send(embed=discord.Embed(description=f"I just checked from my database and it seems there are no birthdays today", color=color))
+        await ctx.send(embed=discord.Embed(description=f"I just checked from my database and it seems there are no birthdays today 💁🏻‍♂️", color=color))
 
 bot.run(token)

@@ -1510,6 +1510,6 @@ async def check_user_bdays_and_wish(ctx):
             await message.add_reaction("🎉")
             toggle = 1
     if toggle == 0:
-        await ctx.send(embed=discord.Embed(description=f"Nope! No ", color=color))
+        await ctx.send(embed=discord.Embed(description=f"I just checked from my database and it seems there are no birthdays today", color=color))
 
 bot.run(token)

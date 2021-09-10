@@ -1489,11 +1489,12 @@ async def check_user_bdays_and_wish(ctx):
     cursor.execute(op_check)
     bdays = cursor.fetchall()
     channel = bot.get_channel(int(announcements))
+    toggle = 0
     for bday in bdays: # bday[0]   bday[1]  bday[2]
         if datetime.datetime.today().month == bday[1] and datetime.datetime.today().day == bday[2]:
             name = bot.get_user(int(bday[0])).name
             wishes = [f"🎊 Happy Birthday {name} 🎊", f"🎉 Happy Birthday {name} 🎉", f"✨ Happy Birthday {name} ✨", f"🎇 Happy Birthday {name} 🎇"]
-            descriptions = [f"Make the most out of your day!", f"I am invited to the party, right? I hope I am 😎", f"Enjoy the cake 🎂!", f"Here is a present for you 🎁", "Party hard dude! Tis' your day 🤟🏻"]
+            descriptions = ["Make the most out of your day!", f"I am invited to the party, right? I hope I am 😎", f"Enjoy the cake 🎂!", f"Here is a present for you 🎁", "Party hard dude! Tis' your day 🤟🏻"]
             embed = discord.Embed(title=random.choice(wishes), description=random.choice(descriptions), color=color)
             embed.set_image(url=random.choice(url_bdays_spiderman))
             embed.set_thumbnail(url=bot.get_user(int(bday[0])).avatar_url)
@@ -1504,7 +1505,8 @@ async def check_user_bdays_and_wish(ctx):
             await message.add_reaction("🎂")
             await message.add_reaction("🎆")
             await message.add_reaction("🎉")
-        else:
-            print(f"According to my database, {bot.get_user(int(bday[0]))}'s birthday isn't today")
+            toggle = 1
+    if toggle == 0:
+        await ctx.send(embed=discord.Embed(description=f"According to my database, no birthdays today", color=color))
 
 bot.run(token)

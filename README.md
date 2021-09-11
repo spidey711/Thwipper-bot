@@ -21,7 +21,7 @@ _Encryption & Decryption_<br>
 _MORE FEATURES COMING SOON🕷_
 
 _<h2>🕷 Note 🕷</h2>_
-Have the bot token, SQL password, reddit client id, client secret and the user agent in a .py file in the same directory as main.py<br>
+Have the bot token, SQL password, reddit client id, client secret and the user agent in a .py file in the same directory as `main.py`<br>
 Make sure you have all the dependencies installed that are required for this bot to work.<br>
 Especially `ffmpeg` as it is required to play music.
 <a href="https://ffmpeg.org/download.html">Install ffmpeg here</a><br>

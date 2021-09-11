@@ -1,6 +1,6 @@
 # Thwipper-bot
 
-_<h2>What is Thwipper?</h2>_
+_<h2>🕷 What is Thwipper? 🕷</h2>_
 Everything you need to keep the members of the server entertained, this bot has it. 
 Thwipper is inspired from my favorite fictional character Spider-Man. Its name is the onomatopoeia of Spider-Man using his web-shooters. Thwip!<br>
 Prefixes => `[t!], [ _ ], [thwip] [thwipper]`<br>
@@ -8,7 +8,7 @@ Prefixes => `[t!], [ _ ], [thwip] [thwipper]`<br>
 <!-- <img src="\spiderman.png"></img> -->
 <img src="https://images2.minutemediacdn.com/image/upload/c_fill,w_912,h_516,f_auto,q_auto,g_auto/shape/cover/entertainment/5b2ec26efae96f818e000001.jpeg"></img>
 
-_<h2>Features:-</h2>_
+_<h2>🕷 Features 🕷</h2>_
 _IMDb_<br>
 _Quips_<br>
 _Reddit_<br>
@@ -18,8 +18,9 @@ _Music Player_<br>
 _Python & MySQL Shells_<br> 
 _Date, Time & Calendar_ <br>
 _Encryption & Decryption_<br>
+_MORE FEATURES COMING SOON🕷_
 
-_<h2>Note:-</h2>_
+_<h2>🕷 Note 🕷</h2>_
 Have the bot token, SQL password, reddit client id, client secret and the user agent in a .py file in the same directory as main.py<br>
 Make sure you have all the dependencies installed that are required for this bot to work.<br>
 Especially `ffmpeg` as it is required to play music.

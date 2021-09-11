@@ -17,8 +17,8 @@ _Wikipedia_<br>
 _Music Player_<br> 
 _Python & MySQL Shells_<br> 
 _Date, Time & Calendar_ <br>
-_Encryption & Decryption_<br>
-_MORE FEATURES COMING SOON🕷_
+_Encryption & Decryption_<br><br>
+_MORE FEATURES COMING SOON_
 
 _<h2>🕷 Note 🕷</h2>_
 Have the bot token, SQL password, reddit client id, client secret and the user agent in a .py file in the same directory as `main.py`<br>

@@ -3,6 +3,7 @@ from discord.utils import get
 from discord.ext import commands, tasks
 from functioning import *
 from links import *
+from responses import *
 import mysql.connector as ms
 import os
 import sys
@@ -69,6 +70,8 @@ dialogue_list = []
 # SQL
 conn = ms.connect(host="localhost", user="root", passwd=sql_pass, database="discord")
 cursor = conn.cursor()
+# Special Perms
+special_roles = ["Mod","Admin","Moderator","Administrator","Potentate","King","Protector"]
 
 # //////////////////////////////////////// NON ASYNC FUNCTIONS /////////////////////////////////////
 
@@ -155,7 +158,7 @@ async def on_ready():
 async def on_message(message):
     if f"<@!{bot.user.id}>" == message.content:
             number_of_requests()
-            embed = discord.Embed(title="About", description=f"Hey {message.author.name}!\nI was made by `Spider-Man#1178` to tend to people's needs on discord while he is out in the city protecting the innocent from harm.", color=color)
+            embed = discord.Embed(title="About", description=f"Hey {message.author.name}!\nI was made by `Spider-Man#1178`. Everything you need to keep the members of the server entertained, I have it 😎", color=color)
             embed.set_thumbnail(url=bot.user.avatar_url)
             embed.set_image(url="https://txt.1001fonts.net/img/txt/dHRmLjcyLjAwMDAwMC5WRWhYU1ZCUVJWSSwuMA,,/lazenby-computer.liquid.png")
             embed.set_footer(text="𝗧𝘆𝗽𝗲 _𝘂𝘀𝗲 𝗳𝗼𝗿 𝗰𝗼𝗺𝗺𝗮𝗻𝗱 𝗺𝗲𝗻𝘂", icon_url=message.author.avatar_url)
@@ -513,42 +516,14 @@ async def on_reaction_add(reaction, user):
         
 # //////////////////////////////////// SPECIAL ACCESS /////////////////////////////////////////
 
-@bot.command(aliases=["allow","alw"])
-async def allow_access(ctx, member:discord.Member):
-    number_of_requests()
-    if ctx.author.id == 622497106657148939:
-        cursor.execute("INSERT INTO dev_users(dev_id)values({})".format(str(member.id)))
-        embed = discord.Embed(description="{} has been allowed access".format(member), color=color)
-        embed.set_author(name="Python Shell", icon_url=url_author_python)
-        await ctx.send(embed=embed)
-    else:
-        embed = discord.Embed(description="Access Denied", color=color)
-
-@bot.command(aliases=["restrict","rstr"])
-async def remove_access(ctx, member:discord.Member):
-    number_of_requests()
-    if ctx.author.id == 622497106657148939:    
-        cursor.execute("DELETE FROM dev_users WHERE dev_id={}".format(str(member.id)))    
-        embed = discord.Embed(description="{} is now restricted".format(str(member)), color=color)
-        embed.set_author(name="Python Shell", icon_url=url_author_python)
-        await ctx.send(embed=embed)
-    else:
-        embed = discord.Embed(description="Access Denied", color=color)    
-
 @bot.command(aliases=["delete", "del"])
 async def clear(ctx, text, num=10000000000000):
     number_of_requests()
-    op_dev = "SELECT * FROM dev_users"
-    cursor.execute(op_dev)
-    dev_list = cursor.fetchall()
-    if str(ctx.author.id) in str(dev_list) or ctx.author.id == 622497106657148939:
-        await ctx.channel.purge(limit=1)
-        if str(text) == "WEB":
-            await ctx.channel.purge(limit=num)
-        else:
-            await ctx.send("Incorrect Password")
+    await ctx.channel.purge(limit=1)
+    if str(text) == "WEB":
+        await ctx.channel.purge(limit=num)
     else:
-        await ctx.send("Access Denied")    
+        await ctx.send("Incorrect Password")
 
 @bot.command(aliases=["[X]"])
 async def stop_program(ctx):
@@ -575,7 +550,7 @@ async def stop_program(ctx):
 @bot.command(aliases=['hello', 'hi', 'hey', 'hey there', 'salut',"kon'nichiwa","hola","aloha"])
 async def greet_bot(ctx):
     number_of_requests()
-    greetings = ["Hey {}!".format(ctx.author.name), "Incoming....", "Hi {}!".format(ctx.author.name), "How's it going {}?".format(ctx.author.name), "What can I do for you {}?".format(ctx.author.name), "What's up {}?".format(ctx.author.name), "Hello {}!".format(ctx.author.name), "You called, {}?".format(ctx.author.name)]
+    greetings = ["Hey {}!".format(ctx.author.name), "Hi {}!".format(ctx.author.name), "How's it going {}?".format(ctx.author.name), "What can I do for you {}?".format(ctx.author.name), "What's up {}?".format(ctx.author.name), "Hello {}!".format(ctx.author.name), "You called, {}?".format(ctx.author.name)]
     embed = discord.Embed(title=random.choice(greetings), color=color)
     embed.set_image(url=random.choice(hello_urls))
     await ctx.send(embed=embed)
@@ -589,15 +564,15 @@ async def embed_help(ctx):
     embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nuse to get this embed\nquips to get a famous dialogue or plot\n@Thwipper to get more info about thwipper", inline=False)
     embed.add_field(name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush en <text> to encrypt message\nhush dec <text> to decrypt message\n", inline=False)
     embed.add_field(name="𝗗𝗧𝗖", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
-    embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; <query> to use SQL Shell\npy for python shell\npinfo to get use of that python function", inline=False)
+    embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; <query> to use SQL Shell\npy for python shell\npydoc to get use of that python function", inline=False)
     embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="imdb <movie> to get movie details from IMDb\nreddit <topic> to get reddit memes\nw <topic> for wikipedia\ng <topic> to google",inline=False)
     embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text="New Features Coming Soon 🛠")
     message = await ctx.send(embed=embed)
     await message.add_reaction("⬅")
-    await message.add_reaction("➡")
     await message.add_reaction("🕸")
+    await message.add_reaction("➡")
 
 @bot.command(aliases=["quips"])
 async def get_quips(ctx):
@@ -609,8 +584,6 @@ async def get_quips(ctx):
         for dialogue in dialogue_list:
             quips_list.append(plot)
             quips_list.append(dialogue)
-    titles = ["Oh man, I remember this one!","Here you go...","I gotta say, this still holds up today..."]
-    footers = ["Man, this is killer material!","Now this is entertaining!","Oh boy, this is one of my favorites!"]
     embed = discord.Embed(title=random.choice(titles), description=random.choice(quips_list), color=color)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text=random.choice(footers), icon_url=bot.user.avatar_url)
@@ -727,7 +700,6 @@ async def snipe(ctx):
 @bot.command(aliases=["pfp"])
 async def user_pfp(ctx, member:discord.Member=None):
     number_of_requests()
-    compliments = ["Man, the daily bugle would pay a lot for this 🤩", "This is nice one! I like it 😎", "Oh Boy! JJJ is gonna be real happy 😃", "🔥🔥🔥","Great Profile Picture, I must say","Damn, where'd you get this? 💙", "Solid 8/10 😎"]
     if member is None:
         embed = discord.Embed(title="Profile Picture : {}".format(ctx.author.name), color=color)
         embed.set_image(url=ctx.author.avatar_url)
@@ -818,59 +790,43 @@ async def get_calendar(ctx, year, month):
 @bot.command(aliases=[";"])
 async def sql_shell(ctx, *, expression):
     number_of_requests()
-    global cursor
-    op_dev = "SELECT * FROM dev_users"
-    cursor.execute(op_dev)
-    dev_list = cursor.fetchall()
-    if str(ctx.author.id) in str(dev_list) or ctx.author.id == 622497106657148939:
-        try:
-            output = ""
-            cursor.execute(expression)
-            for item in cursor.fetchall():
-                output += str(item) + "\n"
-            conn.commit()
-            embed = discord.Embed(title=str(expression), description=str(output), color=color)
-            embed.set_author(name="MySQL Shell", icon_url=url_author_sql)   
-            await ctx.send(embed=embed)
-        except Exception as e:
-            embed_err = discord.Embed(title="ERROR", description=str(e), color=color)
-            embed_err.set_author(name="MySQL Shell", icon_url=url_author_sql)   
-            await ctx.send(embed=embed_err)
-    else:
-        embed = discord.Embed(description="Access Denied", color=color)
-
+    try:
+        output = ""
+        cursor.execute(expression)
+        for item in cursor.fetchall():
+            output += str(item) + "\n"
+        conn.commit()
+        embed = discord.Embed(title=str(expression), description=str(output), color=color)
+        embed.set_author(name="MySQL Shell", icon_url=url_author_sql)   
+        await ctx.send(embed=embed)
+    except Exception as e:
+        embed_err = discord.Embed(title="Error", description=str(e), color=color)
+        embed_err.set_author(name="MySQL Shell", icon_url=url_author_sql)   
+        await ctx.send(embed=embed_err)
+    
 @bot.command(aliases=["py"])
 async def python_shell(ctx, *, expression):
     number_of_requests()
-    global cursor
-    op_dev = "SELECT * FROM dev_users"
-    cursor.execute(op_dev)
-    dev_list = cursor.fetchall()
-    if str(ctx.author.id) in str(dev_list) or ctx.author.id == 622497106657148939:
-        if expression in denied:
-            embed = discord.Embed(description="This function will not be executed", color=color)
-            embed.set_author(name="Access Denied", icon_url=url_author_python)
-            await ctx.send(embed=embed)
-        else:
-            try:
-                embed_acc = discord.Embed(title=str(expression), description=str(eval(expression)), color=color)
-                embed_acc.set_author(name="Python Shell", icon_url=url_author_python)
-                await ctx.send(embed=embed_acc)
-            except Exception as e:
-                embed_err = discord.Embed(title="ERROR", description=str(e), color=color)
-                embed_err.set_author(name="Python Shell", icon_url=url_author_python)
-                await ctx.send(embed=embed_err)
+    if expression in denied:
+        embed = discord.Embed(description=random.choice(denied_responses), color=color)
+        embed.set_author(name="Access Denied", icon_url=url_author_python)
+        await ctx.send(embed=embed)
     else:
-        embed_dc = discord.Embed(title="Access Denied", color=color)
-        embed_dc.set_author(name="Python Shell",icon_url=url_author_python)
-        await ctx.send(embed=embed_dc)
+        try:
+            embed_acc = discord.Embed(title=str(expression), description=str(eval(expression)), color=color)
+            embed_acc.set_author(name="Python Shell", icon_url=url_author_python)
+            await ctx.send(embed=embed_acc)
+        except Exception as e:
+            embed_err = discord.Embed(title="Error", description=str(e), color=color)
+            embed_err.set_author(name="Python Shell", icon_url=url_author_python)
+            await ctx.send(embed=embed_err)
 
-@bot.command(aliases=["pinfo"])
+@bot.command(aliases=["pydoc"])
 async def function_info(ctx, func):
     number_of_requests()
     try:
         if "(" in [char for char in func] and ")" in [char for char in func]:
-            embed = discord.Embed(description="Sorry, can't do functions. Do without brackets to get information", color=color)
+            embed = discord.Embed(description=random.choice(no_functions), color=color)
             embed.set_author(name="Access Denied", icon_url=url_author_python)
             await ctx.send(embed=embed)
         else:
@@ -892,22 +848,22 @@ async def join_vc(ctx):
     try:
         if not ctx.message.author.voice:
             embed = discord.Embed(description="{}, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
-            embed.set_author(name='Voice', icon_url=url_author_music)
+            embed.set_author(name='Walkman™', icon_url=url_author_music)
             await ctx.send(embed=embed)
         if voice == None:    
             channel = ctx.message.author.voice.channel
             await channel.connect()
             message = await ctx.send("Connected to {}".format(ctx.guild.voice_client.channel.name))
             await asyncio.sleep(2)
-            await message.edit(content="Use `t!p <name> or <index>` to play songs 🎵")
+            await message.edit(content="Use _p <name> or _p <index> to play songs 🎵")
             print("Connected Successfully...")
         if voice != None:
             embed = discord.Embed(description="Already connected to a voice channel ✅", color=color)
-            embed.set_author(name='Voice', icon_url=url_author_music)
+            embed.set_author(name='Walkman™', icon_url=url_author_music)
             await ctx.send(embed=embed)
     except Exception as e:
         embed = discord.Embed(description="Error:\n" + str(e), color=color)
-        embed.set_author(name='Voice', icon_url=url_author_music)
+        embed.set_author(name='Walkman™', icon_url=url_author_music)
 
 @bot.command(aliases=["dc","disconnect"])
 async def leave_vc(ctx):

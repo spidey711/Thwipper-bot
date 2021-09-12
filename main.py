@@ -667,19 +667,32 @@ async def google_results(ctx, *, thing_to_search):
 
 @bot.command(aliases=["polls","poll"])
 async def conduct_poll(ctx, type=None, title=None, *, description=None):
-    channel = bot.get_channel(announcements)
+    number_of_requests()
+    await ctx.channel.purge(limit=1)
+    channel = bot.get_channel(886669829698883655) # polls channel id
     if type is not None and title is not None and description is not None:
-        embed = discord.Embed(title=title, description=description, color=color)
+        if "_" in title:
+            embed = discord.Embed(title=f"Topic: {title}".replace("_"," "), description=description, color=color)
+        else:
+            embed = discord.Embed(title=f"Topic: {title}", description=description, color=color)
+        embed.set_author(name='Polls', icon_url=bot.user.avatar_url)
         message = await channel.send(embed=embed)
         if type == "y/n":
             await message.add_reaction("✅")
             await message.add_reaction("❌")
-        if type == "this/that":
-            await message.add_reaction("◀")
-            await message.add_reaction("▶")
-        await ctx.send(embed=discord.Embed(description="Poll sent successfully 👍🏻", color=color))
+        elif type == "this/that":
+            await message.add_reaction("👈🏻")
+            await message.add_reaction("👉🏻")
+        else:
+            await ctx.send("Enter a valid type: y/n for yes or no OR this/that for this or that")
+        if ctx.channel.id == 886669829698883655:
+            pass
+        else:
+            await ctx.send(embed=discord.Embed(description="Poll sent successfully 👍🏻", color=color))
     else:
-        await ctx.send("Here is how to enter details for poll:\ntype [this/that or y/n]\ntitle [cannot be a sentence]\ndescription [enter here]\nEXAMPLE: _polls this/that Title 1 or 2")
+        embed = discord.Embed(title="Polls", description="Command => `_polls type title description`\n\n`Type:` You can specify whether its a yes or no (y/n) OR this or that (t/t) type of poll\n`Title:` Give your poll a title\n`Description:` Give a description for what the poll is about\n\nExample Usage:-\n`_polls y/n Travel Beach or Mountains?`\n\nNOTE: If the title happens to be more than word long, you can separate the words by an `_`.\nExample: `The_Ultimate_Decision`. The title in the poll embed will look like `The Ultimate Decision`.", color=color)
+        embed.set_thumbnail(url=random.choice(url_thumbnails))
+        await ctx.send(embed=embed)
 
 @bot.command(aliases=['req','requests'])
 async def total_requests(ctx):

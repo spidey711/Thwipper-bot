@@ -526,8 +526,6 @@ async def clear(ctx, text, num=10000000000000):
 @bot.command(aliases=["[X]"])
 async def stop_program(ctx):
     number_of_requests()
-    global cursor
-    global conn
     try: 
         voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
         voice.stop()
@@ -667,6 +665,22 @@ async def google_results(ctx, *, thing_to_search):
 
 #///////////////////////////////////// UTILITY ///////////////////////////////////////////////        
 
+@bot.command(aliases=["polls","poll"])
+async def conduct_poll(ctx, type=None, title=None, *, description=None):
+    channel = bot.get_channel(announcements)
+    if type is not None and title is not None and description is not None:
+        embed = discord.Embed(title=title, description=description, color=color)
+        message = await channel.send(embed=embed)
+        if type == "y/n":
+            await message.add_reaction("✅")
+            await message.add_reaction("❌")
+        if type == "this/that":
+            await message.add_reaction("◀")
+            await message.add_reaction("▶")
+        await ctx.send(embed=discord.Embed(description="Poll sent successfully 👍🏻", color=color))
+    else:
+        await ctx.send("Here is how to enter details for poll:\ntype [this/that or y/n]\ntitle [cannot be a sentence]\ndescription [enter here]\nEXAMPLE: _polls this/that Title 1 or 2")
+
 @bot.command(aliases=['req','requests'])
 async def total_requests(ctx):
     number_of_requests()
@@ -740,7 +754,6 @@ async def server_information(ctx):
 @bot.command(aliases=["hush"])
 async def encrypt_data(ctx, mode, *, message):
     number_of_requests()
-    global key, cipher
     res = message.encode()
     try:
         if mode == "en":

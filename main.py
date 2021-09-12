@@ -5,8 +5,6 @@ from functioning import *
 from links import *
 from responses import *
 import mysql.connector as ms
-import os
-import sys
 import imdb
 import random
 import calendar
@@ -807,7 +805,7 @@ async def sql_shell(ctx, *, expression):
 @bot.command(aliases=["py"])
 async def python_shell(ctx, *, expression):
     number_of_requests()
-    if expression in denied:
+    if expression in denied or denied[-2] in expression or denied[-1] in expression:
         embed = discord.Embed(description=random.choice(denied_responses), color=color)
         embed.set_author(name="Access Denied", icon_url=url_author_python)
         await ctx.send(embed=embed)

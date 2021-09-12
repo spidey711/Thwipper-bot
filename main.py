@@ -672,10 +672,10 @@ async def conduct_poll(ctx, type=None, title=None, *, description=None):
     channel = bot.get_channel(886669829698883655) # polls channel id
     if type is not None and title is not None and description is not None:
         if "_" in title:
-            embed = discord.Embed(title=f"Topic: {title}".replace("_"," "), description=description, color=color)
+            embed = discord.Embed(title=f"Poll: {title}".replace("_"," "), description=description, color=color)
         else:
-            embed = discord.Embed(title=f"Topic: {title}", description=description, color=color)
-        embed.set_author(name='Polls', icon_url=bot.user.avatar_url)
+            embed = discord.Embed(title=f"Poll: {title}", description=description, color=color)
+        embed.set_footer(text=f"Conducted by: {ctx.author.name}", icon_url=ctx.author.avatar_url)
         message = await channel.send(embed=embed)
         if type == "y/n":
             await message.add_reaction("✅")

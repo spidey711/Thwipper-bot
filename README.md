@@ -15,6 +15,7 @@ _Reddit_<br>
 _Google_<br>
 _Wikipedia_<br>
 _Music Player_<br> 
+_Conduct Polls_<br>
 _Python & MySQL Shells_<br> 
 _Date, Time & Calendar_ <br>
 _Encryption & Decryption_<br><br>

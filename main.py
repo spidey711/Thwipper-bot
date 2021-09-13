@@ -677,10 +677,10 @@ async def conduct_poll(ctx, type=None, title=None, *, description=None):
             embed = discord.Embed(title=f"Poll: {title}", description=description, color=color)
         embed.set_footer(text=f"Conducted by: {ctx.author.name}", icon_url=ctx.author.avatar_url)
         message = await channel.send(embed=embed)
-        if type == "y/n":
+        if type == "yes/no" or type == "y/n":
             await message.add_reaction("✅")
             await message.add_reaction("❌")
-        elif type == "this/that":
+        elif type == "this/that" or type == "t/t":
             await message.add_reaction("👈🏻")
             await message.add_reaction("👉🏻")
         else:

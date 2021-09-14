@@ -145,10 +145,6 @@ async def on_ready():
         req1 = cursor.fetchall()
         req2 = str(req1).replace("[("," ").replace(",)]"," ")
         num = int(req2)
-        # BDAY CHECK
-        # op_check = "SELECT * FROM birthdays"
-        # cursor.execute(op_check)
-        # bdays = cursor.fetchall()
         conn.commit()
     updation.start()
 
@@ -161,8 +157,6 @@ async def on_message(message):
             embed.set_image(url="https://txt.1001fonts.net/img/txt/dHRmLjcyLjAwMDAwMC5WRWhYU1ZCUVJWSSwuMA,,/lazenby-computer.liquid.png")
             embed.set_footer(text="𝗧𝘆𝗽𝗲 _𝘂𝘀𝗲 𝗳𝗼𝗿 𝗰𝗼𝗺𝗺𝗮𝗻𝗱 𝗺𝗲𝗻𝘂", icon_url=message.author.avatar_url)
             await message.channel.send(embed=embed)
-    if "thwipper" in message.content or "Thwipper" in message.content:
-        await message.channel.send(random.choice(call_responses))
     else:
         await bot.process_commands(message)
 
@@ -204,7 +198,7 @@ async def on_reaction_add(reaction, user):
                             color=color)
                 embed.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="p <name> or <index> to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ this to get current song", inline=False)
                 embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nq to view queue\nrem <index> to remove song from queue\ncq to clear queue", inline=False)
-                embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\nweb to see deleted message\naddbday <mention> <date> to add a user's birthday from DB\nbday to get thwipper to wish the members\nrembday <mention> to remove a member's birthday from DB.\n`Note: The date must be in month-date format`", inline=False)
+                embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\n\polls to see how to conduct a poll\nweb to see deleted message\naddbday <mention> <date> to add a user's birthday from DB\nbday to get thwipper to wish the members\nrembday <mention> to remove a member's birthday from DB.\n`Note: The date must be in month-date format`", inline=False)
                 embed.set_thumbnail(url=random.choice(url_thumbnails))
                 embed.set_footer(text="New Features Coming Soon 🛠")
                 await reaction.message.edit(embed=embed)

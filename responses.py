@@ -5,7 +5,17 @@ footers = ["Really interesting if I do say so myself.","Gotta say, this still ho
 # Profile Picture
 compliments = ["Man, the daily bugle would pay a lot for this 🤩", "This is a nice one! I like it 😎", "Oh Boy! JJJ is gonna be real happy 😃", "The profile picture is fire 🔥🔥🔥","Great Profile Picture, if I do say so myself 🤔","Damn, where'd you get this? 💙", "Solid 8/10 😎","Beautiful 🌃", "Solid 9/10 😎", "I will consider this an exception and give you 10/10 😎","Your FBI Agent will be proud of this profile picture 👌🏻"]
 
+# Channels
+poll_channels = ['polls','poll','🔺-polls-🔻']
+announce_channels = ['announcements','bot-announcement','📢-announcements']
+
 # Shells
 denied = ["exit()","token", "sql_pass", 'eval("token")', "eval('token')",'eval("sql_pass")',"key","cipher","eval('cipher')",'eval("cipher")',"eval('key')",'eval("key")',"reddit_client_id","eval('reddit_client_id')",'eval("reddit_client_id")',"reddit_client_secret","eval('reddit_client_secret')",'eval("reddit_client_secret")',"reddit_user_agent","eval('reddit_user_agent')",'eval("reddit_user_agent")',"reddit_client_id","eval('reddit_client_id')",'eval ("reddit_client_id")',"reddit_user_pass","eval('reddit_user_pass')",'eval("reddit_user_pass")',"reddit_client_id","eval('reddit_client_id')",'eval("reddit_client_id")',"10**10**10","import","exec"]
 denied_responses = ["Uh uh, no can do man. That function will not be executed.","Nope! Can't and won't execute that function","Haha, sorry I cannot possibly execute that function.","That function cannot be executed."]
 no_functions = ["Functions will not be executed. Try w/o brackets to get information.","No functions allowed. Please enter w/o brackets to get information.","I cannot execute functions, try entering w/o brackets to get information."]
+
+# IMDb Responses
+imdb_responses = ["I don't think there is a movie with no name, is there?","I think you forgot to enter the movie name.","You gotta enter the movie name dude.","Is there a movie with no name?"]
+
+# Status
+status_list = ["The Amazing Spider-Man", "The Amazing Spider-Man 2", "Spider-Man", "Spider-Man 2", "Spider-Man 3", "TASM Duology", "Raimi Trilogy", "Spider-Man Homecoming", "Spider-Man Far From Home", "Spectacular Spider-Man", "Ultimate Spider-Man", "Fairly Rad Videos", "Marvel's Spider-Man", "Marvel's Spider-Man Miles Morales", "Chrome", "Firefox Developer Edition", "Visual Studio Code", "Music", "Discord", "Dying Light", "Ezio Trilogy", "Prototype(2009)", "Dead Space(2008)", "Need For Speed: Most Wanted"]

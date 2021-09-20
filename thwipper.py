@@ -101,19 +101,18 @@ async def on_ready():
     print("{0.user} is now online...\nHey Tamonud! How's it going?".format(bot))
     stop = 0
     # QUIPS
-    global plot_list
-    x = requests.get("https://www.cbr.com/greatest-spider-man-stories/").content.decode().replace("<em>"," ").replace("</em>"," ")
-    for i in range(0, 10000):
-        a = x.find("<p>", stop)
-        b = x.find("</p>", stop)
-        stop = b + len("</p>")
-        wits = ""
-        if not x[a:b]:
-            continue
-        else:
-            wits = x[a:b]
-            plot_list += [wits.replace("<p>"," ")]
-    # DIALOGUES
+    # global plot_list
+    # x = requests.get("https://www.cbr.com/greatest-spider-man-stories/").content.decode().replace("<em>"," ").replace("</em>"," ")
+    # for i in range(0, 10000):
+    #     a = x.find("<p>", stop)
+    #     b = x.find("</p>", stop)
+    #     stop = b + len("</p>")
+    #     wits = ""
+    #     if not x[a:b]:
+    #         continue
+    #     else:
+    #         wits = x[a:b]
+    #         plot_list += [wits.replace("<p>"," ")]
     global dialogue_list
     site = requests.get("https://geektrippers.com/spiderman-quotes/").content.decode().replace("<br>","\n").replace("<strong>"," ").replace("</strong>"," ").replace("<em>"," ").replace("</em>"," ").replace("&#8217;","'").replace("&#8221;",'"\n\r').replace("&#8230;","...").replace("&#8220;",'"').replace("&nbsp;"," ").replace("&#8211;","-").replace("&#8216;","'")
     for i in range(0, 1000):
@@ -129,10 +128,10 @@ async def on_ready():
     # STATUSES
     @tasks.loop(minutes=10)
     async def multiple_statuses():
-        status_list = ["The Amazing Spider-Man", "The Amazing Spider-Man 2", "Spider-Man", "Spider-Man 2", "Spider-Man 3", "TASM Duology", "Raimi Trilogy", "Spider-Man Homecoming", "Spider-Man Far From Home", "Spectacular Spider-Man", "Ultimate Spider-Man", "Fairly Rad Videos", "Marvel's Spider-Man", "Marvel's Spider-Man Miles Morales", "Chrome", "Firefox Developer Edition", "Visual Studio Code", "Music", "Discord", "Dying Light", "Ezio Trilogy", "Prototype(2009)", "Dead Space(2008)", "Need For Speed: Most Wanted"]
-        for status in status_list:     
-            await asyncio.sleep(300)
-            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=status))
+        while True:
+            for status in status_list:     
+                await asyncio.sleep(300)
+                await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=status))
     multiple_statuses.start()
     # UPDATION
     @tasks.loop(seconds=5.0)
@@ -198,7 +197,7 @@ async def on_reaction_add(reaction, user):
                             color=color)
                 embed.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="p <name> or <index> to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ songinfo to get current song", inline=False)
                 embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nq to view queue\nrem <index> to remove song from queue\ncq to clear queue", inline=False)
-                embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\n\polls to see how to conduct a poll\nweb to see deleted message\naddbday <mention> <date> to add a user's birthday from DB\nbday to get thwipper to wish the members\nrembday <mention> to remove a member's birthday from DB.\n`Note: The date must be in month-date format`", inline=False)
+                embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\n\polls to see how to conduct a poll\nweb to see deleted message\n.web to troll those who try web command\naddbday <mention> <date> to add a user's birthday from DB\nbday to get thwipper to wish the members\nrembday <mention> to remove a member's birthday from DB.\n`Note: The date must be in month-date format`", inline=False)
                 embed.set_thumbnail(url=random.choice(url_thumbnails))
                 embed.set_footer(text="New Features Coming Soon 🛠")
                 await reaction.message.edit(embed=embed)
@@ -569,13 +568,13 @@ async def embed_help(ctx):
 @bot.command(aliases=["quips"])
 async def get_quips(ctx):
     number_of_requests()
-    global plot_list
+    # global plot_list
     global dialogue_list
     quips_list = []
-    for plot in plot_list:
-        for dialogue in dialogue_list:
-            quips_list.append(plot)
-            quips_list.append(dialogue)
+    # for plot in plot_list:
+    for dialogue in dialogue_list:
+        # quips_list.append(plot)
+        quips_list.append(dialogue)
     embed = discord.Embed(title=random.choice(titles), description=random.choice(quips_list), color=color)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text=random.choice(footers), icon_url=bot.user.avatar_url)
@@ -585,26 +584,27 @@ async def get_quips(ctx):
 # //////////////////////////////////// INTERNET //////////////////////////////////////////////
 
 @bot.command(aliases=["imdb"])
-async def IMDb_movies(ctx, *, movie_name):
+async def IMDb_movies(ctx, *, movie_name=None):
     number_of_requests()
-    # if movie_name == "":
-    #     embed = discord.Embed(description="I don't think there is a movie with no name, is there?", color=color)
-    #     embed.set_author(name="Ahem ahem", icon_url=url_imdb_author)
-    #     await ctx.send(embed=embed)
-    try:
-        db = imdb.IMDb()
-        movie = db.search_movie(movie_name)
-        title = movie[0]['title']
-        movie_summary = db.get_movie(movie[0].getID()).summary().replace("=","").replace("Title","**Title**").replace("Movie","").replace("Genres","**Genres**").replace("Director","**Director**").replace("Writer","**Writer(s)**").replace("Cast","**Cast**").replace("Country","**Country**").replace("Language","**Language**").replace("Rating","**Rating**").replace("Plot","**Plot**").replace("Runtime","**Runtime**")
-        movie_cover = movie[0]['full-size cover url']
-        embed = discord.Embed(title="🎬 {} 🍿".format(title), description=movie_summary, color=color)
-        embed.set_thumbnail(url=url_imdb_thumbnail) # 🎥 🎬 📽
-        embed.set_image(url=movie_cover)
+    if movie_name is None:
+        embed = discord.Embed(description=random.choice(imdb_responses), color=color)
+        embed.set_author(name="Ahem ahem", icon_url=url_imdb_author)
         await ctx.send(embed=embed)
-    except Exception as e:
-        embed = discord.Embed(description="I couldn't find `{}`.\nTry again and make sure you enter the correct movie name.".format(movie_name), color=color)
-        embed.set_author(name="Movie Not Found 💬", icon_url=url_imdb_author)
-        await ctx.send(embed=embed)
+    if movie_name is not None:
+        try:
+            db = imdb.IMDb()
+            movie = db.search_movie(movie_name)
+            title = movie[0]['title']
+            movie_summary = db.get_movie(movie[0].getID()).summary().replace("=","").replace("Title","**Title**").replace("Movie","").replace("Genres","**Genres**").replace("Director","**Director**").replace("Writer","**Writer(s)**").replace("Cast","**Cast**").replace("Country","**Country**").replace("Language","**Language**").replace("Rating","**Rating**").replace("Plot","**Plot**").replace("Runtime","**Runtime**")
+            movie_cover = movie[0]['full-size cover url']
+            embed = discord.Embed(title="🎬 {} 🍿".format(title), description=movie_summary, color=color)
+            embed.set_thumbnail(url=url_imdb_thumbnail) # 🎥 🎬 📽
+            embed.set_image(url=movie_cover)
+            await ctx.send(embed=embed)
+        except Exception as e:
+            embed = discord.Embed(description="I couldn't find `{}`.\nTry again and make sure you enter the correct movie name.".format(movie_name), color=color)
+            embed.set_author(name="Movie Not Found 💬", icon_url=url_imdb_author)
+            await ctx.send(embed=embed)
 
 @bot.command(aliases=["reddit","rd"])
 async def reddit_memes(ctx, *, topic):
@@ -663,6 +663,7 @@ async def google_results(ctx, *, thing_to_search):
 
 @bot.command(aliases=["say"])
 async def replicate_user_text(ctx, *, text):
+    number_of_requests()
     await ctx.channel.purge(limit=1)
     await ctx.send(text)
 
@@ -670,14 +671,10 @@ async def replicate_user_text(ctx, *, text):
 async def conduct_poll(ctx, type=None, title=None, *, description=None):
     number_of_requests()
     await ctx.channel.purge(limit=1)
-    channel = bot.get_channel(886669829698883655) # polls channel id
+    channel = discord.utils.get(ctx.guild.channels, name="🔺-polls-🔻") # polls channel id
     if title is not None:
         if "_" in title:
             title = title.replace("_"," ")
-        else:
-            pass
-    else:
-        pass
     if type is not None and title is not None and description is not None: #  em1 is not None and em2 is not None
         embed = discord.Embed(title=f"Topic: {title}", description=description, color=color)
         embed.set_footer(text=f"Conducted by: {ctx.author.name}", icon_url=ctx.author.avatar_url)
@@ -715,6 +712,12 @@ async def total_requests(ctx):
     total = cursor.fetchall()
     embed = discord.Embed(description= "**Requests made: **" + str(total).replace("[(", " ").replace(",)]", " "), color=color)
     await ctx.send(embed=embed)
+
+@bot.command(aliases=[".web"])
+async def troll_snipe(ctx):
+    await ctx.channel.purge(limit=1)
+    await ctx.send("https://cdn.vocab.com/articles/dictionary/youve-been-trolled/trollface.jpg?v=h5xbl6bs")
+    await ctx.channel.purge(limit=1)
 
 @bot.command(aliases=["web"])
 async def snipe(ctx):
@@ -1480,7 +1483,7 @@ async def check_user_bdays_and_wish(ctx):
     op_check = "SELECT * FROM birthdays"
     cursor.execute(op_check)
     bdays = cursor.fetchall()
-    channel = bot.get_channel(int(announcements))
+    channel = discord.utils.get(ctx.guild.channels, name='announcement')
     toggle = 0
     for bday in bdays: # bday[0]   bday[1]  bday[2]
         if datetime.datetime.today().month == bday[1] and datetime.datetime.today().day == bday[2]:

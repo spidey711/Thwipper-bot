@@ -671,7 +671,7 @@ async def replicate_user_text(ctx, *, text):
 async def conduct_poll(ctx, type=None, title=None, *, description=None):
     number_of_requests()
     await ctx.channel.purge(limit=1)
-    channel = discord.utils.get(ctx.guild.channels, name="🔺-polls-🔻") # polls channel id
+    channel = discord.utils.get(ctx.guild.channels, name="🔺-polls-🔻") 
     if title is not None:
         if "_" in title:
             title = title.replace("_"," ")
@@ -1483,7 +1483,7 @@ async def check_user_bdays_and_wish(ctx):
     op_check = "SELECT * FROM birthdays"
     cursor.execute(op_check)
     bdays = cursor.fetchall()
-    channel = discord.utils.get(ctx.guild.channels, name='announcement')
+    channel = discord.utils.get(ctx.guild.channels, name='announcements')
     toggle = 0
     for bday in bdays: # bday[0]   bday[1]  bday[2]
         if datetime.datetime.today().month == bday[1] and datetime.datetime.today().day == bday[2]:
@@ -1502,6 +1502,6 @@ async def check_user_bdays_and_wish(ctx):
             await message.add_reaction("🎉")
             toggle = 1
     if toggle == 0:
-        await ctx.send(embed=discord.Embed(description=f"I just checked from my database and it seems there are no birthdays today 💁🏻‍♂️", color=color))
+        await ctx.send(embed=discord.Embed(description="I just checked from my database and it seems there are no birthdays today 💁🏻‍♂️", color=color))
 
 bot.run(token)

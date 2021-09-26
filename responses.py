@@ -19,3 +19,6 @@ imdb_responses = ["I don't think there is a movie with no name, is there?","I th
 
 # Status
 status_list = ["The Amazing Spider-Man", "The Amazing Spider-Man 2", "Spider-Man", "Spider-Man 2", "Spider-Man 3", "TASM Duology", "Raimi Trilogy", "Spider-Man Homecoming", "Spider-Man Far From Home", "Spectacular Spider-Man", "Ultimate Spider-Man", "Fairly Rad Videos", "Marvel's Spider-Man", "Marvel's Spider-Man Miles Morales", "Chrome", "Firefox Developer Edition", "Visual Studio Code", "Music", "Discord", "Dying Light", "Ezio Trilogy", "Prototype(2009)", "Dead Space(2008)", "Need For Speed: Most Wanted"]
+
+# Birthdays 
+descriptions = ["Make the most out of your day!", f"I am invited to the party, right? I hope I am 😎", "Enjoy the cake 🎂!", f"Here is a present for you 🎁", "Party hard dude! Tis' your day 🤟🏻"]

@@ -976,7 +976,7 @@ async def queue_song(ctx, *, name=None):
             string = ""
             index = server_index[str(ctx.guild.id)] - 10
             for song in songs[index:index + 20]:
-                string += str(index) + ". " + f"{song[0]}\n".replace(" - YouTube", " ")     
+                string += str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " ")     
                 index += 1
             embed = discord.Embed(description=string, color=color)
             embed.set_author(name=f"{ctx.guild.name}'s Playlist", icon_url=url_author_music)

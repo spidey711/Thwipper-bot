@@ -952,13 +952,12 @@ async def queue_song(ctx, *, name=None):
     operation_view = "SELECT song_name, song_url FROM music_queue WHERE server={}".format(str(ctx.guild.id))
     cursor.execute(operation_view)
     songs = cursor.fetchall()
-    if name is not None:
-        if ctx.author.id not in [member.id for member in ctx.guild.voice_client.channel.members]:
-            embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
-            embed.set_author(name="Walkman™", icon_url=url_author_music)
-            await ctx.send(embed=embed)
-        else:
-            toggle = 0
+    if ctx.author.id not in [member.id for member in ctx.guild.voice_client.channel.members]:
+        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+        embed.set_author(name="Walkman™", icon_url=url_author_music)
+        await ctx.send(embed=embed)
+    else:
+        if name is not None:
             # WEB SCRAPE
             name = name.replace(" ", "+")
             htm = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + name) 
@@ -968,32 +967,32 @@ async def queue_song(ctx, *, name=None):
             starting = htm_code.find("<title>") + len("<title>")
             ending = htm_code.find("</title>")        
             name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&") 
-            # FETCHING SONG DATA FROM DB
-            # operation_view = "SELECT song_name, song_url FROM music_queue WHERE server={}".format(str(ctx.guild.id))
             operation_add_song = f"""INSERT INTO music_queue(song_name, song_url, server)VALUES("{name_of_the_song}","{url}","{str(ctx.guild.id)}")"""
-            # cursor.execute(operation_view)
-            # songs = cursor.fetchall()
             cursor.execute(operation_add_song)
             embed = discord.Embed(description=f"{name_of_the_song}".replace(" - YouTube"," "), color=color)
             embed.set_author(name="Song added", icon_url=url_author_music)
             await ctx.send(embed=embed)
-
-            # for song in songs:
-            #     a = list(str(song[1]).split(","))
-            #     await ctx.send(a[:5])
-
-            # PERFORMING CHECK
-    #         for song in songs:
-    #             url_list = list(str(song[1]).split(','))
-    #             if url not in url_list:
-    #                 toggle = 1
-    #                 break
-    #         if toggle == 0:
-    #             embed = discord.Embed(description=f"Looks like {name_of_the_song} is already queued for {ctx.guild.name}", color=color)
-    #             embed.set_author(name="Couldn't add song", icon_url=url_author_music)
-    #             await ctx.send(embed=embed)
-    # else:
-    #     pass
+        else:
+            string = ""
+            index = server_index[str(ctx.guild.id)] - 10
+            for song in songs[index:index + 20]:
+                string += str(index) + ". " + f"{song[0]}\n".replace(" - YouTube", " ")     
+                index += 1
+            embed = discord.Embed(description=string, color=color)
+            embed.set_author(name=f"{ctx.guild.name}'s Playlist", icon_url=url_author_music)
+            embed.set_thumbnail(url=random.choice(url_thumbnail_music))
+            embed.set_footer(text=f'Number Of Songs: {len(songs)}')
+            player = await ctx.send(embed=embed)
+            await player.add_reaction("⏮") # previous track
+            await player.add_reaction("▶")  # resume
+            await player.add_reaction("⏸") # pause
+            await player.add_reaction("⏭") # next
+            await player.add_reaction("🔂") # repeat
+            await player.add_reaction("⏹") # stop
+            await player.add_reaction("🔀") # shuffle
+            await player.add_reaction("*️⃣") # current song
+            await player.add_reaction("🔼") # move up
+            await player.add_reaction("🔽") # move down
 
 @bot.command(aliases=['play','p'])
 async def play_music(ctx, *, char):

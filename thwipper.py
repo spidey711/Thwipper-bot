@@ -703,7 +703,7 @@ async def total_requests(ctx):
 
 @bot.command(aliases=[".web"])
 async def troll_snipe(ctx):
-    await ctx.channel.purge(limits=1)
+    await ctx.channel.purge(limit=1)
     await ctx.send(random.choice(troll_links))
     await ctx.channel.purge(limit=1)
 

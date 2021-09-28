@@ -59,6 +59,8 @@ reddit = praw.Reddit(
             password = reddit_userpass
         )
 default_topic = {}
+# HELP MENU
+help_toggle = 0
 # QUIPS
 plot_list = []
 dialogue_list = []
@@ -68,6 +70,30 @@ cursor = conn.cursor()
 
 # //////////////////////////////////////// NON ASYNC FUNCTIONS /////////////////////////////////////
 
+def help_menu():
+    global help_toggle
+    embed_help_menu = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸", description="Prefixes => `[t!] [ _ ] [thwip] [thwipper]`", color=color)
+    embed_help_menu.set_thumbnail(url=random.choice(url_thumbnails))
+    embed_help_menu.set_footer(text="New Features Coming Soon 🛠")
+    if help_toggle == 0:
+        embed_help_menu.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nuse to get this embed\nquips to get a famous dialogue or plot\n@Thwipper to get more info about thwipper", inline=False)
+    if help_toggle == 1:
+        embed_help_menu.add_field(name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush en `text` to encrypt message\nhush dec `text` to decrypt message\n", inline=False)
+    if help_toggle == 2:
+        embed_help_menu.add_field(name="𝗗𝗧𝗖", value="dt `timezone` to get IST date and time\ncal `year` `month` to get calendar\nNote: The default timezone is set as `Asia/Kolkata`", inline=False)
+    if help_toggle == 3:
+        embed_help_menu.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; `query` to use SQL Shell\npy `expression` for python shell\npydoc `method` to get use of that python function", inline=False)
+    if help_toggle == 4:
+        embed_help_menu.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="imdb `movie` to get movie details from IMDb\nreddit `topic` to get reddit memes\nw `topic` for wikipedia\ng `topic` to google",inline=False)
+    if help_toggle == 5:
+        embed_help_menu.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel\np `name` or `index` to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ songinfo to get current song\nq `name` to add a song to the queue\nq to view queue\nrem `index` to remove song from queue\ncq to clear queue", inline=False)
+    if help_toggle == 6:
+        embed_help_menu.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\n\polls to see how to conduct a poll\nweb to see deleted message\n.web to troll those who try web command\naddbday `mention` `month` `day` to add a user's birthday from DB\nbday to get thwipper to wish the members\nrembday `mention` to remove a member's birthday from DB.", inline=False)
+    if help_toggle > 6:
+        help_toggle = 6
+    if help_toggle < 0:
+        help_toggle = 0
+    return embed_help_menu
 def time_converter(seconds):
     mins, secs = divmod(seconds, 60)
     hours, mins = divmod(mins, 60)
@@ -96,18 +122,18 @@ async def on_ready():
     print("{0.user} is now online...\nHey Tamonud! How's it going?".format(bot))
     stop = 0
     # QUIPS
-    # global plot_list
-    # x = requests.get("https://www.cbr.com/greatest-spider-man-stories/").content.decode().replace("<em>"," ").replace("</em>"," ")
-    # for i in range(0, 10000):
-    #     a = x.find("<p>", stop)
-    #     b = x.find("</p>", stop)
-    #     stop = b + len("</p>")
-    #     wits = ""
-    #     if not x[a:b]:
-    #         continue
-    #     else:
-    #         wits = x[a:b]
-    #         plot_list += [wits.replace("<p>"," ")]
+    global plot_list
+    x = requests.get("https://www.cbr.com/greatest-spider-man-stories/").content.decode().replace("<em>"," ").replace("</em>"," ")
+    for i in range(0, 10000):
+        a = x.find("<p>", stop)
+        b = x.find("</p>", stop)
+        stop = b + len("</p>")
+        wits = ""
+        if not x[a:b]:
+            continue
+        else:
+            wits = x[a:b]
+            plot_list += [wits.replace("<p>"," ")]
     global dialogue_list
     site = requests.get("https://geektrippers.com/spiderman-quotes/").content.decode().replace("<br>","\n").replace("<strong>"," ").replace("</strong>"," ").replace("<em>"," ").replace("</em>"," ").replace("&#8217;","'").replace("&#8221;",'"\n\r').replace("&#8230;","...").replace("&#8220;",'"').replace("&nbsp;"," ").replace("&#8211;","-").replace("&#8216;","'")
     for i in range(0, 1000):
@@ -166,7 +192,6 @@ async def on_message_delete(message):
 @bot.event
 async def on_reaction_add(reaction, user):
     number_of_requests()
-    
     if not user.bot:
         if reaction.emoji == "🖱":
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
@@ -183,35 +208,18 @@ async def on_reaction_add(reaction, user):
                 embed = discord.Embed(description="Default topic is not set", color=color)
                 embed.set_author(name="Uh oh...", icon_url=url_reddit_author)
                 await reaction.message.edit(embed=embed)
-
+        global help_toggle
         if reaction.emoji == "➡":
+            help_toggle += 1
             if str(user) != str(bot.user)and reaction.message.author == bot.user:
                 await reaction.remove(user)
-                embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
-                            description="Prefixes => `[t!] [ _ ] [thwip] [thwipper]`",
-                            color=color)
-                embed.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="p `name` or `index` to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ songinfo to get current song", inline=False)
-                embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q `name` to add a song to the queue\nq to view queue\nrem `index` to remove song from queue\ncq to clear queue", inline=False)
-                embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\n\polls to see how to conduct a poll\nweb to see deleted message\n.web to troll those who try web command\naddbday `mention` `month` `day` to add a user's birthday from DB\nbday to get thwipper to wish the members\nrembday `mention` to remove a member's birthday from DB.", inline=False)
-                embed.set_thumbnail(url=random.choice(url_thumbnails))
-                embed.set_footer(text="New Features Coming Soon 🛠")
-                await reaction.message.edit(embed=embed)
+                await reaction.message.edit(embed=help_menu())
         
         if reaction.emoji == "⬅":
+            help_toggle -= 1
             if str(user) != str(bot.user)and reaction.message.author == bot.user:
                 await reaction.remove(user)
-                embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
-                            description="Prefixes => `[t!] [ _ ] [thwip] [thwipper]`",
-                            color=color)
-                embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nuse to get this embed\nquips to get a famous dialogue or plot\n@Thwipper to get more info about thwipper", inline=False)
-                embed.add_field(name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush en `text` to encrypt message\nhush dec `text` to decrypt message\n", inline=False)
-                embed.add_field(name="𝗗𝗧𝗖", value="dt `timezone` to get IST date and time\ncal `year` `month` to get calendar\nNote: The default timezone is set as `Asia/Kolkata`", inline=False)
-                embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; `query` to use SQL Shell\npy `expression` for python shell\npydoc `method` to get use of that python function", inline=False)
-                embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="imdb `movie` to get movie details from IMDb\nreddit `topic` to get reddit memes\nw `topic` for wikipedia\ng `topic` to google",inline=False)
-                embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
-                embed.set_thumbnail(url=random.choice(url_thumbnails))
-                embed.set_footer(text="New Features Coming Soon 🛠")
-                await reaction.message.edit(embed=embed)
+                await reaction.message.edit(embed=help_menu())
         
         if reaction.emoji == "🕸":
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
@@ -232,13 +240,8 @@ async def on_reaction_add(reaction, user):
         operation_view = "SELECT * FROM music_queue WHERE server={}".format(str(reaction.message.guild.id))
         cursor.execute(operation_view)
         server_queue = cursor.fetchall()
-        string = ""
-        song_index = server_index[str(reaction.message.guild.id)]
         members_in_vc = [str(names) for names in reaction.message.guild.voice_client.channel.members]
-         # RANGE
-        start = server_index[str(reaction.message.guild.id)] # stop = start + 10
     
-            
         if reaction.emoji == "▶":
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
                 await reaction.remove(user)
@@ -544,18 +547,7 @@ async def greet_bot(ctx):
 @bot.command(aliases=['use','h'])
 async def embed_help(ctx):
     number_of_requests()
-    embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
-                            description="Prefixes => `[t!] [ _ ] [thwip] [thwipper]`",
-                            color=color)
-    embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nuse to get this embed\nquips to get a famous dialogue or plot\n@Thwipper to get more info about thwipper", inline=False)
-    embed.add_field(name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush en `text` to encrypt message\nhush dec `text` to decrypt message\n", inline=False)
-    embed.add_field(name="𝗗𝗧𝗖", value="dt `timezone` to get IST date and time\ncal `year` `month` to get calendar\nNote: The default timezone is set as `Asia/Kolkata`", inline=False)
-    embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; `query` to use SQL Shell\npy `expression` for python shell\npydoc `method` to get use of that python function", inline=False)
-    embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="imdb `movie` to get movie details from IMDb\nreddit `topic` to get reddit memes\nw `topic` for wikipedia\ng `topic` to google",inline=False)
-    embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
-    embed.set_thumbnail(url=random.choice(url_thumbnails))
-    embed.set_footer(text="New Features Coming Soon 🛠")
-    message = await ctx.send(embed=embed)
+    message = await ctx.send(embed=help_menu())
     await message.add_reaction("⬅")
     await message.add_reaction("🕸")
     await message.add_reaction("➡")

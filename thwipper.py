@@ -13,7 +13,6 @@ import datetime
 import regex
 import praw
 import pytube
-import ffmpeg
 import asyncio
 import requests
 import wikipedia
@@ -21,7 +20,6 @@ import youtube_dl
 import urllib.request
 from googlesearch import search
 from cryptography.fernet import Fernet
-print("All modules sucessfully imported...")
 
 # SETUP
 prefixes = ["t!","_","thwip ", "thwipper "]
@@ -47,9 +45,8 @@ ydl_op = {
         'preferredcodec':'mp3',
         'preferredquality':'128',
         }],}
-# CHANNELS
-thwipper_logs = 877394070115336192
-announcements = 849215252280770580
+# DEFAULT TIMEZONE
+default_tz = "Asia/Kolkata"
 # ENCRYPTER DECRYPTER
 key = Fernet.generate_key()
 cipher = Fernet(key)
@@ -68,8 +65,6 @@ dialogue_list = []
 # SQL
 conn = ms.connect(host="localhost", user="root", passwd=sql_pass, database="discord")
 cursor = conn.cursor()
-# Special Perms
-special_roles = ["Mod","Admin","Moderator","Administrator","Potentate","King","Protector"]
 
 # //////////////////////////////////////// NON ASYNC FUNCTIONS /////////////////////////////////////
 
@@ -195,9 +190,9 @@ async def on_reaction_add(reaction, user):
                 embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
                             description="Prefixes => `[t!] [ _ ] [thwip] [thwipper]`",
                             color=color)
-                embed.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="p <name> or <index> to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ songinfo to get current song", inline=False)
-                embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q <name> to add a song to the queue\nq to view queue\nrem <index> to remove song from queue\ncq to clear queue", inline=False)
-                embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\n\polls to see how to conduct a poll\nweb to see deleted message\n.web to troll those who try web command\naddbday <mention> <date> to add a user's birthday from DB\nbday to get thwipper to wish the members\nrembday <mention> to remove a member's birthday from DB.\n`Note: The date must be in month-date format`", inline=False)
+                embed.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="p `name` or `index` to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ songinfo to get current song", inline=False)
+                embed.add_field(name="𝗤𝘂𝗲𝘂𝗲",value="q `name` to add a song to the queue\nq to view queue\nrem `index` to remove song from queue\ncq to clear queue", inline=False)
+                embed.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\n\polls to see how to conduct a poll\nweb to see deleted message\n.web to troll those who try web command\naddbday `mention` `month` `day` to add a user's birthday from DB\nbday to get thwipper to wish the members\nrembday `mention` to remove a member's birthday from DB.", inline=False)
                 embed.set_thumbnail(url=random.choice(url_thumbnails))
                 embed.set_footer(text="New Features Coming Soon 🛠")
                 await reaction.message.edit(embed=embed)
@@ -209,10 +204,10 @@ async def on_reaction_add(reaction, user):
                             description="Prefixes => `[t!] [ _ ] [thwip] [thwipper]`",
                             color=color)
                 embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nuse to get this embed\nquips to get a famous dialogue or plot\n@Thwipper to get more info about thwipper", inline=False)
-                embed.add_field(name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush en <text> to encrypt message\nhush dec <text> to decrypt message\n", inline=False)
-                embed.add_field(name="𝗗𝗧𝗖", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
-                embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; <query> to use SQL Shell\npy for python shell\npinfo to get use of that python function", inline=False)
-                embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="imdb <movie> to get movie details from IMDb\nreddit <topic> to get reddit memes\nw <topic> for wikipedia\ng <topic> to google",inline=False)
+                embed.add_field(name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush en `text` to encrypt message\nhush dec `text` to decrypt message\n", inline=False)
+                embed.add_field(name="𝗗𝗧𝗖", value="dt `timezone` to get IST date and time\ncal `year` `month` to get calendar\nNote: The default timezone is set as `Asia/Kolkata`", inline=False)
+                embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; `query` to use SQL Shell\npy `expression` for python shell\npydoc `method` to get use of that python function", inline=False)
+                embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="imdb `movie` to get movie details from IMDb\nreddit `topic` to get reddit memes\nw `topic` for wikipedia\ng `topic` to google",inline=False)
                 embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
                 embed.set_thumbnail(url=random.choice(url_thumbnails))
                 embed.set_footer(text="New Features Coming Soon 🛠")
@@ -550,13 +545,13 @@ async def greet_bot(ctx):
 async def embed_help(ctx):
     number_of_requests()
     embed = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸",
-                        description="Prefixes => `[t!] [ _ ] [thwip] [thwipper]`",
-                        color=color)
+                            description="Prefixes => `[t!] [ _ ] [thwip] [thwipper]`",
+                            color=color)
     embed.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nuse to get this embed\nquips to get a famous dialogue or plot\n@Thwipper to get more info about thwipper", inline=False)
-    embed.add_field(name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush en <text> to encrypt message\nhush dec <text> to decrypt message\n", inline=False)
-    embed.add_field(name="𝗗𝗧𝗖", value="dt to get IST date and time\ncal.m <year, month(in number)> to get calendar", inline=False)
-    embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; <query> to use SQL Shell\npy for python shell\npydoc to get use of that python function", inline=False)
-    embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="imdb <movie> to get movie details from IMDb\nreddit <topic> to get reddit memes\nw <topic> for wikipedia\ng <topic> to google",inline=False)
+    embed.add_field(name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush en `text` to encrypt message\nhush dec `text` to decrypt message\n", inline=False)
+    embed.add_field(name="𝗗𝗧𝗖", value="dt `timezone` to get IST date and time\ncal `year` `month` to get calendar\nNote: The default timezone is set as `Asia/Kolkata`", inline=False)
+    embed.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; `query` to use SQL Shell\npy `expression` for python shell\npydoc `method` to get use of that python function", inline=False)
+    embed.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="imdb `movie` to get movie details from IMDb\nreddit `topic` to get reddit memes\nw `topic` for wikipedia\ng `topic` to google",inline=False)
     embed.add_field(name="𝗩𝗼𝗶𝗰𝗲 𝗖𝗵𝗮𝗻𝗻𝗲𝗹",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel",inline=False)
     embed.set_thumbnail(url=random.choice(url_thumbnails))
     embed.set_footer(text="New Features Coming Soon 🛠")
@@ -601,7 +596,7 @@ async def IMDb_movies(ctx, *, movie_name=None):
             embed.set_thumbnail(url=url_imdb_thumbnail) # 🎥 🎬 📽
             embed.set_image(url=movie_cover)
             await ctx.send(embed=embed)
-        except Exception as e:
+        except Exception:
             embed = discord.Embed(description="I couldn't find `{}`.\nTry again and make sure you enter the correct movie name.".format(movie_name), color=color)
             embed.set_author(name="Movie Not Found 💬", icon_url=url_imdb_author)
             await ctx.send(embed=embed)
@@ -640,6 +635,7 @@ async def wikipedia_results(ctx, *, thing_to_search):
             embed.add_field(name='Search References', value=', '.join([x for x in wikipedia.search(thing_to_search)][:5]), inline=False)
             embed.set_footer(text="Searched by: {}".format(ctx.author.name), icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
+            print("Results for wikipedia search sent...")
         except wikipedia.PageError as pe:
             embed = discord.Embed(description=str(pe), color=color)
             embed.set_author(name='Error', icon_url=url_wiki)   
@@ -671,14 +667,14 @@ async def replicate_user_text(ctx, *, text):
 async def conduct_poll(ctx, type=None, title=None, *, description=None):
     number_of_requests()
     await ctx.channel.purge(limit=1)
-    channel = discord.utils.get(ctx.guild.channels, name="🔺-polls-🔻") 
+    poll_channel = discord.utils.get(ctx.guild.channels, name="🔺-polls-🔻") 
     if title is not None:
         if "_" in title:
             title = title.replace("_"," ")
-    if type is not None and title is not None and description is not None: #  em1 is not None and em2 is not None
+    if type is not None and title is not None and description is not None: 
         embed = discord.Embed(title=f"Topic: {title}", description=description, color=color)
         embed.set_footer(text=f"Conducted by: {ctx.author.name}", icon_url=ctx.author.avatar_url)
-        message = await channel.send(embed=embed)
+        message = await poll_channel.send(embed=embed)
         if ctx.channel.id == 886669829698883655:
             if type == "y/n" or type == "yes/no":
                 await message.add_reaction("👍🏻")
@@ -699,7 +695,7 @@ async def conduct_poll(ctx, type=None, title=None, *, description=None):
                 await ctx.send(embed=discord.Embed(description="Enter a valid type: y/n for yes or no OR this/that for this or that", color=color))
             await ctx.send(embed=discord.Embed(description="Poll sent successfully 👍🏻", color=color))
     else:
-        embed = discord.Embed(title="Polls", description="`Command: _polls type title description`\n\nDetails:-\n`type:` y/n (yes or no) t/t (this or that)\n`title:` give a title to your poll.\n`description:` tell everyone what the poll is about.\n\nNOTE: If the title happens to be more than one word long, use `_` in place of spaces as demonstrated below.\n`The_Ultimate_Choice` will be displayed in the title of poll as `The Ultimate Choice`", color=color)
+        embed = discord.Embed(title="Polls", description="Command: `_polls type title description`\n\nDetails:-\n`type:` y/n (yes or no) t/t (this or that)\n`title:` give a title to your poll.\n`description:` tell everyone what the poll is about.\n\nNOTE: If the title happens to be more than one word long, use `_` in place of spaces as demonstrated below.\n`The_Ultimate_Choice` will be displayed in the title of poll as `The Ultimate Choice`", color=color)
         embed.set_thumbnail(url=random.choice(url_thumbnails))
         await ctx.send(embed=embed)
 
@@ -715,8 +711,8 @@ async def total_requests(ctx):
 
 @bot.command(aliases=[".web"])
 async def troll_snipe(ctx):
-    await ctx.channel.purge(limit=1)
-    await ctx.send("https://cdn.vocab.com/articles/dictionary/youve-been-trolled/trollface.jpg?v=h5xbl6bs")
+    await ctx.channel.purge(limits=1)
+    await ctx.send(random.choice(troll_links))
     await ctx.channel.purge(limit=1)
 
 @bot.command(aliases=["web"])
@@ -726,7 +722,6 @@ async def snipe(ctx):
         message = deleted_messages[ctx.channel.id][-1]
         if len(message) <  3:
             embed = discord.Embed(title="Deleted Message", description=message[1], color=color)
-            # embed.set_author(name=bot.get_user(int(message[0])), icon_url=bot.get_user(int(message[0])).avatar_url)
             embed.set_footer(text=f"Sent by: {bot.get_user(int(message[0]))}", icon_url=bot.get_user(int(message[0])).avatar_url)
             await ctx.send(embed=embed)
         else:
@@ -766,7 +761,7 @@ async def server_information(ctx):
     icon = str(ctx.guild.icon_url)
     role_count = len(ctx.guild.roles)
     bots_list = [bot.mention for bot in ctx.guild.members if bot.bot]
-    embed = discord.Embed(title=f"📝 {name} 📝", color=color)
+    embed = discord.Embed(title=f"📚 {name} 📚", color=color)
     embed.add_field(name="Owner", value=f"`{owner}`", inline=True)
     embed.add_field(name="Member Count", value=f"`{num_mem}`", inline=True)
     embed.add_field(name="Role Count", value=f"`{role_count}`", inline=True)
@@ -802,26 +797,37 @@ async def encrypt_data(ctx, mode, *, message):
 # /////////////////////////////////////// DATE & TIME /////////////////////////////////////////
 
 @bot.command(aliases=["dt"])
-async def date_time_ist(ctx):
+async def date_time_ist(ctx, timezone=None):
     number_of_requests()
-    tzinfo = pytz.timezone("Asia/Kolkata")
-    dateTime = datetime.datetime.now(tz=tzinfo)
-    embed = discord.Embed(color=color)
-    embed.add_field(name='Date', value="%s/%s/%s" % (dateTime.day, dateTime.month, dateTime.year), inline=False)
-    embed.add_field(name='Time', value="%s:%s:%s" % (dateTime.hour, dateTime.minute, dateTime.second), inline=False)
-    embed.set_thumbnail(url=url_dtc)
-    await ctx.send(embed=embed)   
+    if timezone is None:
+        tzinfo = pytz.timezone(default_tz)
+        dateTime = datetime.datetime.now(tz=tzinfo)
+        embed = discord.Embed(color=color)
+        embed.add_field(name='Date', value="%s/%s/%s" % (dateTime.day, dateTime.month, dateTime.year), inline=True)
+        embed.add_field(name='Time', value="%s:%s:%s" % (dateTime.hour, dateTime.minute, dateTime.second), inline=True)
+        embed.set_footer(text=f'Timezone : {default_tz}')
+        embed.set_thumbnail(url=url_dtc)
+        await ctx.send(embed=embed)   
+    else:
+        tzinfo = pytz.timezone(timezone)
+        dateTime = datetime.datetime.now(tz=tzinfo)
+        embed = discord.Embed(color=color)
+        embed.add_field(name='Date', value="%s/%s/%s" % (dateTime.day, dateTime.month, dateTime.year), inline=True)
+        embed.add_field(name='Time', value="%s:%s:%s" % (dateTime.hour, dateTime.minute, dateTime.second), inline=True)
+        embed.set_thumbnail(url=url_dtc)
+        embed.set_footer(text=f"Timezone : {timezone}")
+        await ctx.send(embed=embed)   
 
-@bot.command(aliases=["cal.m"])
+@bot.command(aliases=["cal"])
 async def get_calendar(ctx, year, month):
     number_of_requests()
     try:
-        embed = discord.Embed(description="```{}```".format(calendar.month(int(year), int(month))), color=color)
-        embed.set_author(name='𝗖𝗮𝗹𝗲𝗻𝗱𝗮𝗿', icon_url=url_dtc)
+        embed = discord.Embed(title="Calendar", description="```{}```".format(calendar.month(int(year), int(month))), color=color)
+        embed.set_thumbnail(url=url_dtc)
         await ctx.send(embed=embed)
     except IndexError:
         embed = discord.Embed(description="{}, this month doesn't exist [📆]".format(ctx.author.name), color=color)
-        embed.set_author(name='𝗖𝗮𝗹𝗲𝗻𝗱𝗮𝗿', icon_url=url_dtc)
+        embed.set_author(name='Calendar', icon_url=url_dtc)
         await ctx.send(embed=embed)
 
 #///////////////////////////////////// SHELLS ///////////////////////////////////////////
@@ -892,17 +898,17 @@ async def join_vc(ctx):
         if voice == None:    
             channel = ctx.message.author.voice.channel
             await channel.connect()
-            message = await ctx.send("Connected to {}".format(ctx.guild.voice_client.channel.name))
-            await asyncio.sleep(2)
-            await message.edit(content="Use _p <name> or _p <index> to play songs 🎵")
-            print("Connected Successfully...")
+            embed = discord.Embed(description=f"Connected to {ctx.guild.voice_client.channel.name}", color=color)
+            embed.set_author(name="Walkman™", icon_url=url_author_music)
+            embed.set_footer(text=random.choice(connections))
+            await ctx.send(embed=embed)
         if voice != None:
             embed = discord.Embed(description="Already connected to a voice channel ✅", color=color)
             embed.set_author(name='Walkman™', icon_url=url_author_music)
             await ctx.send(embed=embed)
     except Exception as e:
         embed = discord.Embed(description="Error:\n" + str(e), color=color)
-        embed.set_author(name='Walkman™', icon_url=url_author_music)
+        embed.set_author(name='Error', icon_url=url_author_music)
 
 @bot.command(aliases=["dc","disconnect"])
 async def leave_vc(ctx):
@@ -912,11 +918,11 @@ async def leave_vc(ctx):
             voice_client = ctx.message.guild.voice_client
             try:
                 if voice_client.is_connected():
-                    message = await ctx.send("Disconnected from {}".format(ctx.guild.voice_client.channel.name))
-                    await voice_client.disconnect() 
-                    await asyncio.sleep(2)
-                    await message.edit(content="See ya later 😎")
-                    print("Disconnected Successfully...")
+                    embed = discord.Embed(description=f"Disconnected from {ctx.guild.voice_client.channel.name}", color=color)
+                    embed.set_author(name="Walkman™", icon_url=url_author_music)
+                    embed.set_footer(text=random.choice(disconnections))
+                    await ctx.send(embed=embed)
+                    await voice_client.disconnect()
             except AttributeError:
                 embed = discord.Embed(description="I am not connected to a voice channel", color=color)
                 embed.set_author(name="Walkman™", icon_url=url_author_music)

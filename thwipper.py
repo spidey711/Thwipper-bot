@@ -26,7 +26,7 @@ prefixes = ["t!","_","thwip ", "thwipper "]
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents, case_insensitive=True)
-color = discord.Color.from_rgb(217,226,231)
+color = discord.Color.from_rgb(135, 107, 254)
 # SNIPE
 deleted_messages = {}
 # NUMBER OF REQUESTS

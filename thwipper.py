@@ -26,7 +26,7 @@ prefixes = ["t!","_","thwip ", "thwipper "]
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents, case_insensitive=True)
-color = discord.Color.from_rgb(193, 2, 1)
+color = discord.Color.from_rgb(65, 95, 255) # 87, 1, 254 | 65, 95, 255 | 
 # SNIPE
 deleted_messages = {}
 # NUMBER OF REQUESTS
@@ -62,7 +62,6 @@ default_topic = {}
 # HELP MENU
 help_toggle = 0
 # QUIPS
-plot_list = []
 dialogue_list = []
 # SQL
 conn = ms.connect(host="localhost", user="root", passwd=sql_pass, database="discord")
@@ -84,7 +83,7 @@ def help_menu():
     if help_toggle == 3:
         embed_help_menu.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; `query` to use SQL Shell\npy `expression` for python shell\npydoc `method` to get use of that python function", inline=False)
     if help_toggle == 4:
-        embed_help_menu.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="imdb `movie` to get movie details from IMDb\nreddit `topic` to get reddit memes\nw `topic` for wikipedia\ng `topic` to google",inline=False)
+        embed_help_menu.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="w `topic` for wikipedia\ng `topic` to google\nimdb `movie` to get movie details from IMDb\nreddit `topic` to get reddit memes",inline=False)
     if help_toggle == 5:
         embed_help_menu.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel\np `name` or `index` to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ songinfo to get current song\nq `name` to add a song to the queue\nq to view queue\nrem `index` to remove song from queue\ncq to clear queue", inline=False)
     if help_toggle == 6:
@@ -122,18 +121,6 @@ async def on_ready():
     print("{0.user} is now online...\nHey Tamonud! How's it going?".format(bot))
     stop = 0
     # QUIPS
-    global plot_list
-    x = requests.get("https://www.cbr.com/greatest-spider-man-stories/").content.decode().replace("<em>"," ").replace("</em>"," ")
-    for i in range(0, 10000):
-        a = x.find("<p>", stop)
-        b = x.find("</p>", stop)
-        stop = b + len("</p>")
-        wits = ""
-        if not x[a:b]:
-            continue
-        else:
-            wits = x[a:b]
-            plot_list += [wits.replace("<p>"," ")]
     global dialogue_list
     site = requests.get("https://geektrippers.com/spiderman-quotes/").content.decode().replace("<br>","\n").replace("<strong>"," ").replace("</strong>"," ").replace("<em>"," ").replace("</em>"," ").replace("&#8217;","'").replace("&#8221;",'"\n\r').replace("&#8230;","...").replace("&#8220;",'"').replace("&nbsp;"," ").replace("&#8211;","-").replace("&#8216;","'")
     for i in range(0, 1000):
@@ -525,7 +512,7 @@ async def stop_program(ctx):
         await voice.disconnect()
     except: 
         pass
-    msgs = ["Bye {}!".format(ctx.author.name), "See ya {}!".format(ctx.author.name), "Till next time {}".format(ctx.author.name)]
+    msgs = ["Bye {}!".format(ctx.author.name), "See ya {}!".format(ctx.author.name), "Till next time {}!".format(ctx.author.name)]
     if ctx.author.id == 622497106657148939:
         await ctx.send(random.choice(msgs))
         conn.commit()
@@ -555,18 +542,14 @@ async def embed_help(ctx):
 @bot.command(aliases=["quips"])
 async def get_quips(ctx):
     number_of_requests()
-    # global plot_list
-    global dialogue_list
-    quips_list = []
-    # for plot in plot_list:
-    for dialogue in dialogue_list:
-        # quips_list.append(plot)
-        quips_list.append(dialogue)
-    embed = discord.Embed(title=random.choice(titles), description=random.choice(quips_list), color=color)
-    embed.set_thumbnail(url=random.choice(url_thumbnails))
-    embed.set_footer(text=random.choice(footers), icon_url=bot.user.avatar_url)
-    await ctx.send(embed=embed)
-    print("Quip successfully sent!")
+    try:
+        embed = discord.Embed(title=random.choice(titles), description=random.choice(dialogue_list), color=color)
+        embed.set_thumbnail(url=random.choice(url_thumbnails))
+        embed.set_footer(text=random.choice(footers), icon_url=bot.user.avatar_url)
+        await ctx.send(embed=embed)
+        print("Quip successfully sent!")
+    except Exception as e:
+        embed = discord.Embed(title="Error", description=str(e), color=color)
  
 # //////////////////////////////////// INTERNET //////////////////////////////////////////////
 
@@ -656,38 +639,34 @@ async def replicate_user_text(ctx, *, text):
     await ctx.send(text)
 
 @bot.command(aliases=["polls","poll"])
-async def conduct_poll(ctx, type=None, title=None, *, description=None):
+async def conduct_poll(ctx, ems=None, title=None, *, description=None):
     number_of_requests()
     await ctx.channel.purge(limit=1)
-    poll_channel = discord.utils.get(ctx.guild.channels, name="🔺-polls-🔻") 
+    poll_channel = discord.utils.get(ctx.guild.channels, name="🔺-polls-🔻")
     if title is not None:
         if "_" in title:
             title = title.replace("_"," ")
-    if type is not None and title is not None and description is not None: 
+    if ems is not None and title is not None and description is not None:
         embed = discord.Embed(title=f"Topic: {title}", description=description, color=color)
         embed.set_footer(text=f"Conducted by: {ctx.author.name}", icon_url=ctx.author.avatar_url)
         message = await poll_channel.send(embed=embed)
-        if ctx.channel.id == 886669829698883655:
-            if type == "y/n" or type == "yes/no":
-                await message.add_reaction("👍🏻")
-                await message.add_reaction("👎🏻")
-            elif type == "t/t" or type == "this/that":
-                await message.add_reaction("👈🏻")
-                await message.add_reaction("👉🏻")
-            else:
-                await ctx.send(embed=discord.Embed(description="Enter a valid type: y/n for yes or no OR this/that for this or that", color=color))
-        else:
-            if type == "y/n" or type == "yes/no":
-                await message.add_reaction("👍🏻")
-                await message.add_reaction("👎🏻")
-            elif type == "t/t" or type == "this/that":
-                await message.add_reaction("👈🏻")
-                await message.add_reaction("👉🏻")
-            else:
-                await ctx.send(embed=discord.Embed(description="Enter a valid type: y/n for yes or no OR this/that for this or that", color=color))
+        if ems == "y/n":
+            await message.add_reaction("✅")
+            await message.add_reaction("❌")
             await ctx.send(embed=discord.Embed(description="Poll sent successfully 👍🏻", color=color))
-    else:
-        embed = discord.Embed(title="Polls", description="Command: `_polls type title description`\n\nDetails:-\n`type:` y/n (yes or no) t/t (this or that)\n`title:` give a title to your poll.\n`description:` tell everyone what the poll is about.\n\nNOTE: If the title happens to be more than one word long, use `_` in place of spaces as demonstrated below.\n`The_Ultimate_Choice` will be displayed in the title of poll as `The Ultimate Choice`", color=color)
+        elif ems == "t/t":
+            await message.add_reaction("👈🏻")
+            await message.add_reaction("👉🏻")
+            await ctx.send(embed=discord.Embed(description="Poll sent successfully 👍🏻", color=color))
+        else:
+            emojis = list(ems.split(","))
+            for emoji in emojis:
+                await message.add_reaction(emoji)
+            await ctx.send(embed=discord.Embed(description="Poll sent successfully 👍🏻", color=color))
+    elif title is None and description is None and ems is None:
+        embed = discord.Embed(title="Polls", description="Command: `_polls emojis title description`", color=color)
+        embed.add_field(name="Details", value="`emojis:` enter emojis for the poll and they will be added as reactions\n`title:` give a title to your poll.\n`description:` tell everyone what the poll is about.", inline=False)
+        embed.add_field(name="Notes", value="To add reactions to poll the multiple emojis should be separated by a `,`.\nIf you wish to use default emojis, `y/n` for yes or no and `t/t` for this or that.\nIf the title happens to be more than one word long, use `_` in place of spaces as demonstrated below.\nExample: `The_Ultimate_Choice` will be displayed in the title of poll as `The Ultimate Choice`.", inline=False)
         embed.set_thumbnail(url=random.choice(url_thumbnails))
         await ctx.send(embed=embed)
 

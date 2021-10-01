@@ -27,6 +27,7 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents, case_insensitive=True)
 color = discord.Color.from_rgb(65, 95, 255) # 87, 1, 254 | 65, 95, 255 | 
+bot.remove_command('help')
 # SNIPE
 deleted_messages = {}
 # NUMBER OF REQUESTS
@@ -75,15 +76,15 @@ def help_menu():
     embed_help_menu.set_thumbnail(url=random.choice(url_thumbnails))
     embed_help_menu.set_footer(text="New Features Coming Soon 🛠")
     if help_toggle == 0:
-        embed_help_menu.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nuse to get this embed\nquips to get a famous dialogue or plot\n@Thwipper to get more info about thwipper", inline=False)
+        embed_help_menu.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nhelp to get this menu\nquips to get a famous dialogue or plot\n@Thwipper to get more info about thwipper", inline=False)
     if help_toggle == 1:
-        embed_help_menu.add_field(name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush en `text` to encrypt message\nhush dec `text` to decrypt message\n", inline=False)
+        embed_help_menu.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="w `topic` for wikipedia\ng `topic` to google\nimdb `movie` to get movie details from IMDb\nreddit `topic` to get reddit memes",inline=False)
     if help_toggle == 2:
         embed_help_menu.add_field(name="𝗗𝗧𝗖", value="dt `timezone` to get IST date and time\ncal `year` `month` to get calendar\nNote: The default timezone is set as `Asia/Kolkata`", inline=False)
     if help_toggle == 3:
         embed_help_menu.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; `query` to use SQL Shell\npy `expression` for python shell\npydoc `method` to get use of that python function", inline=False)
     if help_toggle == 4:
-        embed_help_menu.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="w `topic` for wikipedia\ng `topic` to google\nimdb `movie` to get movie details from IMDb\nreddit `topic` to get reddit memes",inline=False)
+        embed_help_menu.add_field(name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush en `text` to encrypt message\nhush dec `text` to decrypt message\n", inline=False)
     if help_toggle == 5:
         embed_help_menu.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel\np `name` or `index` to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ songinfo to get current song\nq `name` to add a song to the queue\nq to view queue\nrem `index` to remove song from queue\ncq to clear queue", inline=False)
     if help_toggle == 6:
@@ -159,7 +160,7 @@ async def on_ready():
 async def on_message(message):
     if f"<@!{bot.user.id}>" == message.content:
             number_of_requests()
-            embed = discord.Embed(title="About", description=f"Hey {message.author.name}!\nI was made by `Spider-Man#1178`. Everything you need to keep the members of the server entertained, I have it 😎", color=color)
+            embed = discord.Embed(title="About", description="Hi there!\nI am Thwipper. I was made by `Fairly Rad#1178`. I am a multipurpose bot. From music to famous Spider-Man movie and comic dialogues, I have it all. Also if you want to see how I was made, [click here](https://github.com/spidey711/Thwipper-bot) 👊🏻", color=color)
             embed.set_thumbnail(url=bot.user.avatar_url)
             embed.set_image(url="https://txt.1001fonts.net/img/txt/dHRmLjcyLjAwMDAwMC5WRWhYU1ZCUVJWSSwuMA,,/lazenby-computer.liquid.png")
             embed.set_footer(text="𝗧𝘆𝗽𝗲 _𝘂𝘀𝗲 𝗳𝗼𝗿 𝗰𝗼𝗺𝗺𝗮𝗻𝗱 𝗺𝗲𝗻𝘂", icon_url=message.author.avatar_url)
@@ -531,7 +532,7 @@ async def greet_bot(ctx):
     embed.set_image(url=random.choice(hello_urls))
     await ctx.send(embed=embed)
 
-@bot.command(aliases=['use','h'])
+@bot.command(aliases=["help","use"])
 async def embed_help(ctx):
     number_of_requests()
     message = await ctx.send(embed=help_menu())

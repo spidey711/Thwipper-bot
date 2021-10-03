@@ -36,6 +36,7 @@ global auth
 load_dotenv(".env")
 token = os.getenv('token')
 sql_pass = os.getenv('sql_pass')
+auth = os.getenv('transformer_auth')
 reddit_client_id = os.getenv('reddit_client_id')
 reddit_client_secret = os.getenv('reddit_client_secret')
 reddit_user_agent = os.getenv('reddit_user_agent')
@@ -177,7 +178,6 @@ async def transformer(api, header, json):
 
 @bot.event
 async def on_message(message):
-    auth = os.getenv('transformer_auth')
     headeras = {"Authorization": auth}
     API_URL = "https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill"
     if message.content.lower().startswith("thwip"):

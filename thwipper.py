@@ -24,7 +24,7 @@ from googlesearch import search
 from cryptography.fernet import Fernet
 
 # SETUP
-prefixes = ["t!","_","thwip ", "thwipper "]
+prefixes = ["t!","_","thwipper ", "Thwipper "]
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents, case_insensitive=True)
@@ -36,7 +36,6 @@ global auth
 load_dotenv(".env")
 token = os.getenv('token')
 sql_pass = os.getenv('sql_pass')
-auth = os.environ.get('transformer_auth')
 reddit_client_id = os.getenv('reddit_client_id')
 reddit_client_secret = os.getenv('reddit_client_secret')
 reddit_user_agent = os.getenv('reddit_user_agent')
@@ -178,22 +177,20 @@ async def transformer(api, header, json):
 
 @bot.event
 async def on_message(message):
-
+    auth = os.getenv('transformer_auth')
     headeras = {"Authorization": auth}
     API_URL = "https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill"
     if message.content.lower().startswith("thwip"):
         past_respose = []
         generated = []
-        input_text = message.content.lower().replace('alfred', '')
+        input_text = message.content.lower().replace('thwip', '')
         payload = {
             "inputs": {
                 "past_user_inputs": past_respose,
                 "generated_responses": generated,
                 "text": input_text
             },}
-
         output = await transformer(API_URL, header = headeras, json = payload)
-            
         if len(past_respose) < 100:    
             past_respose.append(input_text)
             generated.append(output['generated_text'])
@@ -203,11 +200,10 @@ async def on_message(message):
             past_respose.append(input_text)
             generated.append(output['generated_text'])
         await message.reply(output['generated_text'])
-            
-            
+
     if f"<@!{bot.user.id}>" == message.content:
             number_of_requests()
-            embed = discord.Embed(title="About", description="Hi there!\nI am Thwipper. I was made by [Tamonud](https://github.com/spidey711). I am a multipurpose bot. From music to famous Spider-Man movie and comic dialogues, I have it all. Also if you want to see how I was made, [click here](https://github.com/spidey711/Thwipper-bot) 👊🏻", color=color)
+            embed = discord.Embed(title="About", description="Hi there!\nI am Thwipper. I was made by [Tamonud](https://github.com/spidey711). I am a multipurpose bot. From Music to Famous Spider-Man movie and comic dialogues, I have it all. Also if you want to see how I was made, [click here](https://github.com/spidey711/Thwipper-bot) 👊🏻", color=color)
             embed.set_thumbnail(url=bot.user.avatar_url)
             embed.set_image(url="https://txt.1001fonts.net/img/txt/dHRmLjcyLjAwMDAwMC5WRWhYU1ZCUVJWSSwuMA,,/lazenby-computer.liquid.png")
             embed.set_footer(text="𝗧𝘆𝗽𝗲 _𝘂𝘀𝗲 𝗳𝗼𝗿 𝗰𝗼𝗺𝗺𝗮𝗻𝗱 𝗺𝗲𝗻𝘂", icon_url=message.author.avatar_url)

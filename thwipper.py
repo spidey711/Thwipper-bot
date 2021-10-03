@@ -18,8 +18,13 @@ import requests
 import wikipedia
 import youtube_dl 
 import urllib.request
+import aiohttp
 from googlesearch import search
 from cryptography.fernet import Fernet
+import os
+
+global auth
+auth = os.environ.get('transformer_auth')
 
 # SETUP
 prefixes = ["t!","_","thwip ", "thwipper "]
@@ -155,9 +160,41 @@ async def on_ready():
         num = int(req2)
         conn.commit()
     updation.start()
+    
+async def transformer(api, header, json):
+    async with aiohttp.ClientSession() as session:
+        async with session.post(api, headers = header, json = json) as resp:
+            return await resp.json()
 
 @bot.event
 async def on_message(message):
+
+    headeras = {"Authorization": auth}
+    API_URL = "https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill"
+    if message.content.lower().startswith("thwip"):
+        past_respose = []
+        generated = []
+        input_text = message.content.lower().replace('alfred', '')
+        payload = {
+            "inputs": {
+                "past_user_inputs": past_respose,
+                "generated_responses": generated,
+                "text": input_text
+            },}
+
+        output = await transformer(API_URL, header = headeras, json = payload)
+            
+        if len(past_respose) < 100:    
+            past_respose.append(input_text)
+            generated.append(output['generated_text'])
+        else:
+            past_respose.pop(0)
+            generated.pop(0)
+            past_respose.append(input_text)
+            generated.append(output['generated_text'])
+        await message.reply(output['generated_text'])
+            
+            
     if f"<@!{bot.user.id}>" == message.content:
             number_of_requests()
             embed = discord.Embed(title="About", description="Hi there!\nI am Thwipper. I was made by [Tamonud](https://github.com/spidey711). I am a multipurpose bot. From music to famous Spider-Man movie and comic dialogues, I have it all. Also if you want to see how I was made, [click here](https://github.com/spidey711/Thwipper-bot) 👊🏻", color=color)
@@ -167,6 +204,22 @@ async def on_message(message):
             await message.channel.send(embed=embed)
     else:
         await bot.process_commands(message)
+
+
+async def genpost(api, header, json):
+    async with aiohttp.ClientSession() as session:
+        async with session.post(api, headers = header, json=json) as resp:
+            return await resp.json()
+        
+@bot.command()
+async def gen(ctx, *, text):
+    API_URL2 = "https://api-inference.huggingface.co/models/EleutherAI/gpt-neo-2.7B"
+    header2 = {"Authorization": auth}
+    payload2 = {"inputs": text,
+           "parameters": {"max_new_tokens": 250, "return_full_text": True}}
+    
+    output = await genpost(API_URL2, header2, payload2)
+    await ctx.send(embed=discord.Embed(title="Generated text",description=output[0]['generated_text'],color=color))
 
 @bot.event
 async def on_message_delete(message):
@@ -1444,6 +1497,10 @@ async def remove_user_bday(ctx, member:discord.Member):
             await ctx.send(embed=discord.Embed(description="{}'s birthday does not exist in my database".format(member.display_name), color=color))
     except Exception as e:
         await ctx.send(str(e))
+
+
+
+
 
 @bot.command(aliases=["bday"])
 async def check_user_bdays_and_wish(ctx):

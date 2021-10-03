@@ -3,7 +3,7 @@
 _<h2>🕷 What is Thwipper? 🕷</h2>_
 Everything you need to keep the members of the server entertained, this bot has it. 
 Thwipper is inspired from my favorite fictional character Spider-Man. Its name is the onomatopoeia of Spider-Man using his web-shooters. Thwip!<br>
-Prefixes => `[t!], [ _ ], [thwip] [thwipper]`<br>
+Prefixes => `t! _ Thwipper`<br>
 
 <!-- <img src="\spiderman.png"></img> -->
 <img src="https://wallpapercave.com/wp/wp7936066.jpg"></img>
@@ -22,11 +22,11 @@ _Encryption & Decryption_<br><br>
 _MORE FEATURES COMING SOON_
 
 _<h2>🕷 Note 🕷</h2>_
-Have the bot token, SQL password, reddit client id, client secret and the user agent in a .py file in the same directory as `main.py`<br>
+Have the bot token, SQL password, reddit client id, client secret and the user agent in a .env file in the same directory as `main.py`<br>
 Make sure you have all the dependencies installed that are required for this bot to work.<br>
 Especially `ffmpeg` as it is required to play music.
 <a href="https://ffmpeg.org/download.html">Install ffmpeg here</a><br>
 To install other dependencies required, use `pip install [dependency]`.<br>
 
-P.S. Thanks to Alvin for helping out with web scraping.<br>
-https://github.com/alvinbengeorge
+Thanks to [Alvin](https://github.com/alvinbengeorge) for helping out with web scraping.<br>
+Thanks to [Yash](https://github.com/YashVardhan-AI) for implementing the chat bot.

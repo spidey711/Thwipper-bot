@@ -160,7 +160,7 @@ async def on_ready():
 async def on_message(message):
     if f"<@!{bot.user.id}>" == message.content:
             number_of_requests()
-            embed = discord.Embed(title="About", description="Hi there!\nI am Thwipper. I was made by `Fairly Rad#1178`. I am a multipurpose bot. From music to famous Spider-Man movie and comic dialogues, I have it all. Also if you want to see how I was made, [click here](https://github.com/spidey711/Thwipper-bot) 👊🏻", color=color)
+            embed = discord.Embed(title="About", description="Hi there!\nI am Thwipper. I was made by [Tamonud](https://github.com/spidey711). I am a multipurpose bot. From music to famous Spider-Man movie and comic dialogues, I have it all. Also if you want to see how I was made, [click here](https://github.com/spidey711/Thwipper-bot) 👊🏻", color=color)
             embed.set_thumbnail(url=bot.user.avatar_url)
             embed.set_image(url="https://txt.1001fonts.net/img/txt/dHRmLjcyLjAwMDAwMC5WRWhYU1ZCUVJWSSwuMA,,/lazenby-computer.liquid.png")
             embed.set_footer(text="𝗧𝘆𝗽𝗲 _𝘂𝘀𝗲 𝗳𝗼𝗿 𝗰𝗼𝗺𝗺𝗮𝗻𝗱 𝗺𝗲𝗻𝘂", icon_url=message.author.avatar_url)
@@ -465,27 +465,25 @@ async def on_reaction_add(reaction, user):
                     for index in range(len(server_queue)):
                         if random_song == server_queue[index]:
                             queue_index = int(index)
-                        else:
-                            pass 
                     server_index[str(reaction.message.guild.id)] = queue_index
                     URL_shuffle = youtube_download(reaction.message, random_song[1])
                     if reaction.message.guild.voice_client.is_playing() == False:
-                        embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=random_song[0], b=queue_index).replace(" - YouTube", " "), color=color)
+                        embed = discord.Embed(description=f"**Song: **{random_song[0]}\n**Queue Index: **{queue_index}".replace(" - YouTube", " "), color=color)
                         embed.set_author(name="Shuffle Play", icon_url=url_author_music)
                         embed.set_thumbnail(url=pytube.YouTube(url=random_song[1]).thumbnail_url)
                         embed.add_field(name="Uploader", value=pytube.YouTube(url=random_song[1]).author, inline=True)
                         embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=random_song[1]).length), inline=True)
-                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                        embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                         await reaction.message.edit(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_shuffle, **FFMPEG_OPTS))
                     else:
                         voice.stop()
-                        embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=random_song[0], b=queue_index).replace(" - YouTube", " "), color=color)
+                        embed = discord.Embed(description=f"**Song: **{random_song[0]}\n**Queue Index: **{queue_index}".replace(" - YouTube", " "), color=color)
                         embed.set_author(name="Shuffle Play", icon_url=url_author_music)
                         embed.set_thumbnail(url=pytube.YouTube(url=random_song[1]).thumbnail_url)
                         embed.add_field(name="Uploader", value=pytube.YouTube(url=random_song[1]).author, inline=True)
                         embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=random_song[1]).length), inline=True)
-                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                        embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                         await reaction.message.edit(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_shuffle, **FFMPEG_OPTS))
                 else:
@@ -513,7 +511,7 @@ async def stop_program(ctx):
         await voice.disconnect()
     except: 
         pass
-    msgs = ["Bye {}!".format(ctx.author.name), "See ya {}!".format(ctx.author.name), "Till next time {}!".format(ctx.author.name)]
+    msgs = [f"Bye {ctx.author.name}!", f"See ya {ctx.author.name}!", f"Till next time {ctx.author.name}!"]
     if ctx.author.id == 622497106657148939:
         await ctx.send(random.choice(msgs))
         conn.commit()
@@ -674,11 +672,10 @@ async def conduct_poll(ctx, ems=None, title=None, *, description=None):
 @bot.command(aliases=['req','requests'])
 async def total_requests(ctx):
     number_of_requests()
-    global cursor
     operation = "SELECT MAX(number) FROM requests"
     cursor.execute(operation)
     total = cursor.fetchall()
-    embed = discord.Embed(description= "**Requests made: **" + str(total).replace("[(", " ").replace(",)]", " "), color=color)
+    embed = discord.Embed(description= f"""**Requests Made:\n**{str(total).replace("[(", " ").replace(",)]", " ")}""", color=color)
     await ctx.send(embed=embed)
 
 @bot.command(aliases=[".web"])
@@ -719,7 +716,9 @@ async def user_pfp(ctx, member:discord.Member=None):
 @bot.command(aliases=["ping"])
 async def get_ping(ctx):
     number_of_requests()
-    await ctx.send(embed=discord.Embed(description="**Latency:** {} ms".format(round(bot.latency * 1000)), color=color))
+    embed = discord.Embed(title="Pong!", description=f"Latency = {round(bot.latency*1000)} ms", color=color)
+    embed.set_thumbnail(url=bot.user.avatar_url)
+    await ctx.send(embed=embed)
 
 @bot.command(aliases=["serverinfo","si"])
 async def server_information(ctx):
@@ -798,7 +797,7 @@ async def get_calendar(ctx, year, month):
         embed.set_thumbnail(url=url_dtc)
         await ctx.send(embed=embed)
     except IndexError:
-        embed = discord.Embed(description="{}, this month doesn't exist [📆]".format(ctx.author.name), color=color)
+        embed = discord.Embed(description="{}, this month doesn't exist 📆".format(ctx.author.name), color=color)
         embed.set_author(name='Calendar', icon_url=url_dtc)
         await ctx.send(embed=embed)
 
@@ -911,18 +910,11 @@ async def leave_vc(ctx):
 @bot.command(aliases=["setbit","bit"])
 async def set_bitrate(ctx, kbps):
     number_of_requests()
-    global cursor
-    op_dev = "SELECT * FROM dev_users"
-    cursor.execute(op_dev)
-    dev_list = cursor.fetchall()
-    if str(ctx.author.id) in str(dev_list) or ctx.author.id == 622497106657148939:
-        for items in ydl_op['postprocessors']:
-            items['preferredquality'] = str(kbps)
-            embed = discord.Embed(description='**Bitrate:** {} kbps'.format(kbps), color=color)
-            embed.set_author(name='Audio Quality', icon_url=url_author_music)
-            await ctx.send(embed=embed)
-    else:
-        await ctx.send(title="Access Denied", description="{}, only dev users can edit bitrate".format(ctx.author.name))
+    for items in ydl_op['postprocessors']:
+        items['preferredquality'] = str(kbps)
+        embed = discord.Embed(description='**Bitrate:** {} kbps'.format(kbps), color=color)
+        embed.set_author(name='Audio Quality', icon_url=url_author_music)
+        await ctx.send(embed=embed)
 
 @bot.command(aliases=["queue","q"])
 async def queue_song(ctx, *, name=None):
@@ -1478,6 +1470,6 @@ async def check_user_bdays_and_wish(ctx):
             await message.add_reaction("🎉")
             toggle = 1
     if toggle == 0:
-        await ctx.send(embed=discord.Embed(description="I just checked from my database and it seems there are no birthdays today 💁🏻‍♂️", color=color))
+        await ctx.send(embed=discord.Embed(description=random.choice(none_today), color=color))
 
 bot.run(token)

@@ -1,9 +1,10 @@
 import discord
 from discord.utils import get
 from discord.ext import commands, tasks
-from functioning import *
 from links import *
 from responses import *
+import os
+from dotenv import load_dotenv
 import mysql.connector as ms
 import imdb
 import random
@@ -21,10 +22,6 @@ import urllib.request
 import aiohttp
 from googlesearch import search
 from cryptography.fernet import Fernet
-import os
-
-global auth
-auth = os.environ.get('transformer_auth')
 
 # SETUP
 prefixes = ["t!","_","thwip ", "thwipper "]
@@ -33,6 +30,19 @@ intents.members = True
 bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents, case_insensitive=True)
 color = discord.Color.from_rgb(65, 95, 255) # 87, 1, 254 | 65, 95, 255 | 
 bot.remove_command('help')
+
+# Enviroment Variables
+global auth
+load_dotenv(".env")
+token = os.getenv('token')
+sql_pass = os.getenv('sql_pass')
+auth = os.environ.get('transformer_auth')
+reddit_client_id = os.getenv('reddit_client_id')
+reddit_client_secret = os.getenv('reddit_client_secret')
+reddit_user_agent = os.getenv('reddit_user_agent')
+reddit_username = os.getenv('SpideyNYC')
+reddit_userpass = os.getenv('reddit_userpass')
+
 # SNIPE
 deleted_messages = {}
 # NUMBER OF REQUESTS
@@ -80,6 +90,8 @@ def help_menu():
     embed_help_menu = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸", description="Prefixes => `[t!] [ _ ] [thwip] [thwipper]`", color=color)
     embed_help_menu.set_thumbnail(url=random.choice(url_thumbnails))
     embed_help_menu.set_footer(text="New Features Coming Soon 🛠")
+    if help_toggle < 0:
+        help_toggle = 0
     if help_toggle == 0:
         embed_help_menu.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nhelp to get this menu\nquips to get a famous dialogue or plot\n@Thwipper to get more info about thwipper", inline=False)
     if help_toggle == 1:
@@ -96,8 +108,6 @@ def help_menu():
         embed_help_menu.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\n\polls to see how to conduct a poll\nweb to see deleted message\n.web to troll those who try web command\naddbday `mention` `month` `day` to add a user's birthday from DB\nbday to get thwipper to wish the members\nrembday `mention` to remove a member's birthday from DB.", inline=False)
     if help_toggle > 6:
         help_toggle = 6
-    if help_toggle < 0:
-        help_toggle = 0
     return embed_help_menu
 def time_converter(seconds):
     mins, secs = divmod(seconds, 60)

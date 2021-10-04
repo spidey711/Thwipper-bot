@@ -24,7 +24,7 @@ from googlesearch import search
 from cryptography.fernet import Fernet
 
 # SETUP
-prefixes = ["t!","_","|","Thwipper "]
+prefixes = ["t!","_","|"]
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=[prefix for prefix in prefixes], intents=intents, case_insensitive=True)
@@ -87,7 +87,7 @@ cursor = conn.cursor()
 
 def help_menu():
     global help_toggle
-    embed_help_menu = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸", description="Prefixes => `t! _ | Thwipper`", color=color)
+    embed_help_menu = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸", description="Prefixes => `t! | _`", color=color)
     embed_help_menu.set_thumbnail(url=random.choice(url_thumbnails))
     embed_help_menu.set_footer(text="New Features Coming Soon 🛠")
     if help_toggle == 0 or help_toggle < 0:

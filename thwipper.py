@@ -87,10 +87,11 @@ cursor = conn.cursor()
 
 def help_menu():
     global help_toggle
-    embed_help_menu = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸", description="Prefixes => `t! | _`", color=color)
+    embed_help_menu = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸", description="Prefixes => `t! _ | Thwipper`", color=color)
     embed_help_menu.set_thumbnail(url=random.choice(url_thumbnails))
     embed_help_menu.set_footer(text="New Features Coming Soon 🛠")
     if help_toggle == 0 or help_toggle < 0:
+        help_toggle = 0
         embed_help_menu.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nhelp to get this menu\nquips to get a famous dialogue or plot\n@Thwipper to get more info about thwipper", inline=False)
     if help_toggle == 1:
         embed_help_menu.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="w `topic` for wikipedia\ng `topic` to google\nimdb `movie` to get movie details from IMDb\nreddit `topic` to get reddit memes",inline=False)
@@ -103,6 +104,7 @@ def help_menu():
     if help_toggle == 5:
         embed_help_menu.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel\np `name` or `index` to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ songinfo to get current song\nq `name` to add a song to the queue\nq to view queue\nrem `index` to remove song from queue\ncq to clear queue", inline=False)
     if help_toggle == 6 or help_toggle > 6:
+        help_toggle = 6
         embed_help_menu.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\n\polls to see how to conduct a poll\nweb to see deleted message\n.web to troll those who try web command\naddbday `mention` `month` `day` to add a user's birthday from DB\nbday to get thwipper to wish the members\nrembday `mention` to remove a member's birthday from DB.", inline=False)
     return embed_help_menu
 def time_converter(seconds):

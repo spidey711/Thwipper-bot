@@ -1210,7 +1210,7 @@ async def leave_vc(ctx):
     try:
     
         if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
-            voice_client = ctx.message.guild.voice_clien
+            voice_client = ctx.message.guild.voice_client
     
             try:
     

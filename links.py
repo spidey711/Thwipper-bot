@@ -15,3 +15,9 @@ url_about = ["https://txt.1001fonts.net/img/txt/dHRmLjU0LjAwMDAwMC5WR2gzYVhCd1pY
 url_imdb_thumbnail = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7zFAj0Y6wJp-swFKRcXMo_LMSr0lhSGnltA&usqp=CAU"
 url_imdb_author = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIBpxdv4v3OFXNUQaoN_v_q2GPheL44f4iTTb_JSnJIKe4x6Qio7onD3hyDSWwK6AuZrU&usqp=CAU"
 troll_links = ["https://s3.getstickerpack.com/storage/uploads/sticker-pack/troll-face-1/sticker_2.png?655b17067df1601e75cc33e267fe806f&d=200x200","https://s3.getstickerpack.com/storage/uploads/sticker-pack/troll-face-1/sticker_3.png?655b17067df1601e75cc33e267fe806f&d=200x200","https://s3.getstickerpack.com/storage/uploads/sticker-pack/troll-face-1/sticker_8.png?655b17067df1601e75cc33e267fe806f&d=200x200","https://s3.getstickerpack.com/storage/uploads/sticker-pack/troll-face-1/sticker_11.png?655b17067df1601e75cc33e267fe806f&d=200x200","https://s3.getstickerpack.com/storage/uploads/sticker-pack/troll-face-1/sticker_23.png?655b17067df1601e75cc33e267fe806f&d=200x200","https://s3.getstickerpack.com/storage/uploads/sticker-pack/troll-face-1/sticker_18.png?655b17067df1601e75cc33e267fe806f&d=200x200","https://s3.getstickerpack.com/storage/uploads/sticker-pack/troll-face-1/sticker_16.png?655b17067df1601e75cc33e267fe806f&d=200x200"]
+help_page1 = "https://images6.alphacoders.com/813/thumbbig-813100.webp"
+help_page2 = "https://wallpapercave.com/wp/wp3158861.jpg"
+help_page3 = "https://wallpapercave.com/wp/wp1828903.png"
+help_page4 = "https://c4.wallpaperflare.com/wallpaper/693/694/388/blue-chip-color-fee-wallpaper-preview.jpg"
+help_page5 = "https://c4.wallpaperflare.com/wallpaper/408/181/153/macro-background-sony-walkman-wallpaper-preview.jpg" # https://c4.wallpaperflare.com/wallpaper/764/246/501/neon-synthwave-walkman-wallpaper-preview.jpg
+help_page6 = "https://c4.wallpaperflare.com/wallpaper/251/835/643/aenami-digital-art-eclipse-sun-wallpaper-preview.jpg"

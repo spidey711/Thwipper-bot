@@ -1,28 +1,32 @@
 # IMPORTS
-import discord
-from discord.utils import get
-from discord.ext import commands, tasks
-from links import *
-from responses import *
-from dotenv import load_dotenv
-import mysql.connector as ms
-import os
-import random
-import calendar
-import pytz
-import datetime
-import asyncio
-import regex
-import praw
-import pytube
-import imdb
-import requests
-import aiohttp
-import urllib.request
-import youtube_dl 
-import wikipedia
-from googlesearch import search
-from cryptography.fernet import Fernet
+try:
+    import discord
+    from discord.utils import get
+    from discord.ext import commands, tasks
+    from links import *
+    from responses import *
+    from dotenv import load_dotenv
+    import mysql.connector as ms
+    import os
+    import random
+    import calendar
+    import pytz
+    import datetime
+    import asyncio
+    import regex
+    import praw
+    import pytube
+    import imdb
+    import requests
+    import aiohttp
+    import urllib.request
+    import youtube_dl 
+    import wikipedia
+    from googlesearch import search
+    from cryptography.fernet import Fernet
+    print("All modules and libraries imported...")
+except Exception as e:
+    print(e)
 
 # SETUP
 prefixes = ["t!","_","|"]
@@ -83,7 +87,7 @@ help_toggle = 0
 # QUIPS
 dialogue_list = []
 # SQL
-conn = ms.connect(host="localhost", user="root", passwd=sql_pass, database="discord")
+conn = ms.connect(user="root", host="localhost", password=sql_pass, database="discord")
 cursor = conn.cursor()
 
 # //////////////////////////////////////// NON ASYNC FUNCTIONS /////////////////////////////////////

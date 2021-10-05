@@ -1197,6 +1197,7 @@ async def join_vc(ctx):
     except Exception as e:
         embed = discord.Embed(description="Error:\n" + str(e), color=color)
         embed.set_author(name='Error', icon_url=url_author_music)
+        await ctx.send(embed=embed)
 
 @bot.command(aliases=["dc","disconnect"])
 async def leave_vc(ctx):

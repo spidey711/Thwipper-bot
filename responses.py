@@ -9,16 +9,14 @@ compliments = ["Man, the daily bugle would pay a lot for this 🤩", "This is a 
 poll_channels = ['polls','poll','🔺-polls-🔻']
 announce_channels = ['announcements','bot-announcement','📢-announcements']
 
-# Web Trolls
-troll_links = ["https://s3.getstickerpack.com/storage/uploads/sticker-pack/troll-face-1/sticker_2.png?655b17067df1601e75cc33e267fe806f&d=200x200","https://s3.getstickerpack.com/storage/uploads/sticker-pack/troll-face-1/sticker_3.png?655b17067df1601e75cc33e267fe806f&d=200x200","https://s3.getstickerpack.com/storage/uploads/sticker-pack/troll-face-1/sticker_8.png?655b17067df1601e75cc33e267fe806f&d=200x200","https://s3.getstickerpack.com/storage/uploads/sticker-pack/troll-face-1/sticker_11.png?655b17067df1601e75cc33e267fe806f&d=200x200","https://s3.getstickerpack.com/storage/uploads/sticker-pack/troll-face-1/sticker_23.png?655b17067df1601e75cc33e267fe806f&d=200x200","https://s3.getstickerpack.com/storage/uploads/sticker-pack/troll-face-1/sticker_18.png?655b17067df1601e75cc33e267fe806f&d=200x200","https://s3.getstickerpack.com/storage/uploads/sticker-pack/troll-face-1/sticker_16.png?655b17067df1601e75cc33e267fe806f&d=200x200"]
-
 # Music 
-connections = ["Ready to rock 'n roll, let's go 🎸","Alright then, time to vibe 🌃","So, what do you want to play? 🤔","Man, I am so down for some music right now 🎼","I like trap beats at night and heavy rock 'n roll during the day 🎤"]
+connections = ["Ready to rock 'n roll, let's go 🎸","Alright then, time to vibe 🌃","So, what do you want to play? 🤔","Man, I am so down for some music right now 🎼","I like trap beats at night and heavy rock 'n roll during the day 🎤","Ever listened to Jaws Of Life by John Petrucci? I highly recommend it if you're into Metal 🥁","Is it just me or does LoFi sometimes gets you drowsy? 😴","Genres: Rock, Alternative Rock, Pop, Math Rock, Metal, Progressive Metal, Pop Funk, Blues, Jazz 🎷"]
 disconnections = ["Well, that was fun 👍🏻","Aight fam, catch you later 👊🏻","Gotta say, very solid song collection 🌟","This has been quite an experience 🎇","Oh hell yeah, that was dope. We should do this more often 😃","Holy Shit, you do have a good taste in music 🥁"]
+default_index = ["Use prefix `index` from queue to set a current song 🤔","You have not set a current song, play a song from the queue 🎶","It seems that there is no current song set. Play something from the queue to set one 🎼"]
 
 # Shells
 denied = ["exit()","token", "sql_pass", 'eval("token")', "eval('token')",'eval("sql_pass")',"key","cipher","eval('cipher')",'eval("cipher")',"eval('key')",'eval("key")',"reddit_client_id","eval('reddit_client_id')",'eval("reddit_client_id")',"reddit_client_secret","eval('reddit_client_secret')",'eval("reddit_client_secret")',"reddit_user_agent","eval('reddit_user_agent')",'eval("reddit_user_agent")',"reddit_client_id","eval('reddit_client_id')",'eval ("reddit_client_id")',"reddit_user_pass","eval('reddit_user_pass')",'eval("reddit_user_pass")',"reddit_client_id","eval('reddit_client_id')",'eval("reddit_client_id")',"10**10**10","import","exec"]
-denied_responses = ["Uh uh, no can do man. That function will not be executed.","Nope! Can't and won't execute that function","Haha, sorry I cannot possibly execute that function.","That function cannot be executed."]
+denied_responses = ["Not gonna execute that one haha. Bummer.","Can't execute that. Sorry, not sorry.","Uh uh, no can do man. That function will not be executed.","Nope! Can't and won't execute that function","Haha, sorry I cannot possibly execute that function.","That function cannot be executed."]
 no_functions = ["Functions will not be executed. Try w/o brackets to get information.","No functions allowed. Please enter w/o brackets to get information.","I cannot execute functions, try entering w/o brackets to get information."]
 
 # IMDb Responses

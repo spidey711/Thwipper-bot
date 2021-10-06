@@ -25,8 +25,8 @@ try:
     from googlesearch import search
     from cryptography.fernet import Fernet
     print("All modules and libraries imported...")
-except Exception as e:
-    print(e)
+except ImportError as ie:
+    print(ie)
 
 # SETUP
 prefixes = ["t!","_","|"]
@@ -1301,6 +1301,7 @@ async def queue_song(ctx, *, name=None):
                 await player.add_reaction("⏹") # stop
                 await player.add_reaction("🔀") # shuffle
                 await player.add_reaction("*️⃣") # current song
+                await player.add_reaction("🔠") # display queue
             
             except KeyError:
                 embed = discord.Embed(description=random.choice(default_index), color=color)

@@ -1,7 +1,4 @@
 # IMPORTS
-import types
-
-
 try:
     import discord
     from discord.utils import get
@@ -739,21 +736,27 @@ async def stop_program(ctx):
 
     number_of_requests()
 
-    try: 
-        voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-        voice.stop()
-        await voice.disconnect()
-
-    except: 
-        pass
-
     msgs = [f"Bye {ctx.author.name}!", f"See ya {ctx.author.name}!", f"Till next time {ctx.author.name}!"]
+    li = bot.voice_clients
 
     if ctx.author.id == 622497106657148939:
-        await ctx.send(random.choice(msgs))
-        conn.commit()
-        print(random.choice(msgs))
-        exit()
+
+        if len(li) == 0:
+            
+            try: 
+                voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+                voice.stop()
+                await voice.disconnect()
+            except: 
+                pass
+    
+            conn.commit()
+            await ctx.send(random.choice(msgs))
+            print(random.choice(msgs))
+            exit()
+
+        else:
+            await ctx.send(embed=discord.Embed(description="Hold Up! I am vibing to music with others 🤖", color=color))
 
     else:
         await ctx.send("Access Denied")
@@ -914,12 +917,10 @@ async def conduct_poll(ctx, ems=None, title=None, *, description=None):
     await ctx.channel.purge(limit=1)
     poll_channel = None
 
-    for channel in ctx.guild.channels:
-
-        for channel_name in poll_channels:
-        
-            if channel.name == channel_name:
-                send_to = channel.name = channel_name
+    for i in ctx.guild.channels:
+        for j in poll_channels:
+            if i.name == j:
+                send_to = i.name = j
                 poll_channel = discord.utils.get(ctx.guild.channels, name=send_to)
     
     if title is not None:
@@ -1380,6 +1381,7 @@ async def play_music(ctx, *, char):
                         embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=url).length), inline=True)
                         player = await ctx.send(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
+                        
                         await player.add_reaction("⏮") # previous track
                         await player.add_reaction("▶")  # resume
                         await player.add_reaction("⏸") # pause
@@ -1400,6 +1402,7 @@ async def play_music(ctx, *, char):
                         embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=url).length), inline=True)
                         player = await ctx.send(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
+                        
                         await player.add_reaction("⏮") # previous track
                         await player.add_reaction("▶")  # resume
                         await player.add_reaction("⏸") # pause

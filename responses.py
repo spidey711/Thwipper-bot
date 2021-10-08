@@ -10,7 +10,7 @@ poll_channels = ['polls','poll','🔺-polls-🔻']
 announcement_channels = ['announcements','bot-announcement','📢-announcements']
 
 # Music 
-connections = ["Ready to rock 'n roll, let's go 🎸","Alright then, time to vibe 🌃","So, what do you want to play? 🤔","Man, I am so down for some music right now 🎼","I like trap beats at night and heavy rock 'n roll during the day 🎤","Ever listened to Jaws Of Life by John Petrucci? I highly recommend it if you're into Metal 🥁","Is it just me or does LoFi sometimes gets you drowsy? 😴","Genres: Rock, Alternative Rock, Pop, Math Rock, Metal, Progressive Metal, Pop Funk, Blues, Jazz 🎷"]
+connections = ["Ready to rock 'n roll, let's go 🎸","Alright then, time to vibe 🌃","So, what do you want to play? 🤔","Man, I am so down for some music right now 🎼","I like trap beats at night and heavy rock 'n roll during the day 🎤", "Is it just me or does LoFi sometimes gets you drowsy? 😴"]
 disconnections = ["Well, that was fun 👍🏻","Aight fam, catch you later 👊🏻","Gotta say, very solid song collection 🌟","This has been quite an experience 🎇","Oh hell yeah, that was dope. We should do this more often 😃","Holy Shit, you do have a good taste in music 🥁"]
 default_index = ["Use prefix `index` from queue to set a current song 🤔","You have not set a current song, play a song from the queue 🎶","It seems that there is no current song set. Play something from the queue to set one 🎼"]
 empty_queue = ["Hey, it looks like your queue is empty 🤔", "You might wanna queue some songs to use all features of Walkman 😎", "It seems you haven't queued any songs 🎼","This server's queue is empty. Queue some songs maybe? 😃","Uh oh...We have ourselves an empty queue, how about we queue some songs eh? 🎶"]
@@ -24,7 +24,7 @@ no_functions = ["Functions will not be executed. Try w/o brackets to get informa
 imdb_responses = ["I don't think there is a movie with no name, is there?","I think you forgot to enter the movie name.","You gotta enter the movie name dude.","Is there a movie with no name?"]
 
 # Status
-status_list = ["The Amazing Spider-Man", "The Amazing Spider-Man 2", "Spider-Man", "Spider-Man 2", "Spider-Man 3", "TASM Duology", "Raimi Trilogy", "Spider-Man Homecoming", "Spider-Man Far From Home", "Spectacular Spider-Man", "Ultimate Spider-Man", "Fairly Rad Videos", "Marvel's Spider-Man", "Marvel's Spider-Man Miles Morales", "Chrome", "Firefox Developer Edition", "Visual Studio Code", "Music", "Discord", "Dying Light", "Ezio Trilogy", "Prototype(2009)", "Dead Space(2008)", "Need For Speed: Most Wanted"]
+status_list = ["The Amazing Spider-Man", "The Amazing Spider-Man 2", "Spider-Man", "Spider-Man 2", "Spider-Man 3", "TASM Duology", "Raimi Trilogy", "Spider-Man Homecoming", "Spider-Man Far From Home", "Spectacular Spider-Man", "Ultimate Spider-Man", "Fairly Rad Videos", "Marvel's Spider-Man", "Marvel's Spider-Man Miles Morales", "Music", "Dying Light", "Ezio Trilogy", "Prototype(2009)", "Dead Space(2008)", "Need For Speed: Most Wanted"]
 
 # Birthdays 
 descriptions = ["Make the most out of your day!", "I am invited to the party, right? I hope I am 😎", "Enjoy the cake 🎂!", f"Here is a present for you 🎁", "Party hard dude! Tis' your day 🤟🏻"]

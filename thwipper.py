@@ -1,4 +1,7 @@
 # IMPORTS
+import types
+
+
 try:
     import discord
     from discord.utils import get
@@ -320,12 +323,14 @@ async def on_reaction_add(reaction, user):
                 embed.set_image(url=sub.url)
                 embed.set_footer(text="🔺: {}   🔻: {}   💬: {}".format(sub.ups, sub.downs, sub.num_comments))
                 await reaction.message.edit(embed=embed)
+            
             except Exception:
                 embed = discord.Embed(description="Default topic is not set", color=color)
                 embed.set_author(name="Uh oh...", icon_url=url_reddit_author)
                 await reaction.message.edit(embed=embed)
     
         global help_toggle
+        
         if reaction.emoji == "➡":
             help_toggle += 1
     
@@ -907,7 +912,15 @@ async def conduct_poll(ctx, ems=None, title=None, *, description=None):
     number_of_requests()
     
     await ctx.channel.purge(limit=1)
-    poll_channel = discord.utils.get(ctx.guild.channels, name="🔺-polls-🔻")
+    poll_channel = None
+
+    for channel in ctx.guild.channels:
+
+        for channel_name in poll_channels:
+        
+            if channel.name == channel_name:
+                send_to = channel.name = channel_name
+                poll_channel = discord.utils.get(ctx.guild.channels, name=send_to)
     
     if title is not None:
     
@@ -922,20 +935,20 @@ async def conduct_poll(ctx, ems=None, title=None, *, description=None):
         if ems == "y/n":
             await message.add_reaction("✅")
             await message.add_reaction("❌")
-            await ctx.send(embed=discord.Embed(description="Poll sent successfully 👍🏻", color=color))
     
         elif ems == "t/t":
             await message.add_reaction("👈🏻")
             await message.add_reaction("👉🏻")
-            await ctx.send(embed=discord.Embed(description="Poll sent successfully 👍🏻", color=color))
     
         else:
             emojis = list(ems.split(","))
     
             for emoji in emojis:
                 await message.add_reaction(emoji)
-            await ctx.send(embed=discord.Embed(description="Poll sent successfully 👍🏻", color=color))
-    
+        
+        if ctx.channel.name != poll_channel:
+            await ctx.send(embed=discord.Embed(description="Poll Sent Successfully 👍🏻", color=color))
+
     elif title is None and description is None and ems is None:
         embed = discord.Embed(title="Polls", description="Command: `_polls emojis title description`", color=color)
         embed.add_field(name="Details", value="`emojis:` enter emojis for the poll and they will be added as reactions\n`title:` give a title to your poll.\n`description:` tell everyone what the poll is about.", inline=False)
@@ -1923,8 +1936,14 @@ async def check_user_bdays_and_wish(ctx):
     op_check = "SELECT * FROM birthdays"
     cursor.execute(op_check)
     bdays = cursor.fetchall()
-    channel = discord.utils.get(ctx.guild.channels, name=[channel for channel in announce_channels])
+    channel = None
     toggle = 0
+
+    for i in ctx.guild.channels:
+        for j in announcement_channels:
+            if i.name == j:
+                send_to = i.name = j
+                channel = discord.utils.get(ctx.guild.channels, name=send_to)
     
     for bday in bdays: # bday[0]   bday[1]  bday[2]
     

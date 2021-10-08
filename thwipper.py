@@ -96,39 +96,47 @@ def help_menu():
 
     global help_toggle
     
-    embed_help_menu = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸", description="Prefixes => `t! | _`", color=color)
+    embed_help_menu = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸", description="Prefixes: t! _ |", color=color)
     embed_help_menu.set_thumbnail(url=random.choice(url_thumbnails))
     embed_help_menu.set_footer(text="New Features Coming Soon 🛠")
     
     if help_toggle == 0 or help_toggle < 0:
         help_toggle = 0
-        embed_help_menu.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="hello to greet bot\nhelp to get this menu\nquips to get a famous dialogue or plot\n@Thwipper to get more info about thwipper", inline=False)
+        embed_help_menu.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="1) hello to greet bot\n2) help to get this menu\n3) quips to get a famous dialogue or plot\n4) @Thwipper to get more info about thwipper", inline=False)
         embed_help_menu.set_image(url=bot.user.avatar_url)
     
     if help_toggle == 1:
-        embed_help_menu.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="w `topic` for wikipedia\ng `topic` to google\nimdb `movie` to get movie details from IMDb\nreddit `topic` to get reddit memes",inline=False)
+        embed_help_menu.add_field(name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",value="1) w `topic` for wikipedia\n2) g `topic` to google\n3) imdb `movie` to get movie details from IMDb\n4) reddit `topic` to get reddit memes",inline=False)
         embed_help_menu.set_image(url=help_page1)
 
     if help_toggle == 2:
-        embed_help_menu.add_field(name="𝗗𝗧𝗖", value="dt `timezone` to get IST date and time\ncal `year` `month` to get calendar\nNote: The default timezone is set as `Asia/Kolkata`", inline=False)
+        embed_help_menu.add_field(name="𝗗𝗧𝗖", value="1) dt `timezone` to get IST date and time\n2) cal `year` `month` to get calendar\nNote: The default timezone is set as `Asia/Kolkata`", inline=False)
         embed_help_menu.set_image(url=help_page2)
     
     if help_toggle == 3:
-        embed_help_menu.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; `query` to use SQL Shell\npy `expression` for python shell\npydoc `method` to get use of that python function", inline=False)
+        embed_help_menu.add_field(name="𝗦𝗵𝗲𝗹𝗹𝘀", value="1) ; `query` to use SQL Shell\n2) py `expression` for python shell\n3) pydoc `function` to get information about that python function\nNote: The functions, when using `pydoc` command, will not be executed. Try without `()`.", inline=False)
         embed_help_menu.set_image(url=help_page3)
     
     if help_toggle == 4:
-        embed_help_menu.add_field(name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush en `text` to encrypt message\nhush dec `text` to decrypt message\n", inline=False)
+        embed_help_menu.add_field(name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="1) hush en `text` to encrypt message\n2) hush dec `text` to decrypt message\n", inline=False)
         embed_help_menu.set_image(url=help_page4)
     
     if help_toggle == 5:
-        embed_help_menu.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="cn to get the bot to join voice channel\ndc to remove bot from voice channel\np `name` or `index` to play songs\n▶ res to resume a song\n⏸ pause to pause a song\n⏹ st to stop a song\n🔂 rep to repeat song \n⏭ skip to skip song\n⏮ prev for previous song\n*️⃣ songinfo to get current song\n🔠 q to display queue\nq `name` to add a song to the queue\nrem `index` to remove song from queue\ncq to clear queue", inline=False)
+        embed_help_menu.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™",value="1) cn to get the bot to join voice channel\n2) dc to remove bot from voice channel\n3) p `name` or `index` to play songs\n4) ▶ res to resume a song\n5) ⏸ pause to pause a song\n6) ⏹ st to stop a song\n7) 🔂 rep to repeat song \n8) ⏭ skip to skip song\n9) ⏮ prev for previous song\n10) *️⃣ songinfo to get current song\n11) 🔠 q to display queue\n12) q `name` to add a song to the queue\n13) rem `index` to remove song from queue\n14) cq to clear queue", inline=False)
         embed_help_menu.set_image(url=help_page5)
     
-    if help_toggle == 6 or help_toggle > 6:
-        help_toggle = 6
-        embed_help_menu.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="req to get number of requests\nping to get user latency\nserverinfo to get server's information\npfp to get user's profile picture\nbit to set quality of bitrate\npolls to see how to conduct a poll\nweb to see deleted message\n.web to troll those who try web command\naddbday `mention` `month` `day` to add a user's birthday from DB\nbday to get thwipper to wish the members\nrembday `mention` to remove a member's birthday from DB.", inline=False)
+    if help_toggle == 6:
+        embed_help_menu.add_field(name="𝗕𝗶𝗿𝘁𝗵𝗱𝗮𝘆𝘀", value="1) addbday `mention` `month` `day` to add a user's birthday from DB\n2) bday to get thwipper to wish the members\n3) rembday `mention` to remove a member's birthday.", inline=False)
         embed_help_menu.set_image(url=help_page6)
+
+    if help_toggle == 7:
+        embed_help_menu.add_field(name="𝗧𝗵𝗲 𝗪𝗲𝗯 𝗙𝗲𝗮𝘁𝘂𝗿𝗲", value="1) web to see deleted message\n2) .web to troll those who try web command", inline=False)
+        embed_help_menu.set_image(url=help_page7)
+
+    if help_toggle == 8 or help_toggle > 8:
+        help_toggle = 8
+        embed_help_menu.add_field(name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="1) req to get number of requests\n2) ping to get bot's latency\n3) serverinfo to get server's information\n4) pfp to get user's profile picture\n5) bit to set quality of bitrate\n6) polls to see how to conduct a poll", inline=False)
+        embed_help_menu.set_image(url=help_page8)
     
     return embed_help_menu
 
@@ -1235,7 +1243,6 @@ async def leave_vc(ctx):
 
 @bot.command(aliases=["setbit","bit"])
 async def set_bitrate(ctx, kbps):
-
     
     number_of_requests()
     
@@ -1249,10 +1256,6 @@ async def set_bitrate(ctx, kbps):
 async def queue_song(ctx, *, name=None):
     
     number_of_requests()
-    
-    operation_view = "SELECT song_name, song_url FROM music_queue WHERE server={}".format(str(ctx.guild.id))
-    cursor.execute(operation_view)
-    songs = cursor.fetchall()
     
     if ctx.author.id not in [member.id for member in ctx.guild.voice_client.channel.members]:
         embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
@@ -1268,44 +1271,60 @@ async def queue_song(ctx, *, name=None):
             video = regex.findall(r"watch\?v=(\S{11})", htm.read().decode())
             url = "https://www.youtube.com/watch?v=" + video[0] 
             htm_code = str(urllib.request.urlopen(url).read().decode()) 
+            
             starting = htm_code.find("<title>") + len("<title>")
             ending = htm_code.find("</title>")        
             name_of_the_song = htm_code[starting:ending].replace("&#39;","'").replace("&amp;","&") 
+            
             operation_add_song = f"""INSERT INTO music_queue(song_name, song_url, server)VALUES("{name_of_the_song}","{url}","{str(ctx.guild.id)}")"""
             cursor.execute(operation_add_song)
+            
             embed = discord.Embed(description=f"{name_of_the_song}".replace(" - YouTube"," "), color=color)
             embed.set_author(name="Song added", icon_url=url_author_music)
             await ctx.send(embed=embed)
-    
+
         else:
-    
-            try:
-                string = ""
-                index = server_index[str(ctx.guild.id)] - 10
-    
-                for song in songs[index:index + 20]:
-                    string += str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " ")     
-                    index += 1
-    
-                embed = discord.Embed(description=string, color=color)
+            operation_view = "SELECT song_name, song_url FROM music_queue WHERE server={}".format(str(ctx.guild.id))
+            cursor.execute(operation_view)
+            songs = cursor.fetchall()
+            
+            if len(songs) > 0:
+        
+                try:
+                    string = ""
+                    index = server_index[str(ctx.guild.id)] - 10
+            
+                    for song in songs[index:index + 20]:
+                        string += str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " ")     
+                        index += 1
+                
+                    embed = discord.Embed(description=string, color=color)
+                    embed.set_author(name=f"{ctx.guild.name}'s Playlist", icon_url=url_author_music)
+                    embed.set_thumbnail(url=random.choice(url_thumbnail_music))
+                    embed.set_footer(text=f'Number Of Songs: {len(songs)}')
+                    player = await ctx.send(embed=embed)
+                
+                    await player.add_reaction("⏮") # previous track
+                    await player.add_reaction("▶")  # resume
+                    await player.add_reaction("⏸") # pause
+                    await player.add_reaction("⏭") # next
+                    await player.add_reaction("🔂") # repeat
+                    await player.add_reaction("⏹") # stop
+                    await player.add_reaction("🔀") # shuffle
+                    await player.add_reaction("*️⃣") # current song
+                    await player.add_reaction("🔠") # display queue
+                
+                except KeyError:
+                    embed = discord.Embed(description=random.choice(default_index), color=color)
+                    embed.set_author(name="Walkman™", icon_url=url_author_music)
+                    await ctx.send(embed=embed)
+        
+            else:
+            
+                embed = discord.Embed(description=random.choice(empty_queue), color=color)
                 embed.set_author(name=f"{ctx.guild.name}'s Playlist", icon_url=url_author_music)
                 embed.set_thumbnail(url=random.choice(url_thumbnail_music))
-                embed.set_footer(text=f'Number Of Songs: {len(songs)}')
-                player = await ctx.send(embed=embed)
-           
-                await player.add_reaction("⏮") # previous track
-                await player.add_reaction("▶")  # resume
-                await player.add_reaction("⏸") # pause
-                await player.add_reaction("⏭") # next
-                await player.add_reaction("🔂") # repeat
-                await player.add_reaction("⏹") # stop
-                await player.add_reaction("🔀") # shuffle
-                await player.add_reaction("*️⃣") # current song
-                await player.add_reaction("🔠") # display queue
-            
-            except KeyError:
-                embed = discord.Embed(description=random.choice(default_index), color=color)
-                embed.set_author(name="Walkman™", icon_url=url_author_music)
+                embed.set_footer(text="Queue songs by using _q song, t!q song, |q song")
                 await ctx.send(embed=embed)
 
 @bot.command(aliases=['play','p'])

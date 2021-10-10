@@ -1018,9 +1018,19 @@ async def get_ping(ctx):
     
     number_of_requests()
     
-    embed = discord.Embed(title="Pong!", description=f"Latency = {round(bot.latency*1000)} ms", color=color)
-    embed.set_thumbnail(url=bot.user.avatar_url)
-    await ctx.send(embed=embed)
+    ping = round(bot.latency * 1000) 
+    c1 = "🟢"
+    c2 = "🟡"
+    c3 = "🔴"
+    if ping >= 350:
+        embed = discord.Embed(description=f"{c3} {ping} ms", color=color)
+        await ctx.send(embed=embed)
+    elif ping <= 320:
+        embed = discord.Embed(description=f"{c1} {ping} ms", color=color)
+        await ctx.send(embed=embed)
+    elif ping > 320 and ping < 350:
+        embed = discord.Embed(description=f"{c2} {ping} ms", color=color)
+        await ctx.send(embed=embed)
 
 @bot.command(aliases=["serverinfo","si"])
 async def server_information(ctx):

@@ -376,17 +376,27 @@ async def on_reaction_add(reaction, user):
                 
                     try:
                         string = ""
-                        index = server_index[str(reaction.message.guild.id)] - 10
-            
-                        for song in server_queue[index:index + 20]:
-                            string += str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " ")     
-                            index += 1
-            
-                        embed = discord.Embed(description=string, color=color)
-                        embed.set_author(name=f"{reaction.message.guild.name}'s Playlist", icon_url=url_author_music)
-                        embed.set_thumbnail(url=random.choice(url_thumbnail_music))
-                        embed.set_footer(text=f'Number Of Songs: {len(server_queue)}')
-                        await reaction.message.edit(embed=embed)
+                        
+                        if server_index[str(reaction.message.guild.id)] > 10:
+                            
+                            index = server_index[str(reaction.message.guild.id)] - 10
+                            
+                            for song in server_queue[index:index + 20]:
+                                string += str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " ")     
+                                index += 1
+                            
+                            embed = discord.Embed(description=string, color=color)
+                            embed.set_author(name=f"{reaction.message.guild.name}'s Playlist", icon_url=url_author_music)
+                            embed.set_thumbnail(url=random.choice(url_thumbnail_music))
+                            embed.set_footer(text=f'Number Of Songs: {len(server_queue)}')
+                            await reaction.message.edit(embed=embed)
+                        
+                        else:
+                            # index = server_index[str(reaction.message.guild.id)] + 20
+                            # for song in server_queue[0:index]:
+                            #     string += str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " ")     
+                            #     index += 1
+                            await reaction.message.channel.send("Under Works...Sorry for inconvenience")
                 
                     except KeyError:
                         embed = discord.Embed(description=random.choice(default_index), color=color)
@@ -1339,26 +1349,34 @@ async def queue_song(ctx, *, name=None):
                 try:
                     string = ""
                     index = server_index[str(ctx.guild.id)] - 10
-            
-                    for song in songs[index:index + 20]:
-                        string += str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " ")     
-                        index += 1
-                
-                    embed = discord.Embed(description=string, color=color)
-                    embed.set_author(name=f"{ctx.guild.name}'s Playlist", icon_url=url_author_music)
-                    embed.set_thumbnail(url=random.choice(url_thumbnail_music))
-                    embed.set_footer(text=f'Number Of Songs: {len(songs)}')
-                    player = await ctx.send(embed=embed)
-                
-                    await player.add_reaction("⏮") # previous track
-                    await player.add_reaction("▶")  # resume
-                    await player.add_reaction("⏸") # pause
-                    await player.add_reaction("⏭") # next
-                    await player.add_reaction("🔂") # repeat
-                    await player.add_reaction("⏹") # stop
-                    await player.add_reaction("🔀") # shuffle
-                    await player.add_reaction("*️⃣") # current song
-                    await player.add_reaction("🔠") # display queue
+                    
+                    if server_index[str(ctx.guild.id)] > 10:
+                            index = server_index[str(ctx.guild.id)] - 10
+                            for song in songs[index:index + 20]:
+                                string += str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " ")     
+                                index += 1
+                    
+                            embed = discord.Embed(description=string, color=color)
+                            embed.set_author(name=f"{ctx.guild.name}'s Playlist", icon_url=url_author_music)
+                            embed.set_thumbnail(url=random.choice(url_thumbnail_music))
+                            embed.set_footer(text=f'Number Of Songs: {len(songs)}')
+                            player = await ctx.send(embed=embed)
+                        
+                            await player.add_reaction("⏮") # previous track
+                            await player.add_reaction("▶")  # resume
+                            await player.add_reaction("⏸") # pause
+                            await player.add_reaction("⏭") # next
+                            await player.add_reaction("🔂") # repeat
+                            await player.add_reaction("⏹") # stop
+                            await player.add_reaction("🔀") # shuffle
+                            await player.add_reaction("*️⃣") # current song
+                            await player.add_reaction("🔠") # display queue
+                    else:
+                        # index = server_index[str(reaction.message.guild.id)] + 20
+                        # for song in server_queue[0:index]:
+                        #     string += str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " ")     
+                        #     index += 1
+                        await ctx.send("Under Works...Sorry for inconvenience")
                 
                 except KeyError:
                     embed = discord.Embed(description=random.choice(default_index), color=color)
@@ -1366,7 +1384,6 @@ async def queue_song(ctx, *, name=None):
                     await ctx.send(embed=embed)
         
             else:
-            
                 embed = discord.Embed(description=random.choice(empty_queue), color=color)
                 embed.set_author(name=f"{ctx.guild.name}'s Playlist", icon_url=url_author_music)
                 embed.set_thumbnail(url=random.choice(url_thumbnail_music))
@@ -1414,15 +1431,9 @@ async def play_music(ctx, *, char):
                         player = await ctx.send(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
                         
-                        await player.add_reaction("⏮") # previous track
                         await player.add_reaction("▶")  # resume
                         await player.add_reaction("⏸") # pause
-                        await player.add_reaction("⏭") # next
-                        await player.add_reaction("🔂") # repeat
                         await player.add_reaction("⏹") # stop
-                        await player.add_reaction("🔀") # shuffle
-                        await player.add_reaction("*️⃣") # current song
-                        await player.add_reaction("🔠") # display queue
     
                     else:
                         voice.stop()
@@ -1435,15 +1446,9 @@ async def play_music(ctx, *, char):
                         player = await ctx.send(embed=embed)
                         voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
                         
-                        await player.add_reaction("⏮") # previous track
                         await player.add_reaction("▶")  # resume
                         await player.add_reaction("⏸") # pause
-                        await player.add_reaction("⏭") # next
-                        await player.add_reaction("🔂") # repeat
                         await player.add_reaction("⏹") # stop
-                        await player.add_reaction("🔀") # shuffle
-                        await player.add_reaction("*️⃣") # current song
-                        await player.add_reaction("🔠") # display queue
     
                 if char.isdigit() == True:
                      # Server Specific Queue

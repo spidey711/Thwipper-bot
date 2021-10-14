@@ -90,7 +90,7 @@ dialogue_list = []
 conn = ms.connect(user="root", host="localhost", password=sql_pass, database="discord")
 cursor = conn.cursor()
 
-# //////////////////////////////////////// NON ASYNC FUNCTIONS /////////////////////////////////////
+# ---------------------------------------------- NON ASYNC FUNCTIONS -----------------------------------------
 
 def help_menu():
 
@@ -102,7 +102,7 @@ def help_menu():
     
     if help_toggle == 0 or help_toggle < 0:
         help_toggle = 0
-        embed_help_menu.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="1) hello to greet bot\n2) help to get this menu\n3) quips to get a famous dialogue or plot\n4) @Thwipper to get more info about thwipper", inline=False)
+        embed_help_menu.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",value="1) hello to greet bot\n2) help to get this menu\n3) quips to get a famous dialogue or plot\n4) @Thwipper to get more info about thwipper\n5) Spiderman Aliases to call upon Spider-Man\n6) img to get really cool photos of Spider-Man along with other well-known icons", inline=False)
         embed_help_menu.set_image(url=bot.user.avatar_url)
     
     if help_toggle == 1:
@@ -169,7 +169,7 @@ def number_of_requests():
     num += 1
     requests_query()
 
-# ////////////////////////////////// EVENTS //////////////////////////////////////////////////
+# ----------------------------------------- EVENTS --------------------------------------
 
 @bot.event
 async def on_ready():
@@ -716,62 +716,42 @@ async def on_reaction_add(reaction, user):
                     embed = discord.Embed(description=f"{reaction.message.author.name}, connect to a voice channel first 🔊", color=color)
                     embed.set_author(name="Walkman™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
-            
-# //////////////////////////////////// SPECIAL ACCESS /////////////////////////////////////////
+    
+# ---------------------------------------------- STANDARD ----------------------------------------------------
 
-@bot.command(aliases=["delete", "del"])
-async def clear(ctx, text, num=10000000000000):
-
-    number_of_requests()
-    await ctx.channel.purge(limit=1)
-
-    if str(text) == "WEB":
-        await ctx.channel.purge(limit=num)
-
-    else:
-        await ctx.send("Incorrect Password")
-
-@bot.command(aliases=["[X]"])
-async def stop_program(ctx):
+@bot.command(aliases=["spidey","spiderman","webslinger","webhead","wallcrawler"])
+async def spiderman_signal(ctx):
 
     number_of_requests()
 
-    msgs = [f"Bye {ctx.author.name}!", f"See ya {ctx.author.name}!", f"Till next time {ctx.author.name}!"]
-    li = bot.voice_clients
+    calls = [f"{ctx.author.name} is calling you!", f"Your aid has been requested by {ctx.author.name}.", f"{ctx.author.name} has got something for ya.", f"{ctx.author.name} requires your assistance.", f"{ctx.author.name} has called."]
+    embed = discord.Embed(description=random.choice(calls), color=color)
+    embed.set_image(url=random.choice(hello_urls))
+    await ctx.send("<@!622497106657148939>")
+    await ctx.send(embed=embed)
 
-    if ctx.author.id == 622497106657148939:
+@bot.command(aliases=["img"])
+async def spiderman_photos(ctx):
 
-        if len(li) == 0:
-            
-            try: 
-                voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-                voice.stop()
-                await voice.disconnect()
-            except: 
-                pass
-    
-            conn.commit()
-            await ctx.send(random.choice(msgs))
-            print(random.choice(msgs))
-            exit()
+    number_of_requests()
 
-        else:
-            await ctx.send(embed=discord.Embed(description="Hold Up! I am vibing to music with others 🤖", color=color))
+    li = []
+    for i in url_thumbnails:
+        for j in hello_urls:
+            li.append(i)
+            li.append(j)
 
-    else:
-        await ctx.send("Access Denied")
-    
-#///////////////////////////////////// STANDARD //////////////////////////////////////////////
+    embed = discord.Embed(color=color)
+    embed.set_image(url=random.choice(li))
+    await ctx.send(embed=embed)
 
-@bot.command(aliases=['hello', 'hi', 'hey', 'hey there', 'salut',"kon'nichiwa","hola","aloha"])
+@bot.command(aliases=['hello','hi','hey','hey there','salut',"kon'nichiwa","hola","aloha"])
 async def greet_bot(ctx):
  
     number_of_requests()
- 
-    greetings = ["Hey {}!".format(ctx.author.name), "Hi {}!".format(ctx.author.name), "How's it going {}?".format(ctx.author.name), "What can I do for you {}?".format(ctx.author.name), "What's up {}?".format(ctx.author.name), "Hello {}!".format(ctx.author.name), "You called, {}?".format(ctx.author.name)]
-    embed = discord.Embed(title=random.choice(greetings), color=color)
-    embed.set_image(url=random.choice(hello_urls))
-    await ctx.send(embed=embed)
+
+    greetings = [f"Hey {ctx.author.name}!", f"Hi {ctx.author.name}!", f"How's it going {ctx.author.name}?", f"What can I do for you {ctx.author.name}?", f"What's up {ctx.author.name}?", f"Hello {ctx.author.name}!", f"So {ctx.author.name}, how's your day going?"]
+    await ctx.send(random.choice(greetings))
 
 @bot.command(aliases=["help","use"])
 async def embed_help(ctx):
@@ -798,7 +778,7 @@ async def get_quips(ctx):
     except Exception as e:
         embed = discord.Embed(title="Error", description=str(e), color=color)
  
-# //////////////////////////////////// INTERNET //////////////////////////////////////////////
+# ----------------------------------------------- INTERNET ---------------------------------------------
 
 @bot.command(aliases=["imdb"])
 async def IMDb_movies(ctx, *, movie_name=None):
@@ -899,7 +879,49 @@ async def google_results(ctx, *, thing_to_search):
     await ctx.send(results)
     print("Results for google search sent...")
 
-#///////////////////////////////////// UTILITY ///////////////////////////////////////////////        
+# ------------------------------------------------- UTILITY -------------------------------------------------
+
+@bot.command(aliases=["delete", "del"])
+async def clear(ctx, text, num=10000000000000):
+
+    number_of_requests()
+    await ctx.channel.purge(limit=1)
+
+    if str(text) == "WEB":
+        await ctx.channel.purge(limit=num)
+
+    else:
+        await ctx.send("Incorrect Password")
+
+@bot.command(aliases=["[X]"])
+async def stop_program(ctx):
+
+    number_of_requests()
+
+    msgs = [f"Bye {ctx.author.name}!", f"See ya {ctx.author.name}!", f"Till next time {ctx.author.name}!"]
+    li = bot.voice_clients
+
+    if ctx.author.id == 622497106657148939:
+
+        if len(li) == 0:
+            
+            try: 
+                voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+                voice.stop()
+                await voice.disconnect()
+            except: 
+                pass
+    
+            conn.commit()
+            await ctx.send(random.choice(msgs))
+            print(random.choice(msgs))
+            exit()
+
+        else:
+            await ctx.send(embed=discord.Embed(description="Hold Up! I am vibing to music with others 🤖", color=color))
+
+    else:
+        await ctx.send("Access Denied")
 
 @bot.command(aliases=["say"])
 async def replicate_user_text(ctx, *, text):
@@ -1058,7 +1080,7 @@ async def server_information(ctx):
     embed.set_image(url=icon)
     await ctx.send(embed=embed)
 
-# //////////////////////////////////////// Encrypter / Decrypter //////////////////////////////////
+# --------------------------------------- ENCRYPER DECRYPTER ---------------------------------
 
 @bot.command(aliases=["hush"])
 async def encrypt_data(ctx, mode, *, message):
@@ -1086,7 +1108,7 @@ async def encrypt_data(ctx, mode, *, message):
             embed.set_thumbnail(url=url_en_dec)
             await ctx.send(embed=embed)
 
-# /////////////////////////////////////// DATE & TIME /////////////////////////////////////////
+# ------------------------------------- DATE TIME CALENDAR --------------------------------------------- 
 
 @bot.command(aliases=["dt"])
 async def date_time_ist(ctx, timezone=None):
@@ -1128,7 +1150,7 @@ async def get_calendar(ctx, year, month):
         embed.set_author(name='Calendar', icon_url=url_dtc)
         await ctx.send(embed=embed)
 
-#///////////////////////////////////// SHELLS ///////////////////////////////////////////
+# ------------------------------------------ SHELLS --------------------------------------------
 
 @bot.command(aliases=[";"])
 async def sql_shell(ctx, *, expression):
@@ -1197,7 +1219,7 @@ async def function_info(ctx, func):
         embed.set_author(name="Error", icon_url=url_author_python)
         await ctx.send(embed=embed)
 
-#///////////////////////////////////////// MUSIC /////////////////////////////////////////////
+# ----------------------------------------------- MUSIC ----------------------------------------------------
 
 @bot.command(aliases=["cn","connect"])
 async def join_vc(ctx):
@@ -1884,7 +1906,7 @@ async def clear_song_queue(ctx):
         embed_empty.set_author(name="Hmm...", icon_url=url_author_music)
         await ctx.send(embed=embed_empty)
 
-# /////////////////////////////////////////// EXTRA //////////////////////////////////////////////////
+# -------------------------------------------------- EXTRA ---------------------------------------------------------
 
 @bot.command(aliases=["thwip"])
 async def thwipper(ctx):
@@ -1979,4 +2001,9 @@ async def check_user_bdays_and_wish(ctx):
     if toggle == 0:
         await ctx.send(embed=discord.Embed(description=random.choice(none_today), color=color))
 
-bot.run(token)
+try:
+    bot.run(token)
+except discord.ext.commands.errors.CommandNotFound:
+    pass
+
+# --------------------------------------------------------------------------------------------------------------------------------------

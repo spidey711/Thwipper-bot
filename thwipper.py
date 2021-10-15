@@ -2330,6 +2330,7 @@ try:
                     wishes), description=random.choice(descriptions), color=color)
                 embed.set_image(url=random.choice(url_bdays_spiderman))
                 embed.set_thumbnail(url=bot.get_user(int(bday[0])).avatar_url)
+                await channel.send(f"<@!{bot.get_user(int(bday[0])).id}>")
                 message = await channel.send(embed=embed)
 
                 await ctx.send(embed=discord.Embed(description="Wish Sent 🥳", color=color))
@@ -2342,7 +2343,7 @@ try:
 
         if toggle == 0:
             await ctx.send(embed=discord.Embed(description=random.choice(none_today), color=color))
-
+            
 except discord.ext.commands.errors.CommandNotFound:
     pass
 

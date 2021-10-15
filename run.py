@@ -1,4 +1,8 @@
-import thwipper
+from thwipper import bot
+import os
+from dotenv import load_dotenv
 
-if __name__ == "__main__":
-    exec(thwipper)
+load_dotenv(".env")
+
+if __name__ == "__main":
+    bot.run(os.gentenv('token'))

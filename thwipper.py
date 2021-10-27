@@ -34,7 +34,7 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=[
                    prefix for prefix in prefixes], intents=intents, case_insensitive=True)
-color = discord.Color.from_rgb(65, 95, 255)  # 87, 1, 254 | 65, 95, 255 |
+color = discord.Color.from_rgb(255, 0, 0)  # 87, 1, 254 | 65, 95, 255 |
 bot.remove_command('help')
 # Enviroment Variables
 global auth

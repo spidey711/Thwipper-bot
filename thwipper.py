@@ -1159,11 +1159,11 @@ async def conduct_poll(ctx, ems=None, title=None, *, description=None):
             text=f"Conducted by: {ctx.author.name}", icon_url=ctx.author.avatar_url)
         message = await poll_channel.send(embed=embed)
 
-        if ems == "y/n":
+        if ems == "y/n" or ems == "yes/no":
             await message.add_reaction("✅")
             await message.add_reaction("❌")
 
-        elif ems == "t/t":
+        elif ems == "t/t" or ems == "this/that":
             await message.add_reaction("👈🏻")
             await message.add_reaction("👉🏻")
 

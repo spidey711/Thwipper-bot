@@ -34,7 +34,7 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=[
                    prefix for prefix in prefixes], intents=intents, case_insensitive=True)
-color = discord.Color.from_rgb(255, 0, 0)  # 87, 1, 254 | 65, 95, 255 |
+color = discord.Color.lighter_grey()  # 87, 1, 254 | 65, 95, 255 |
 bot.remove_command('help')
 # Enviroment Variables
 global auth
@@ -163,6 +163,7 @@ def number_of_requests():
     requests_query()
 
 # ----------------------------------------- EVENTS --------------------------------------
+
 
 @bot.event
 async def on_ready():
@@ -484,8 +485,8 @@ async def on_reaction_add(reaction, user):
                         async for user in reaction.users():
                             users.add(user)
                     str1 = ','.join([str(users)])
-                    pre_li = str1.replace('{','').replace('}','')
-                    li = list(pre_li.split(',')) # li[-1]
+                    pre_li = str1.replace('{', '').replace('}', '')
+                    li = list(pre_li.split(','))  # li[-1]
                     embed = discord.Embed(
                         description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(
@@ -544,8 +545,8 @@ async def on_reaction_add(reaction, user):
                         async for user in reaction.users():
                             users.add(user)
                     str1 = ','.join([str(users)])
-                    pre_li = str1.replace('{','').replace('}','')
-                    li = list(pre_li.split(',')) # li[-1]
+                    pre_li = str1.replace('{', '').replace('}', '')
+                    li = list(pre_li.split(','))  # li[-1]
                     embed = discord.Embed(
                         description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(
@@ -620,7 +621,7 @@ async def on_reaction_add(reaction, user):
                     embed.set_author(
                         name="Walkman™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
-                    
+
         if reaction.emoji == "⏭":
 
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
@@ -900,17 +901,19 @@ async def on_reaction_add(reaction, user):
 
 # ---------------------------------------------- STANDARD ----------------------------------------------------
 
+
 @bot.command(aliases=["spidey", "spiderman", "webslinger", "webhead", "wallcrawler"])
 async def spiderman_signal(ctx):
 
     number_of_requests()
 
     calls = [f"{ctx.author.name} is calling you!", f"Your aid has been requested by {ctx.author.name}.",
-                f"{ctx.author.name} has got something for ya.", f"{ctx.author.name} requires your assistance.", f"{ctx.author.name} has called."]
+             f"{ctx.author.name} has got something for ya.", f"{ctx.author.name} requires your assistance.", f"{ctx.author.name} has called."]
     embed = discord.Embed(description=random.choice(calls), color=color)
     embed.set_image(url=random.choice(hello_urls))
     await ctx.send("<@!622497106657148939>")
     await ctx.send(embed=embed)
+
 
 @bot.command(aliases=["img"])
 async def spiderman_photos(ctx):
@@ -927,14 +930,16 @@ async def spiderman_photos(ctx):
     embed.set_image(url=random.choice(li))
     await ctx.send(embed=embed)
 
+
 @bot.command(aliases=['hello', 'hi', 'hey', 'hey there', 'salut', "kon'nichiwa", "hola", "aloha"])
 async def greet_bot(ctx):
 
     number_of_requests()
 
     greetings = [f"Hey {ctx.author.name}!", f"Hi {ctx.author.name}!", f"How's it going {ctx.author.name}?", f"What can I do for you {ctx.author.name}?",
-                    f"What's up {ctx.author.name}?", f"Hello {ctx.author.name}!", f"So {ctx.author.name}, how's your day going?"]
+                 f"What's up {ctx.author.name}?", f"Hello {ctx.author.name}!", f"So {ctx.author.name}, how's your day going?"]
     await ctx.send(random.choice(greetings))
+
 
 @bot.command(aliases=["help", "use"])
 async def embed_help(ctx):
@@ -946,6 +951,7 @@ async def embed_help(ctx):
     await message.add_reaction("🕸")
     await message.add_reaction("➡")
 
+
 @bot.command(aliases=["quips"])
 async def get_quips(ctx):
 
@@ -956,7 +962,7 @@ async def get_quips(ctx):
             titles), description=random.choice(dialogue_list), color=color)
         embed.set_thumbnail(url=random.choice(url_thumbnails))
         embed.set_footer(text=random.choice(footers),
-                            icon_url=bot.user.avatar_url)
+                         icon_url=bot.user.avatar_url)
         await ctx.send(embed=embed)
         print("Quip successfully sent!")
 
@@ -965,6 +971,7 @@ async def get_quips(ctx):
             title="Error", description=str(e), color=color)
 
 # ----------------------------------------------- INTERNET ---------------------------------------------
+
 
 @bot.command(aliases=["imdb"])
 async def IMDb_movies(ctx, *, movie_name=None):
@@ -996,8 +1003,9 @@ async def IMDb_movies(ctx, *, movie_name=None):
             embed = discord.Embed(description="I couldn't find `{}`.\nTry again and make sure you enter the correct movie name.".format(
                 movie_name), color=color)
             embed.set_author(name="Movie Not Found 💬",
-                                icon_url=url_imdb_author)
+                             icon_url=url_imdb_author)
             await ctx.send(embed=embed)
+
 
 @bot.command(aliases=["reddit", "rd"])
 async def reddit_memes(ctx, *, topic):
@@ -1032,8 +1040,9 @@ async def reddit_memes(ctx, *, topic):
         embed = discord.Embed(
             description="Looks like the subreddit is either banned or does not exist 🤔", color=color)
         embed.set_author(name="Subreddit Not Found",
-                            icon_url=url_reddit_author)
+                         icon_url=url_reddit_author)
         await ctx.send(embed=embed)
+
 
 @bot.command(aliases=['wiki', 'w'])
 async def wikipedia_results(ctx, *, thing_to_search):
@@ -1064,6 +1073,7 @@ async def wikipedia_results(ctx, *, thing_to_search):
         embed.set_author(name='Hmm...', icon_url=url_wiki)
         await ctx.send(embed=embed)
 
+
 @bot.command(aliases=['google', 'g'])
 async def google_results(ctx, *, thing_to_search):
 
@@ -1080,6 +1090,7 @@ async def google_results(ctx, *, thing_to_search):
 
 # ------------------------------------------------- UTILITY -------------------------------------------------
 
+
 @bot.command(aliases=["delete", "del"])
 async def clear(ctx, text, num=10000000000000):
 
@@ -1092,6 +1103,7 @@ async def clear(ctx, text, num=10000000000000):
     else:
         await ctx.send("Incorrect Password")
 
+
 @bot.command(aliases=["[X]"])
 async def stop_program(ctx):
 
@@ -1099,30 +1111,21 @@ async def stop_program(ctx):
 
     msgs = [f"Bye {ctx.author.name}!", f"See ya {ctx.author.name}!",
             f"Till next time {ctx.author.name}!"]
-    li = bot.voice_clients
-
     if ctx.author.id == 622497106657148939:
-
-        if len(li) == 0:
-
-            try:
-                voice = discord.utils.get(
-                    bot.voice_clients, guild=ctx.guild)
-                voice.stop()
-                await voice.disconnect()
-            except:
-                pass
-
-            conn.commit()
-            await ctx.send(random.choice(msgs))
-            print(random.choice(msgs))
-            exit()
-
-        else:
-            await ctx.send(embed=discord.Embed(description="Hold Up! I am vibing to music with others 🤖", color=color))
-
+        try:
+            voice = discord.utils.get(
+                bot.voice_clients, guild=ctx.guild)
+            voice.stop()
+            await voice.disconnect()
+        except:
+            pass
+        conn.commit()
+        await ctx.send(random.choice(msgs))
+        print(random.choice(msgs))
+        exit()
     else:
         await ctx.send("Access Denied")
+
 
 @bot.command(aliases=["say"])
 async def replicate_user_text(ctx, *, text):
@@ -1132,12 +1135,12 @@ async def replicate_user_text(ctx, *, text):
     await ctx.channel.purge(limit=1)
     await ctx.send(text)
 
+
 @bot.command(aliases=["polls", "poll"])
 async def conduct_poll(ctx, ems=None, title=None, *, description=None):
 
     number_of_requests()
 
-    await ctx.channel.purge(limit=1)
     poll_channel = None
 
     for i in ctx.guild.channels:
@@ -1184,6 +1187,7 @@ async def conduct_poll(ctx, ems=None, title=None, *, description=None):
         embed.set_thumbnail(url=random.choice(url_thumbnails))
         await ctx.send(embed=embed)
 
+
 @bot.command(aliases=['req', 'requests'])
 async def total_requests(ctx):
 
@@ -1196,12 +1200,14 @@ async def total_requests(ctx):
         description=f"""**Requests Made:\n**{str(total).replace("[(", " ").replace(",)]", " ")}""", color=color)
     await ctx.send(embed=embed)
 
+
 @bot.command(aliases=[".web"])
 async def troll_snipe(ctx):
 
     await ctx.channel.purge(limit=1)
     await ctx.send(random.choice(troll_links))
     await ctx.channel.purge(limit=1)
+
 
 @bot.command(aliases=["web"])
 async def snipe(ctx):
@@ -1229,6 +1235,7 @@ async def snipe(ctx):
     except KeyError:
         await ctx.send(embed=discord.Embed(description="There is nothing to web up 🕸", color=color))
 
+
 @bot.command(aliases=["pfp"])
 async def user_pfp(ctx, member: discord.Member = None):
 
@@ -1248,6 +1255,7 @@ async def user_pfp(ctx, member: discord.Member = None):
         compliments), icon_url="https://i.pinimg.com/236x/9f/9c/11/9f9c11d4eaa3d99bc9a8ece092f5e979.jpg")
     await ctx.send(embed=embed)
 
+
 @bot.command(aliases=["ping"])
 async def get_ping(ctx):
 
@@ -1266,6 +1274,7 @@ async def get_ping(ctx):
     elif ping > 320 and ping < 350:
         embed = discord.Embed(description=f"{c2} {ping} ms", color=color)
         await ctx.send(embed=embed)
+
 
 @bot.command(aliases=["serverinfo", "si"])
 async def server_information(ctx):
@@ -1298,6 +1307,7 @@ async def server_information(ctx):
 
 # --------------------------------------- ENCRYPER DECRYPTER ---------------------------------
 
+
 @bot.command(aliases=["hush"])
 async def encrypt_data(ctx, mode, *, message):
 
@@ -1329,6 +1339,7 @@ async def encrypt_data(ctx, mode, *, message):
 
 # ------------------------------------- DATE TIME CALENDAR ---------------------------------------------
 
+
 @bot.command(aliases=["dt"])
 async def date_time_ist(ctx, timezone=None):
 
@@ -1358,6 +1369,7 @@ async def date_time_ist(ctx, timezone=None):
         embed.set_footer(text=f"Timezone : {timezone}")
         await ctx.send(embed=embed)
 
+
 @bot.command(aliases=["cal"])
 async def get_calendar(ctx, year, month):
 
@@ -1377,6 +1389,7 @@ async def get_calendar(ctx, year, month):
 
 # ------------------------------------------ SHELLS --------------------------------------------
 
+
 @bot.command(aliases=[";"])
 async def sql_shell(ctx, *, expression):
 
@@ -1391,7 +1404,7 @@ async def sql_shell(ctx, *, expression):
 
         conn.commit()
         embed = discord.Embed(title=str(expression),
-                                description=str(output), color=color)
+                              description=str(output), color=color)
         embed.set_author(name="MySQL Shell", icon_url=url_author_sql)
         await ctx.send(embed=embed)
 
@@ -1400,6 +1413,7 @@ async def sql_shell(ctx, *, expression):
             title="Error", description=str(e), color=color)
         embed_err.set_author(name="MySQL Shell", icon_url=url_author_sql)
         await ctx.send(embed=embed_err)
+
 
 @bot.command(aliases=["py"])
 async def python_shell(ctx, *, expression):
@@ -1418,15 +1432,16 @@ async def python_shell(ctx, *, expression):
             embed_acc = discord.Embed(
                 title=str(expression), description=str(eval(expression)), color=color)
             embed_acc.set_author(name="Python Shell",
-                                    icon_url=url_author_python)
+                                 icon_url=url_author_python)
             await ctx.send(embed=embed_acc)
 
         except Exception as e:
             embed_err = discord.Embed(
                 title="Error", description=str(e), color=color)
             embed_err.set_author(name="Python Shell",
-                                    icon_url=url_author_python)
+                                 icon_url=url_author_python)
             await ctx.send(embed=embed_err)
+
 
 @bot.command(aliases=["pydoc"])
 async def function_info(ctx, func):
@@ -1439,7 +1454,7 @@ async def function_info(ctx, func):
             embed = discord.Embed(
                 description=random.choice(no_functions), color=color)
             embed.set_author(name="Access Denied",
-                                icon_url=url_author_python)
+                             icon_url=url_author_python)
             await ctx.send(embed=embed)
 
         else:
@@ -1456,6 +1471,7 @@ async def function_info(ctx, func):
         await ctx.send(embed=embed)
 
 # ----------------------------------------------- MUSIC ----------------------------------------------------
+
 
 @bot.command(aliases=["cn", "connect"])
 async def join_vc(ctx):
@@ -1491,6 +1507,7 @@ async def join_vc(ctx):
         embed = discord.Embed(description="Error:\n" + str(e), color=color)
         embed.set_author(name='Error', icon_url=url_author_music)
         await ctx.send(embed=embed)
+
 
 @bot.command(aliases=["dc", "disconnect"])
 async def leave_vc(ctx):
@@ -1532,6 +1549,7 @@ async def leave_vc(ctx):
         embed.set_author(name="Walkman™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
+
 @bot.command(aliases=["setbit", "bit"])
 async def set_bitrate(ctx, kbps):
 
@@ -1543,6 +1561,7 @@ async def set_bitrate(ctx, kbps):
             description='**Bitrate:** {} kbps'.format(kbps), color=color)
         embed.set_author(name='Audio Quality', icon_url=url_author_music)
         await ctx.send(embed=embed)
+
 
 @bot.command(aliases=["queue", "q"])
 async def queue_song(ctx, *, name=None):
@@ -1566,19 +1585,31 @@ async def queue_song(ctx, *, name=None):
                 r"watch\?v=(\S{11})", htm.read().decode())
             url = "https://www.youtube.com/watch?v=" + video[0]
             htm_code = str(urllib.request.urlopen(url).read().decode())
-
             starting = htm_code.find("<title>") + len("<title>")
             ending = htm_code.find("</title>")
             name_of_the_song = htm_code[starting:ending].replace(
                 "&#39;", "'").replace("&amp;", "&")
-
-            operation_add_song = f"""INSERT INTO music_queue(song_name, song_url, server)VALUES("{name_of_the_song}","{url}","{str(ctx.guild.id)}")"""
-            cursor.execute(operation_add_song)
-
-            embed = discord.Embed(description=f"{name_of_the_song}".replace(
-                " - YouTube", " "), color=color)
-            embed.set_author(name="Song added", icon_url=url_author_music)
-            await ctx.send(embed=embed)
+            # check if song is already queued
+            operation_check = f"SELECT song_url FROM music_queue WHERE server={str(ctx.guild.id)}"
+            cursor.execute(operation_check)
+            index, check_list, links = None, [], cursor.fetchall()
+            for link in links:
+                link = str(link).replace(
+                    '(', '').replace(',)', '').replace("'", '')
+                check_list.append(link)
+            if url in check_list:
+                embed = discord.Embed(
+                    description=f"{random.choice(already_queued)}\nSong Postion: {url}", color=color)
+                embed.set_author(name="Already Queued",
+                                 icon_url=url_author_music)
+                await ctx.send(embed=embed)
+            else:
+                operation_add_song = f"""INSERT INTO music_queue(song_name, song_url, server)VALUES("{name_of_the_song}","{url}","{str(ctx.guild.id)}")"""
+                cursor.execute(operation_add_song)
+                embed = discord.Embed(description=f"{name_of_the_song}".replace(
+                    " - YouTube", " "), color=color)
+                embed.set_author(name="Song added", icon_url=url_author_music)
+                await ctx.send(embed=embed)
 
         else:
             operation_view = "SELECT song_name, song_url FROM music_queue WHERE server={}".format(
@@ -1641,6 +1672,7 @@ async def queue_song(ctx, *, name=None):
                 embed.set_footer(
                     text="Queue songs by using _q song, t!q song, |q song")
                 await ctx.send(embed=embed)
+
 
 @bot.command(aliases=['play', 'p'])
 async def play_music(ctx, *, char):
@@ -1821,6 +1853,7 @@ async def play_music(ctx, *, char):
         embed.set_author(name="Voice", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
+
 @bot.command(aliases=["songinfo"])
 async def fetch_current_song(ctx):
 
@@ -1848,7 +1881,7 @@ async def fetch_current_song(ctx):
             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(
                 ctx.guild.voice_client.channel.bitrate/1000))
             embed.set_author(name="Currently Playing",
-                                icon_url=url_author_music)
+                             icon_url=url_author_music)
             player = await ctx.send(embed=embed)
             await player.add_reaction("⏮")  # previous track
             await player.add_reaction("▶")  # resume
@@ -1865,6 +1898,7 @@ async def fetch_current_song(ctx):
                 description=random.choice(default_index), color=color)
             embed.set_author(name="Walkman™", icon_url=url_author_music)
             await ctx.send(embed=embed)
+
 
 @bot.command(aliases=["prev", "previous"])
 async def previous_song(ctx):
@@ -1889,7 +1923,7 @@ async def previous_song(ctx):
                 embed = discord.Embed(description="**Song: **{}".format(
                     server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
                 embed.set_author(name="Now playing",
-                                    icon_url=url_author_music)
+                                 icon_url=url_author_music)
                 embed.set_thumbnail(url=pytube.YouTube(
                     url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
                 embed.add_field(name="Uploader", value=pytube.YouTube(
@@ -1917,7 +1951,7 @@ async def previous_song(ctx):
                 embed = discord.Embed(description="**Song: **{}".format(
                     server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
                 embed.set_author(name="Now playing",
-                                    icon_url=url_author_music)
+                                 icon_url=url_author_music)
                 embed.set_thumbnail(url=pytube.YouTube(
                     url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
                 embed.add_field(name="Uploader", value=pytube.YouTube(
@@ -1954,6 +1988,7 @@ async def previous_song(ctx):
         embed.set_author(name="Walkman™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
+
 @bot.command(aliases=["rep", "repeat"])
 async def repeat_song(ctx):
 
@@ -1971,7 +2006,7 @@ async def repeat_song(ctx):
             embed = discord.Embed(description="**Song: **{}".format(
                 server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
             embed.set_author(name="Repeating Song",
-                                icon_url=url_author_music)
+                             icon_url=url_author_music)
             embed.set_thumbnail(url=pytube.YouTube(
                 url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
             embed.add_field(name="Uploader", value=pytube.YouTube(
@@ -1998,7 +2033,7 @@ async def repeat_song(ctx):
             embed = discord.Embed(description="**Song: **{}".format(
                 server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
             embed.set_author(name="Repeating Song",
-                                icon_url=url_author_music)
+                             icon_url=url_author_music)
             embed.set_thumbnail(url=pytube.YouTube(
                 url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
             embed.add_field(name="Uploader", value=pytube.YouTube(
@@ -2025,6 +2060,7 @@ async def repeat_song(ctx):
         embed.set_author(name="Error", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
+
 @bot.command(aliases=["skip", "next"])
 async def skip_song(ctx):
 
@@ -2048,7 +2084,7 @@ async def skip_song(ctx):
                 embed = discord.Embed(description="**Song: **{}".format(
                     server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
                 embed.set_author(name="Now Playing",
-                                    icon_url=url_author_music)
+                                 icon_url=url_author_music)
                 embed.set_thumbnail(url=pytube.YouTube(
                     url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
                 embed.add_field(name="Uploader", value=pytube.YouTube(
@@ -2076,7 +2112,7 @@ async def skip_song(ctx):
                 embed = discord.Embed(description="**Song: **{}".format(
                     server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
                 embed.set_author(name="Now playing",
-                                    icon_url=url_author_music)
+                                 icon_url=url_author_music)
                 embed.set_thumbnail(url=pytube.YouTube(
                     url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
                 embed.add_field(name="Uploader", value=pytube.YouTube(
@@ -2112,6 +2148,7 @@ async def skip_song(ctx):
             ctx.author.name), color=color)
         embed.set_author(name="Walkman™", icon_url=url_author_music)
         await ctx.send(embed=embed)
+
 
 @bot.command(aliases=["pause"])
 async def pause_song(ctx):
@@ -2157,6 +2194,7 @@ async def pause_song(ctx):
             ctx.author.name), color=color)
         embed.set_author(name="Walkman™", icon_url=url_author_music)
         await ctx.send(embed=embed)
+
 
 @bot.command(aliases=["resume", "res"])
 async def resume_song(ctx):
@@ -2207,6 +2245,7 @@ async def resume_song(ctx):
         embed.set_author(name="Walkman™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
+
 @bot.command(aliases=["stop", "st"])
 async def stop_song(ctx):
 
@@ -2245,6 +2284,7 @@ async def stop_song(ctx):
         embed.set_author(name="Walkman™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
+
 @bot.command(aliases=["rem", "remove"])
 async def remove_song(ctx, index):
 
@@ -2263,6 +2303,7 @@ async def remove_song(ctx, index):
     operation_remove = "DELETE FROM music_queue WHERE song_url = '{a}' AND server='{b}'".format(
         a=songs[int(index)][1], b=str(ctx.guild.id))
     cursor.execute(operation_remove)
+
 
 @bot.command(aliases=["clear_queue", "cq"])
 async def clear_song_queue(ctx):
@@ -2289,12 +2330,14 @@ async def clear_song_queue(ctx):
 
 # -------------------------------------------------- EXTRA ---------------------------------------------------------
 
+
 @bot.command(aliases=["thwip"])
 async def thwipper(ctx):
 
     number_of_requests()
 
     await ctx.send(embed=discord.Embed(title="*Thwip!*", color=color))
+
 
 @bot.command(aliases=["addbday"])
 async def add_user_bday(ctx, member: discord.Member, month, day):
@@ -2321,6 +2364,7 @@ async def add_user_bday(ctx, member: discord.Member, month, day):
     except Exception as e:
         await ctx.send(str(e))
 
+
 @bot.command(aliases=["rembday"])
 async def remove_user_bday(ctx, member: discord.Member):
 
@@ -2345,6 +2389,7 @@ async def remove_user_bday(ctx, member: discord.Member):
 
     except Exception as e:
         await ctx.send(str(e))
+
 
 @bot.command(aliases=["bday"])
 async def check_user_bdays_and_wish(ctx):
@@ -2371,7 +2416,7 @@ async def check_user_bdays_and_wish(ctx):
         if datetime.datetime.today().month == bday[1] and datetime.datetime.today().day == bday[2]:
             name = bot.get_user(int(bday[0])).name
             wishes = [f"🎊 Happy Birthday {name} 🎊", f"🎉 Happy Birthday {name} 🎉",
-                        f"✨ Happy Birthday {name} ✨", f"🎇 Happy Birthday {name} 🎇"]
+                      f"✨ Happy Birthday {name} ✨", f"🎇 Happy Birthday {name} 🎇"]
             embed = discord.Embed(title=random.choice(
                 wishes), description=random.choice(descriptions), color=color)
             embed.set_image(url=random.choice(url_bdays_spiderman))
@@ -2389,5 +2434,5 @@ async def check_user_bdays_and_wish(ctx):
 
     if toggle == 0:
         await ctx.send(embed=discord.Embed(description=random.choice(none_today), color=color))
-        
+
 # --------------------------------------------------------------------------------------------------------------------------------------

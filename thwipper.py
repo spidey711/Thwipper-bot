@@ -406,27 +406,11 @@ async def on_reaction_add(reaction, user):
                             if pause == True:
                                 voice_client.resume()
                                 embed = discord.Embed(
-                                    description=f"**Song: **{server_queue[server_index[str(reaction.message.guild.id)]][0]}".replace(
-                                        " - YouTube", " "),
-                                    color=color)
+                                    description="Song has resumed playing 🎸", color=color)
                                 embed.set_author(
-                                    name="Song Resumed",
-                                    icon_url=url_author_music)
-                                embed.set_thumbnail(
-                                    url=pytube.YouTube(
-                                        url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
-                                embed.add_field(
-                                    name="Uploader",
-                                    value=pytube.YouTube(
-                                        url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author,
-                                    inline=True)
-                                embed.add_field(
-                                    name="Duration",
-                                    value=time_converter(pytube.YouTube(
-                                        url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length),
-                                    inline=True)
-                                embed.set_footer(
-                                    text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
+                                    name="Walkman™", icon_url=url_author_music)
+                                embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(
+                                    reaction.message.guild.voice_client.channel.bitrate/1000))
                                 await reaction.message.edit(embed=embed)
                             else:
                                 if playing == True:
@@ -539,14 +523,6 @@ async def on_reaction_add(reaction, user):
                         await reaction.message.edit(embed=embed)
 
                 else:
-                    users = set()
-                    message = await reaction.message.channel.fetch_message(reaction.message)
-                    for reaction in message.reactions:
-                        async for user in reaction.users():
-                            users.add(user)
-                    str1 = ','.join([str(users)])
-                    pre_li = str1.replace('{', '').replace('}', '')
-                    li = list(pre_li.split(','))  # li[-1]
                     embed = discord.Embed(
                         description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(
@@ -608,14 +584,6 @@ async def on_reaction_add(reaction, user):
                         await reaction.message.edit(embed=embed)
 
                 else:
-                    # users = set()
-                    # message = await reaction.message.channel.fetch_message(reaction.message)
-                    # for reaction in message.reactions:
-                    #     async for user in reaction.users():
-                    #         users.add(user)
-                    # str1 = ','.join([str(users)])
-                    # pre_li = str1.replace('{','').replace('}','')
-                    # li = list(pre_li.split(',')) # li[-1]
                     embed = discord.Embed(
                         description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(
@@ -677,14 +645,6 @@ async def on_reaction_add(reaction, user):
                         await reaction.message.edit(embed=embed)
 
                 else:
-                    # users = set()
-                    # message = await reaction.message.channel.fetch_message(reaction.message)
-                    # for reaction in message.reactions:
-                    #     async for user in reaction.users():
-                    #         users.add(user)
-                    # str1 = ','.join([str(users)])
-                    # pre_li = str1.replace('{','').replace('}','')
-                    # li = list(pre_li.split(',')) # li[-1]
                     embed = discord.Embed(
                         description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(
@@ -726,14 +686,6 @@ async def on_reaction_add(reaction, user):
                         await reaction.message.edit(embed=embed)
 
                 else:
-                    # users = set()
-                    # message = await reaction.message.channel.fetch_message(reaction.message)
-                    # for reaction in message.reactions:
-                    #     async for user in reaction.users():
-                    #         users.add(user)
-                    # str1 = ','.join([str(users)])
-                    # pre_li = str1.replace('{','').replace('}','')
-                    # li = list(pre_li.split(',')) # li[-1]
                     embed = discord.Embed(
                         description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(
@@ -825,14 +777,6 @@ async def on_reaction_add(reaction, user):
                         await reaction.message.edit(embed=embed)
 
                 else:
-                    # users = set()
-                    # message = await reaction.message.channel.fetch_message(reaction.message)
-                    # for reaction in message.reactions:
-                    #     async for user in reaction.users():
-                    #         users.add(user)
-                    # str1 = ','.join([str(users)])
-                    # pre_li = str1.replace('{','').replace('}','')
-                    # li = list(pre_li.split(',')) # li[-1]
                     embed = discord.Embed(
                         description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(

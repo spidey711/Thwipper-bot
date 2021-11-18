@@ -6,7 +6,7 @@ Thwipper is inspired from my favorite fictional character Spider-Man. Its name i
 Prefixes => `t! | _`<br>
 
 <!-- <img src="\spiderman.png"></img> -->
-<img src="https://wallpapercave.com/wp/wp7936066.jpg"></img>
+<img src="https://images4.alphacoders.com/115/thumbbig-1155434.webp"></img>
 
 _<h2>🕷 Features 🕷</h2>_
 _IMDb_<br>

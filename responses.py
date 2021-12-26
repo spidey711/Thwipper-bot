@@ -25,7 +25,7 @@ no_functions = ["Functions will not be executed. Try w/o brackets to get informa
 imdb_responses = ["I don't think there is a movie with no name, is there?","I think you forgot to enter the movie name.","You gotta enter the movie name dude.","Is there a movie with no name?"]
 
 # Status
-status_list = ["The Amazing Spider-Man", "The Amazing Spider-Man 2", "Spider-Man", "Spider-Man 2", "Spider-Man 3", "TASM Duology", "Raimi Trilogy", "Spider-Man Homecoming", "Spider-Man Far From Home", "Spectacular Spider-Man", "Ultimate Spider-Man", "Fairly Rad Videos", "Marvel's Spider-Man", "Marvel's Spider-Man Miles Morales", "Music", "Dying Light", "Ezio Trilogy", "Prototype(2009)", "Dead Space(2008)", "Need For Speed: Most Wanted"]
+status_list = ["Spider-Man: No Way Home","The Amazing Spider-Man", "The Amazing Spider-Man 2", "Spider-Man", "Spider-Man 2", "Spider-Man 3", "TASM Duology", "Raimi Trilogy", "Spider-Man: Homecoming", "Spider-Man: Far From Home", "Spectacular Spider-Man", "Ultimate Spider-Man", "Fairly Rad Videos", "Marvel's Spider-Man", "Marvel's Spider-Man: Miles Morales", "Music"]
 
 # Birthdays 
 descriptions = ["Make the most out of your day!", "I am invited to the party, right? I hope I am 😎", "Enjoy the cake 🎂!", f"Here is a present for you 🎁", "Party hard dude! Tis' your day 🤟🏻"]

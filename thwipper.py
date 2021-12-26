@@ -34,7 +34,7 @@ intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=[
                    prefix for prefix in prefixes], intents=intents, case_insensitive=True)
-color = discord.Color.from_rgb(255, 223, 0)  # 87, 1, 254 | 65, 95, 255 | 255,223,0
+color = discord.Color.from_rgb(4, 152, 255)
 bot.remove_command('help')
 # Enviroment Variables
 global auth
@@ -169,6 +169,7 @@ def number_of_requests():
 async def on_ready():
     print("{0.user} is now online...\nHey Tamonud! How's it going?".format(bot))
     stop = 0
+
     # QUIPS
     global dialogue_list
     site = requests.get("https://geektrippers.com/spiderman-quotes/").content.decode().replace("<br>", "\n").replace("<strong>", " ").replace("</strong>", " ").replace("<em>", " ").replace(
@@ -185,8 +186,8 @@ async def on_ready():
         else:
             dialogues = site[q:w]
             dialogue_list += [dialogues]
-    # STATUSES
 
+    # STATUSES
     @tasks.loop(minutes=10)
     async def multiple_statuses():
 
@@ -195,8 +196,8 @@ async def on_ready():
                 await asyncio.sleep(300)
                 await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=status))
     multiple_statuses.start()
-    # UPDATION
 
+    # UPDATION
     @tasks.loop(seconds=5.0)
     async def updation():
         # REQUESTS UPDATE

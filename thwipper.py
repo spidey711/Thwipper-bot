@@ -96,39 +96,39 @@ def help_menu():
 
     if help_toggle == 0 or help_toggle < 0:
         help_toggle = 0
-        embed_help_menu.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱", value="1) hello to greet bot\n2) help to get this menu\n3) quips to get a famous dialogue or plot\n4) @Thwipper to get more info about thwipper\n5) Spiderman Aliases to call upon Spider-Man\n6) img to get really cool photos of Spider-Man along with other well-known icons", inline=False)
+        embed_help_menu.add_field(name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱", value="`hello` to greet bot\n`help` to get this menu\n`quips` to get a famous dialogue or plot\n`@Thwipper` to get more info about thwipper", inline=False)
         embed_help_menu.set_image(url=bot.user.avatar_url)
     if help_toggle == 1:
         embed_help_menu.add_field(
-            name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁", value="1) w `topic` for wikipedia\n2) g `topic` to google\n3) imdb `movie` to get movie details from IMDb\n4) reddit `topic` to get reddit memes", inline=False)
+            name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁", value="w `topic` for wikipedia\ng `topic` to google\nimdb `movie` to get movie details from IMDb\n reddit `topic` to get reddit memes", inline=False)
         embed_help_menu.set_image(url=help_page1)
     if help_toggle == 2:
         embed_help_menu.add_field(
-            name="𝗗𝗧𝗖", value="1) dt `timezone` to get IST date and time\n2) cal `year` `month` to get calendar\nNote: The default timezone is set as `Asia/Kolkata`", inline=False)
+            name="𝗗𝗧𝗖", value="dt `timezone` to get IST date and time\ncal `year` `month` to get calendar\nNote: The default timezone is set as `Asia/Kolkata`", inline=False)
         embed_help_menu.set_image(url=help_page2)
     if help_toggle == 3:
         embed_help_menu.add_field(
-            name="𝗦𝗵𝗲𝗹𝗹𝘀", value="1) ; `query` to use SQL Shell\n2) py `expression` for python shell\n3) pydoc `function` to get information about that python function\nNote: The functions, when using `pydoc` command, will not be executed. Try without `()`.", inline=False)
+            name="𝗦𝗵𝗲𝗹𝗹𝘀", value="; `query` to use SQL Shell\npy `expression` for python shell\npydoc `function` to get information about that python function\nNote: The functions, when using `pydoc` command, will not be executed. Try without `()`.", inline=False)
         embed_help_menu.set_image(url=help_page3)
     if help_toggle == 4:
         embed_help_menu.add_field(
-            name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="1) hush en `text` to encrypt message\n2) hush dec `text` to decrypt message\n", inline=False)
+            name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush `en` `text` to encrypt message\nhush `dec` `text` to decrypt message\n", inline=False)
         embed_help_menu.set_image(url=help_page4)
     if help_toggle == 5:
-        embed_help_menu.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™", value="1) cn to get the bot to join voice channel\n2) dc to remove bot from voice channel\n3) p `name` or `index` to play songs\n4) ▶ res to resume a song\n5) ⏸ pause to pause a song\n6) ⏹ st to stop a song\n7) 🔂 rep to repeat song \n8) ⏭ skip to skip song\n9) ⏮ prev for previous song\n10) *️⃣ songinfo to get current song\n11) 🔠 q to display queue\n12) q `name` to add a song to the queue\n13) rem `index` to remove song from queue\n14) cq to clear queue", inline=False)
+        embed_help_menu.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™", value="🔉 `cn` to get the bot to join voice channel\n🔇 `dc` to remove bot from voice channel\n🎶 p `name` or `index` to play songs\n▶ `res` to resume a song\n⏸ `pause` to pause a song\n⏹ `st` to stop a song\n🔂 `rep` to repeat song\n⏭ `skip` to skip song\n⏮ `prev` for previous song\n*️⃣ `songinfo` to get current song\n🔠 `q` to display queue\n✔ q `name` to add a song to the queue\n❌ rem `index` to remove song from queue\n💥 `cq` to clear queue", inline=False)
         embed_help_menu.set_image(url=help_page5)
     if help_toggle == 6:
         embed_help_menu.add_field(
-            name="𝗕𝗶𝗿𝘁𝗵𝗱𝗮𝘆𝘀", value="1) addbday `mention` `month` `day` to add a user's birthday from DB\n2) bday to get thwipper to wish the members\n3) rembday `mention` to remove a member's birthday.", inline=False)
+            name="𝗕𝗶𝗿𝘁𝗵𝗱𝗮𝘆𝘀", value="addbday `mention` `month` `day` to add a user's birthday from DB\n`bday` to get thwipper to wish the members\nrembday `mention` to remove a member's birthday.", inline=False)
         embed_help_menu.set_image(url=help_page6)
     if help_toggle == 7:
         embed_help_menu.add_field(
-            name="𝗧𝗵𝗲 𝗪𝗲𝗯 𝗙𝗲𝗮𝘁𝘂𝗿𝗲", value="1) web to see deleted message\n2) .web to troll those who try web command", inline=False)
+            name="𝗧𝗵𝗲 𝗪𝗲𝗯 𝗙𝗲𝗮𝘁𝘂𝗿𝗲", value="`web` to see deleted message\n`troll` to troll those who try web command", inline=False)
         embed_help_menu.set_image(url=help_page7)
     if help_toggle == 8 or help_toggle > 8:
         help_toggle = 8
         embed_help_menu.add_field(
-            name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="1) req to get number of requests\n2) ping to get bot's latency\n3) serverinfo to get server's information\n4) pfp to get user's profile picture\n5) bit to set quality of bitrate\n6) polls to see how to conduct a poll", inline=False)
+            name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆", value="`req` to get number of requests\n`ping` to get bot's latency\n`serverinfo` to get server's information\npfp `mention` to get user's profile picture\n`setbit` to set quality of bitrate\n`polls` to see how to conduct a poll", inline=False)
         embed_help_menu.set_image(url=help_page8)
 
     return embed_help_menu
@@ -173,7 +173,7 @@ async def on_ready():
     # QUIPS
     global dialogue_list
     site = requests.get("https://geektrippers.com/spiderman-quotes/").content.decode().replace("<br>", "\n").replace("<strong>", " ").replace("</strong>", " ").replace("<em>", " ").replace(
-        "</em>", " ").replace("&#8217;", "'").replace("&#8221;", '"\n\r').replace("&#8230;", "...").replace("&#8220;", '"').replace("&nbsp;", " ").replace("&#8211;", "-").replace("&#8216;", "'")
+        "</em>", " ").replace("&#8217;", "'").replace("&#8221;", '"\n\r').replace("&#8230;", "...").replace("&#8220;", '"').replace("&nbsp;", " ").replace("&#8211;", "-").replace("&#8216;", "'").replace("]", "]\n").replace("[","\n[")
 
     for i in range(0, 1000):
         q = site.find('<p class="has-background" style="background-color:#dedfe0">',
@@ -846,7 +846,6 @@ async def on_reaction_add(reaction, user):
 
 # ---------------------------------------------- STANDARD ----------------------------------------------------
 
-
 @bot.command(aliases=["spidey", "spiderman", "webslinger", "webhead", "wallcrawler"])
 async def spiderman_signal(ctx):
 
@@ -860,22 +859,6 @@ async def spiderman_signal(ctx):
     await ctx.send(embed=embed)
 
 
-@bot.command(aliases=["img"])
-async def spiderman_photos(ctx):
-
-    number_of_requests()
-
-    li = []
-    for i in url_thumbnails:
-        for j in hello_urls:
-            li.append(i)
-            li.append(j)
-
-    embed = discord.Embed(color=color)
-    embed.set_image(url=random.choice(li))
-    await ctx.send(embed=embed)
-
-
 @bot.command(aliases=['hello', 'hi', 'hey', 'hey there', 'salut', "kon'nichiwa", "hola", "aloha"])
 async def greet_bot(ctx):
 
@@ -883,7 +866,10 @@ async def greet_bot(ctx):
 
     greetings = [f"Hey {ctx.author.name}!", f"Hi {ctx.author.name}!", f"How's it going {ctx.author.name}?", f"What can I do for you {ctx.author.name}?",
                  f"What's up {ctx.author.name}?", f"Hello {ctx.author.name}!", f"So {ctx.author.name}, how's your day going?"]
-    await ctx.send(random.choice(greetings))
+    embed = discord.Embed(color=color)
+    embed.set_author(name=random.choice(greetings), icon_url=ctx.author.avatar_url)
+    embed.set_image(url=random.choice(hello_urls))
+    await ctx.send(embed=embed)
 
 
 @bot.command(aliases=["help", "use"])
@@ -1146,7 +1132,7 @@ async def total_requests(ctx):
     await ctx.send(embed=embed)
 
 
-@bot.command(aliases=[".web"])
+@bot.command(aliases=["troll"])
 async def troll_snipe(ctx):
 
     await ctx.channel.purge(limit=1)

@@ -20,8 +20,8 @@ help_page1 = "https://images6.alphacoders.com/813/thumbbig-813100.webp"
 help_page2 = "https://wallpapercave.com/wp/wp3158861.jpg"
 help_page3 = "https://wallpapercave.com/wp/wp1828903.png"
 help_page4 = "https://c4.wallpaperflare.com/wallpaper/693/694/388/blue-chip-color-fee-wallpaper-preview.jpg"
-help_page5 = "https://c4.wallpaperflare.com/wallpaper/408/181/153/macro-background-sony-walkman-wallpaper-preview.jpg" # https://c4.wallpaperflare.com/wallpaper/764/246/501/neon-synthwave-walkman-wallpaper-preview.jpg
+help_page5 = "https://wallpapercave.com/wp/wp9505029.jpg" # https://c4.wallpaperflare.com/wallpaper/764/246/501/neon-synthwave-walkman-wallpaper-preview.jpg
 help_page6 = "https://i.imgflip.com/440eii.jpg"
 help_page7 = "https://static0.cbrimages.com/wordpress/wp-content/uploads/2017/04/14-spider-man-webbing.jpg?q=50&fit=crop&w=740&h=370&dpr=1.5"
-help_page8 = "https://c4.wallpaperflare.com/wallpaper/251/835/643/aenami-digital-art-eclipse-sun-wallpaper-preview.jpg"
+help_page8 = "https://c4.wallpaperflare.com/wallpaper/228/684/1/video-games-spider-man-2018-spider-man-marvel-comics-wallpaper-preview.jpg"
 github_author = "https://www.nicepng.com/png/full/52-520535_free-files-github-github-icon-png-white.png"

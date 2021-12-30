@@ -1529,8 +1529,12 @@ async def queue_song(ctx, *, name=None):
                     '(', '').replace(',)', '').replace("'", '')
                 check_list.append(link)
             if url in check_list:
+                def song_position():
+                    for position in range(len(check_list)):
+                        if url == check_list[position]:
+                            return position
                 embed = discord.Embed(
-                    description=f"{random.choice(already_queued)}\nSong Postion: {url}", color=color)
+                    description=f"{random.choice(already_queued)}\nSong Postion: {song_position()}", color=color)
                 embed.set_author(name="Already Queued",
                                  icon_url=url_author_music)
                 await ctx.send(embed=embed)

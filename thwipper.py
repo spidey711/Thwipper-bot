@@ -115,7 +115,7 @@ def help_menu():
             name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿", value="hush `en` `text` to encrypt message\nhush `dec` `text` to decrypt message\n", inline=False)
         embed_help_menu.set_image(url=help_page4)
     if help_toggle == 5:
-        embed_help_menu.add_field(name="𝗪𝗮𝗹𝗸𝗺𝗮𝗻™", value="🔉 `cn` to get the bot to join voice channel\n🔇 `dc` to remove bot from voice channel\n🎶 p `name` or `index` to play songs\n▶ `res` to resume a song\n⏸ `pause` to pause a song\n⏹ `st` to stop a song\n🔂 `rep` to repeat song\n⏭ `skip` to skip song\n⏮ `prev` for previous song\n*️⃣ `songinfo` to get current song\n🔠 `q` to display queue\n✔ q `name` to add a song to the queue\n❌ rem `index` to remove song from queue\n💥 `cq` to clear queue", inline=False)
+        embed_help_menu.add_field(name="𝗦𝗽𝗶𝗱𝗲𝗿-𝗣𝘂𝗻𝗸 𝗥𝗮𝗱𝗶𝗼™", value="🔉 `cn` to get the bot to join voice channel\n🔇 `dc` to remove bot from voice channel\n🎶 p `name` or `index` to play songs\n▶ `res` to resume a song\n⏸ `pause` to pause a song\n⏹ `st` to stop a song\n🔂 `rep` to repeat song\n⏭ `skip` to skip song\n⏮ `prev` for previous song\n*️⃣ `songinfo` to get current song\n🔠 `q` to display queue\n✔ q `name` to add a song to the queue\n❌ rem `index` to remove song from queue\n💥 `cq` to clear queue", inline=False)
         embed_help_menu.set_image(url=help_page5)
     if help_toggle == 6:
         embed_help_menu.add_field(
@@ -123,7 +123,7 @@ def help_menu():
         embed_help_menu.set_image(url=help_page6)
     if help_toggle == 7:
         embed_help_menu.add_field(
-            name="𝗧𝗵𝗲 𝗪𝗲𝗯 𝗙𝗲𝗮𝘁𝘂𝗿𝗲", value="`web` to see deleted message\n`troll` to troll those who try web command", inline=False)
+            name="𝗪𝗲𝗯 𝗙𝗲𝗮𝘁𝘂𝗿𝗲𝘀", value="`web` to see deleted message\n`troll` to troll those who try web command", inline=False)
         embed_help_menu.set_image(url=help_page7)
     if help_toggle == 8 or help_toggle > 8:
         help_toggle = 8
@@ -254,7 +254,7 @@ async def on_message(message):
             name="Source Code", value="[Thwipper](https://github.com/spidey711/Thwipper-bot)", inline=True)
         embed.set_thumbnail(url=bot.user.avatar_url)
         # embed.set_image(url="https://txt.1001fonts.net/img/txt/dHRmLjcyLjAwMDAwMC5WRWhYU1ZCUVJWSSwuMA,,/lazenby-computer.liquid.png")
-        embed.set_footer(text="𝗧𝘆𝗽𝗲 _𝘂𝘀𝗲 𝗳𝗼𝗿 𝗰𝗼𝗺𝗺𝗮𝗻𝗱 𝗺𝗲𝗻𝘂",
+        embed.set_footer(text="Type _help for command menu",
                          icon_url=message.author.avatar_url)
         await message.reply(embed=embed)
     else:
@@ -394,7 +394,7 @@ async def on_reaction_add(reaction, user):
                             description=random.choice(default_index),
                             color=color)
                         embed.set_author(
-                            name="Walkman™",
+                            name="Spider-Punk Radio™",
                             icon_url=url_author_music)
                         await reaction.message.edit(embed=embed)
 
@@ -409,7 +409,7 @@ async def on_reaction_add(reaction, user):
                                 embed = discord.Embed(
                                     description="Song has resumed playing 🎸", color=color)
                                 embed.set_author(
-                                    name="Walkman™", icon_url=url_author_music)
+                                    name="Spider-Punk Radio™", icon_url=url_author_music)
                                 embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(
                                     reaction.message.guild.voice_client.channel.bitrate/1000))
                                 await reaction.message.edit(embed=embed)
@@ -419,7 +419,7 @@ async def on_reaction_add(reaction, user):
                                         description="Song is not paused 🤔",
                                         color=color)
                                     embed.set_author(
-                                        name="Walkman™",
+                                        name="Spider-Punk Radio™",
                                         icon_url=url_author_music)
                                     embed.set_footer(
                                         text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
@@ -430,7 +430,7 @@ async def on_reaction_add(reaction, user):
                                         description="Nothing is playing right now ❗",
                                         color=color)
                                     embed.set_author(
-                                        name="Walkman™",
+                                        name="Spider-Punk Radio™",
                                         icon_url=url_author_music)
                                     embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(
                                         reaction.message.guild.voice_client.channel.bitrate/1000))
@@ -443,7 +443,7 @@ async def on_reaction_add(reaction, user):
                                 embed = discord.Embed(
                                     description="Song has resumed playing ▶", color=color)
                                 embed.set_author(
-                                    name="Walkman™", icon_url=url_author_music)
+                                    name="Spider-Punk Radio™", icon_url=url_author_music)
                                 embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(
                                     reaction.message.guild.voice_client.channel.bitrate/1000))
                                 await reaction.message.edit(embed=embed)
@@ -452,7 +452,7 @@ async def on_reaction_add(reaction, user):
                                 embed = discord.Embed(
                                     description="Song is already playing 🎸", color=color)
                                 embed.set_author(
-                                    name="Walkman™", icon_url=url_author_music)
+                                    name="Spider-Punk Radio™", icon_url=url_author_music)
                                 embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(
                                     reaction.message.guild.voice_client.channel.bitrate/1000))
                                 await reaction.message.edit(embed=embed)
@@ -475,7 +475,7 @@ async def on_reaction_add(reaction, user):
                     embed = discord.Embed(
                         description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(
-                        name="Walkman™", icon_url=url_author_music)
+                        name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
         if reaction.emoji == "⏸":
@@ -492,7 +492,7 @@ async def on_reaction_add(reaction, user):
                             embed = discord.Embed(
                                 description="Song is paused ⏸", color=color)
                             embed.set_author(
-                                name="Walkman™", icon_url=url_author_music)
+                                name="Spider-Punk Radio™", icon_url=url_author_music)
                             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(
                                 reaction.message.guild.voice_client.channel.bitrate/1000))
                             await reaction.message.edit(embed=embed)
@@ -503,7 +503,7 @@ async def on_reaction_add(reaction, user):
                                 embed = discord.Embed(
                                     description="Song is already paused ⏸", color=color)
                                 embed.set_author(
-                                    name="Walkman™", icon_url=url_author_music)
+                                    name="Spider-Punk Radio™", icon_url=url_author_music)
                                 embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(
                                     reaction.message.guild.voice_client.channel.bitrate/1000))
                                 await reaction.message.edit(embed=embed)
@@ -512,7 +512,7 @@ async def on_reaction_add(reaction, user):
                                 embed = discord.Embed(
                                     description="No song playing currently ❗", color=color)
                                 embed.set_author(
-                                    name="Walkman™", icon_url=url_author_music)
+                                    name="Spider-Punk Radio™", icon_url=url_author_music)
                                 embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(
                                     reaction.message.guild.voice_client.channel.bitrate/1000))
                                 await reaction.message.edit(embed=embed)
@@ -527,7 +527,7 @@ async def on_reaction_add(reaction, user):
                     embed = discord.Embed(
                         description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(
-                        name="Walkman™", icon_url=url_author_music)
+                        name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
         if reaction.emoji == "⏮":
@@ -588,7 +588,7 @@ async def on_reaction_add(reaction, user):
                     embed = discord.Embed(
                         description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(
-                        name="Walkman™", icon_url=url_author_music)
+                        name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
         if reaction.emoji == "⏭":
@@ -649,7 +649,7 @@ async def on_reaction_add(reaction, user):
                     embed = discord.Embed(
                         description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(
-                        name="Walkman™", icon_url=url_author_music)
+                        name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
         if reaction.emoji == "⏹":
@@ -666,7 +666,7 @@ async def on_reaction_add(reaction, user):
                             embed = discord.Embed(
                                 description="Song has been stopped ⏹", color=color)
                             embed.set_author(
-                                name="Walkman™", icon_url=url_author_music)
+                                name="Spider-Punk Radio™", icon_url=url_author_music)
                             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(
                                 reaction.message.guild.voice_client.channel.bitrate/1000))
                             await reaction.message.edit(embed=embed)
@@ -675,7 +675,7 @@ async def on_reaction_add(reaction, user):
                             embed = discord.Embed(
                                 description="Nothing is playing at the moment ❗", color=color)
                             embed.set_author(
-                                name="Walkman™", icon_url=url_author_music)
+                                name="Spider-Punk Radio™", icon_url=url_author_music)
                             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(
                                 reaction.message.guild.voice_client.channel.bitrate/1000))
                             await reaction.message.edit(embed=embed)
@@ -690,7 +690,7 @@ async def on_reaction_add(reaction, user):
                     embed = discord.Embed(
                         description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(
-                        name="Walkman™", icon_url=url_author_music)
+                        name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
         if reaction.emoji == "*️⃣":
@@ -700,7 +700,7 @@ async def on_reaction_add(reaction, user):
 
                 if len(server_queue) <= 0:
                     embed = discord.Embed(
-                        description="There are no songs in the queue currently 🤔")
+                        description=random.choice(empty_queue), color=color)
                     embed.set_author(
                         name="Uh oh...", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
@@ -781,7 +781,7 @@ async def on_reaction_add(reaction, user):
                     embed = discord.Embed(
                         description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(
-                        name="Walkman™", icon_url=url_author_music)
+                        name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
         if reaction.emoji == "🔀":
@@ -841,7 +841,7 @@ async def on_reaction_add(reaction, user):
                     embed = discord.Embed(
                         description=f"{reaction.message.author.name}, connect to a voice channel first 🔊", color=color)
                     embed.set_author(
-                        name="Walkman™", icon_url=url_author_music)
+                        name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
 # ---------------------------------------------- STANDARD ----------------------------------------------------
@@ -1416,7 +1416,7 @@ async def join_vc(ctx):
         if not ctx.message.author.voice:
             embed = discord.Embed(description="{}, connect to a voice channel first 🔊".format(
                 ctx.author.name), color=color)
-            embed.set_author(name='Walkman™', icon_url=url_author_music)
+            embed.set_author(name='Spider-Punk Radio™', icon_url=url_author_music)
             await ctx.send(embed=embed)
 
         if voice == None:
@@ -1424,14 +1424,14 @@ async def join_vc(ctx):
             await channel.connect()
             embed = discord.Embed(
                 description=f"Connected to {ctx.guild.voice_client.channel.name}", color=color)
-            embed.set_author(name="Walkman™", icon_url=url_author_music)
+            embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
             embed.set_footer(text=random.choice(connections))
             await ctx.send(embed=embed)
 
         if voice != None:
             embed = discord.Embed(
                 description="Already connected to a voice channel ✅", color=color)
-            embed.set_author(name='Walkman™', icon_url=url_author_music)
+            embed.set_author(name='Spider-Punk Radio™', icon_url=url_author_music)
             await ctx.send(embed=embed)
 
     except Exception as e:
@@ -1456,7 +1456,7 @@ async def leave_vc(ctx):
                     embed = discord.Embed(
                         description=f"Disconnected from {ctx.guild.voice_client.channel.name}", color=color)
                     embed.set_author(
-                        name="Walkman™", icon_url=url_author_music)
+                        name="Spider-Punk Radio™", icon_url=url_author_music)
                     embed.set_footer(text=random.choice(disconnections))
                     await ctx.send(embed=embed)
                     await voice_client.disconnect()
@@ -1465,19 +1465,19 @@ async def leave_vc(ctx):
                 embed = discord.Embed(
                     description="I am not connected to a voice channel", color=color)
                 embed.set_author(
-                    name="Walkman™", icon_url=url_author_music)
+                    name="Spider-Punk Radio™", icon_url=url_author_music)
                 await ctx.send(embed=embed)
 
         else:
             embed = discord.Embed(description="{}, buddy, connect to the voice channel first 🔊".format(
                 ctx.author.name), color=color)
-            embed.set_author(name="Walkman™", icon_url=url_author_music)
+            embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
             await ctx.send(embed=embed)
 
     except AttributeError:
         embed = discord.Embed(
             description="I am not connected to a voice channel", color=color)
-        embed.set_author(name="Walkman™", icon_url=url_author_music)
+        embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
 
@@ -1502,7 +1502,7 @@ async def queue_song(ctx, *, name=None):
     if ctx.author.id not in [member.id for member in ctx.guild.voice_client.channel.members]:
         embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(
             ctx.author.name), color=color)
-        embed.set_author(name="Walkman™", icon_url=url_author_music)
+        embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
     else:
@@ -1591,7 +1591,7 @@ async def queue_song(ctx, *, name=None):
                     embed = discord.Embed(
                         description=random.choice(default_index), color=color)
                     embed.set_author(
-                        name="Walkman™", icon_url=url_author_music)
+                        name="Spider-Punk Radio™", icon_url=url_author_music)
                     await ctx.send(embed=embed)
 
             else:
@@ -1775,7 +1775,7 @@ async def play_music(ctx, *, char):
         else:
             embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(
                 ctx.author.name), color=color)
-            embed.set_author(name="Walkman™", icon_url=url_author_music)
+            embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
             await ctx.send(embed=embed)
 
     except AttributeError:
@@ -1827,7 +1827,7 @@ async def fetch_current_song(ctx):
         except KeyError:
             embed = discord.Embed(
                 description=random.choice(default_index), color=color)
-            embed.set_author(name="Walkman™", icon_url=url_author_music)
+            embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
             await ctx.send(embed=embed)
 
 
@@ -1916,7 +1916,7 @@ async def previous_song(ctx):
     else:
         embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(
             ctx.author.name), color=color)
-        embed.set_author(name="Walkman™", icon_url=url_author_music)
+        embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
 
@@ -2077,7 +2077,7 @@ async def skip_song(ctx):
     else:
         embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(
             ctx.author.name), color=color)
-        embed.set_author(name="Walkman™", icon_url=url_author_music)
+        embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
 
@@ -2123,7 +2123,7 @@ async def pause_song(ctx):
     else:
         embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(
             ctx.author.name), color=color)
-        embed.set_author(name="Walkman™", icon_url=url_author_music)
+        embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
 
@@ -2151,7 +2151,7 @@ async def resume_song(ctx):
                     embed = discord.Embed(
                         description="Song is not paused 🤔", color=color)
                     embed.set_author(
-                        name="Walkman™", icon_url=url_author_music)
+                        name="Spider-Punk Radio™", icon_url=url_author_music)
                     embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(
                         ctx.guild.voice_client.channel.bitrate/1000))
                     await ctx.send(embed=embed)
@@ -2160,7 +2160,7 @@ async def resume_song(ctx):
                     embed = discord.Embed(
                         description="Nothing is playing right now", color=color)
                     embed.set_author(
-                        name="Walkman™", icon_url=url_author_music)
+                        name="Spider-Punk Radio™", icon_url=url_author_music)
                     embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(
                         ctx.guild.voice_client.channel.bitrate/1000))
                     await ctx.send(embed=embed)
@@ -2173,7 +2173,7 @@ async def resume_song(ctx):
     else:
         embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(
             ctx.author.name), color=color)
-        embed.set_author(name="Walkman™", icon_url=url_author_music)
+        embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
 
@@ -2199,7 +2199,7 @@ async def stop_song(ctx):
                 embed = discord.Embed(
                     description="Nothing is playing right now", color=color)
                 embed.set_author(
-                    name="Walkman™", icon_url=url_author_music)
+                    name="Spider-Punk Radio™", icon_url=url_author_music)
                 embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(
                     ctx.guild.voice_client.channel.bitrate/1000))
                 await ctx.send(embed=embed)
@@ -2212,7 +2212,7 @@ async def stop_song(ctx):
     else:
         embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(
             ctx.author.name), color=color)
-        embed.set_author(name="Walkman™", icon_url=url_author_music)
+        embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
 
@@ -2255,7 +2255,7 @@ async def clear_song_queue(ctx):
 
     else:
         embed_empty = discord.Embed(
-            description="Queue is already empty 🤷🏻‍♂️", color=color)
+            description=random.choice(empty_queue), color=color)
         embed_empty.set_author(name="Hmm...", icon_url=url_author_music)
         await ctx.send(embed=embed_empty)
 

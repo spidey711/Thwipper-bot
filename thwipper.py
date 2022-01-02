@@ -1285,7 +1285,7 @@ async def date_time_ist(ctx, timezone=None):
         embed.add_field(name='Time', value="%s:%s:%s" % (
             dateTime.hour, dateTime.minute, dateTime.second), inline=True)
         embed.set_footer(text=f'Timezone : {default_tz}')
-        embed.set_thumbnail(url=url_dtc)
+        # embed.set_thumbnail(url=url_dtc)
         await ctx.send(embed=embed)
 
     else:
@@ -1296,7 +1296,7 @@ async def date_time_ist(ctx, timezone=None):
                         (dateTime.day, dateTime.month, dateTime.year), inline=True)
         embed.add_field(name='Time', value="%s:%s:%s" % (
             dateTime.hour, dateTime.minute, dateTime.second), inline=True)
-        embed.set_thumbnail(url=url_dtc)
+        # embed.set_thumbnail(url=url_dtc)
         embed.set_footer(text=f"Timezone : {timezone}")
         await ctx.send(embed=embed)
 

@@ -38,7 +38,7 @@ bot = commands.Bot(
     intents=intents,
     case_insensitive=True,
 )
-color = discord.Color.from_rgb(0, 180, 255)
+color = discord.Color.from_rgb(223, 31, 45)
 bot.remove_command("help")
 # Enviroment Variables
 global auth
@@ -1113,51 +1113,92 @@ async def on_reaction_add(reaction, user):
                 else:
 
                     try:
-                        embed = discord.Embed(
-                            description="**Song: **{a}\n**Index: **{b}\n**Views: **{c}\n**Description: **\n{d}".format(
-                                a=server_queue[
-                                    server_index[str(
-                                        reaction.message.guild.id)]
-                                ][0],
-                                b=server_index[str(reaction.message.guild.id)],
-                                c=pytube.YouTube(
-                                    url=server_queue[
+                        try:
+                            embed = discord.Embed(
+                                description="**Song: **{a}\n**Index: **{b}\n**Views: **{c}\n**Description: **\n{d}".format(
+                                    a=server_queue[
                                         server_index[str(
                                             reaction.message.guild.id)]
-                                    ][1]
-                                ).views,
-                                d=pytube.YouTube(
-                                    url=server_queue[
-                                        server_index[str(
-                                            reaction.message.guild.id)]
-                                    ][1]
-                                ).description,
-                            ),
-                            color=color,
-                        )
-                        embed.set_author(
-                            name="Currently Playing",
-                            url=server_queue[
-                                server_index[str(reaction.message.guild.id)]
-                            ][1],
-                            icon_url=url_author_music,
-                        )
-                        embed.set_footer(
-                            text="Voice Channel Bitrate: {} kbps".format(
-                                reaction.message.guild.voice_client.channel.bitrate
-                                / 1000
+                                    ][0],
+                                    b=server_index[str(reaction.message.guild.id)],
+                                    c=pytube.YouTube(
+                                        url=server_queue[
+                                            server_index[str(
+                                                reaction.message.guild.id)]
+                                        ][1]
+                                    ).views,
+                                    d=pytube.YouTube(
+                                        url=server_queue[
+                                            server_index[str(
+                                                reaction.message.guild.id)]
+                                        ][1]
+                                    ).description,
+                                ),
+                                color=color,
                             )
-                        )
-                        embed.set_thumbnail(
-                            url=pytube.YouTube(
+                            embed.set_author(
+                                name="Currently Playing",
                                 url=server_queue[
-                                    server_index[str(
-                                        reaction.message.guild.id)]
-                                ][1]
-                            ).thumbnail_url
-                        )
-                        await reaction.message.edit(embed=embed)
-
+                                    server_index[str(reaction.message.guild.id)]
+                                ][1],
+                                icon_url=url_author_music,
+                            )
+                            embed.set_footer(
+                                text="Voice Channel Bitrate: {} kbps".format(
+                                    reaction.message.guild.voice_client.channel.bitrate
+                                    / 1000
+                                )
+                            )
+                            embed.set_thumbnail(
+                                url=pytube.YouTube(
+                                    url=server_queue[
+                                        server_index[str(
+                                            reaction.message.guild.id)]
+                                    ][1]
+                                ).thumbnail_url
+                            )
+                            await reaction.message.edit(embed=embed)
+                        except discord.errors.HTTPException:
+                            embed = discord.Embed(
+                                description="**Song: **{a}\n**Index: **{b}\n**Views: **{c}\n**Description: **\n{d}".format(
+                                    a=server_queue[
+                                        server_index[str(
+                                            reaction.message.guild.id)]
+                                    ][0],
+                                    b=server_index[str(reaction.message.guild.id)],
+                                    c=pytube.YouTube(
+                                        url=server_queue[
+                                            server_index[str(
+                                                reaction.message.guild.id)]
+                                        ][1]
+                                    ).views,
+                                    d=random.choice(description_embed_errors),
+                                ),
+                                color=color,
+                            )
+                            embed.set_author(
+                                name="Currently Playing",
+                                url=server_queue[
+                                    server_index[str(reaction.message.guild.id)]
+                                ][1],
+                                icon_url=url_author_music,
+                            )
+                            embed.set_footer(
+                                text="Voice Channel Bitrate: {} kbps".format(
+                                    reaction.message.guild.voice_client.channel.bitrate
+                                    / 1000
+                                )
+                            )
+                            embed.set_thumbnail(
+                                url=pytube.YouTube(
+                                    url=server_queue[
+                                        server_index[str(
+                                            reaction.message.guild.id)]
+                                    ][1]
+                                ).thumbnail_url
+                            )
+                            await reaction.message.edit(embed=embed)
+                            
                     except KeyError:
                         embed = discord.Embed(
                             description="Looks like you weren't playing anything before this so there is no current song. Play song from queue to set a current song",

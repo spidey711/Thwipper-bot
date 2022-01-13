@@ -150,21 +150,14 @@ def help_menu():
             inline=False,
         )
         embed_help_menu.set_image(url=help_page6)
-    if help_toggle == 7:
+    if help_toggle == 7 or help_toggle > 7:
+        help_toggle = 7
         embed_help_menu.add_field(
-            name="𝗪𝗲𝗯 𝗙𝗲𝗮𝘁𝘂𝗿𝗲𝘀",
-            value="`web` to see deleted message\n`troll` to troll those who try web command",
+            name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆",
+            value="`req` to get number of requests\n`web` to see deleted message\n`ping` to get bot's latency\n`serverinfo` to get server's information\npfp `mention` to get user's profile picture\n`setbit` to set quality of bitrate\n`polls` to see how to conduct a poll",
             inline=False,
         )
         embed_help_menu.set_image(url=help_page7)
-    if help_toggle == 8 or help_toggle > 8:
-        help_toggle = 8
-        embed_help_menu.add_field(
-            name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆",
-            value="`req` to get number of requests\n`ping` to get bot's latency\n`serverinfo` to get server's information\npfp `mention` to get user's profile picture\n`setbit` to set quality of bitrate\n`polls` to see how to conduct a poll",
-            inline=False,
-        )
-        embed_help_menu.set_image(url=help_page8)
 
     return embed_help_menu
 

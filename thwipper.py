@@ -24,7 +24,6 @@ try:
     import wikipedia
     from googlesearch import search
     from cryptography.fernet import Fernet
-
     print("All modules and libraries imported...")
 except ImportError as ie:
     print(ie)
@@ -61,9 +60,7 @@ ydl_op = {
             "key": "FFmpegExtractAudio",
             "preferredcodec": "mp3",
             "preferredquality": "128",
-        }
-    ],
-}
+        }],}
 # DEFAULT TIMEZONE
 default_tz = "Asia/Kolkata"
 # ENCRYPTER DECRYPTER
@@ -84,19 +81,19 @@ help_toggle = 0
 dialogue_list = []
 # SQL
 conn = ms.connect(
-    user="root", host="localhost", password=os.getenv("sql_pass"), database="discord"
+    user="root",
+    host="localhost",
+    password=os.getenv("sql_pass"),
+    database="discord"
 )
 cursor = conn.cursor()
 
 # ---------------------------------------------- NON ASYNC FUNCTIONS -----------------------------------------
 
-
 def help_menu():
     global help_toggle
 
-    embed_help_menu = discord.Embed(
-        title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸", description="Prefixes: t! _ |", color=color
-    )
+    embed_help_menu = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸", description="Prefixes: t! _ |", color=color)
     embed_help_menu.set_thumbnail(url=random.choice(url_thumbnails))
     embed_help_menu.set_footer(text="New Features Coming Soon 🛠")
 
@@ -155,7 +152,7 @@ def help_menu():
         embed_help_menu.add_field(
             name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆",
             value="`req` to get number of requests\n`web` to see deleted message\n`ping` to get bot's latency\n`serverinfo` to get server's information\npfp `mention` to get user's profile picture\n`setbit` to set quality of bitrate\n`polls` to see how to conduct a poll",
-            inline=False,
+            inline=False
         )
         embed_help_menu.set_image(url=help_page7)
 
@@ -166,10 +163,8 @@ def time_converter(seconds):
     mins, secs = divmod(seconds, 60)
     hours, mins = divmod(mins, 60)
 
-    if hours == 0:
-        return "%02d mins %02d secs" % (mins, secs)
-    if hours > 0:
-        return "%d hrs %02d mins %02d secs" % (hours, mins, secs)
+    if hours == 0: return "%02d mins %02d secs" % (mins, secs)
+    if hours > 0: return "%d hrs %02d mins %02d secs" % (hours, mins, secs)
 
 
 def youtube_download(ctx, url):
@@ -189,7 +184,6 @@ def number_of_requests():
     global num  # num = 0
     num += 1
     requests_query()
-
 
 # ----------------------------------------- EVENTS --------------------------------------
 
@@ -222,13 +216,11 @@ async def on_ready():
 
     for i in range(0, 1000):
         q = site.find(
-            '<p class="has-background" style="background-color:#dedfe0">', stop
-        ) + len('<p class="has-background style="background-color:#dedfe0">')
+            '<p class="has-background" style="background-color:#dedfe0">', stop) + len('<p class="has-background style="background-color:#dedfe0">')
         w = site.find("</p>", stop)
         stop = w + len("</p>")
         dialogues = ""
-        if not site[q:w]:
-            continue
+        if not site[q:w]: continue
         else:
             dialogues = site[q:w]
             dialogue_list += [dialogues]
@@ -236,16 +228,10 @@ async def on_ready():
     # STATUSES
     @tasks.loop(minutes=10)
     async def multiple_statuses():
-
         while True:
             for status in status_list:
                 await asyncio.sleep(300)
-                await bot.change_presence(
-                    activity=discord.Activity(
-                        type=discord.ActivityType.playing, name=status
-                    )
-                )
-
+                await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=status))
     multiple_statuses.start()
 
     # UPDATION
@@ -260,7 +246,6 @@ async def on_ready():
         req2 = str(req1).replace("[(", " ").replace(",)]", " ")
         num = int(req2)
         conn.commit()
-
     updation.start()
 
 
@@ -269,13 +254,10 @@ async def transformer(api, header, json):
         async with session.post(api, headers=header, json=json) as resp:
             return await resp.json()
 
-
 @bot.event
 async def on_message(message):
     headeras = {"Authorization": auth}
-    API_URL = (
-        "https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill"
-    )
+    API_URL = ("https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill")
 
     if message.content.lower().startswith("thwip"):
         past_respose = []
@@ -286,8 +268,7 @@ async def on_message(message):
                 "past_user_inputs": past_respose,
                 "generated_responses": generated,
                 "text": input_text,
-            },
-        }
+            },}
         output = await transformer(API_URL, header=headeras, json=payload)
         if len(past_respose) < 100:
             past_respose.append(input_text)
@@ -317,18 +298,16 @@ async def on_message(message):
         embed.set_thumbnail(url=bot.user.avatar_url)
         # embed.set_image(url="https://txt.1001fonts.net/img/txt/dHRmLjcyLjAwMDAwMC5WRWhYU1ZCUVJWSSwuMA,,/lazenby-computer.liquid.png")
         embed.set_footer(
-            text="Type _help for command menu", icon_url=message.author.avatar_url
+            text="Type _help for command menu",
+            icon_url=message.author.avatar_url
         )
         await message.reply(embed=embed)
-    else:
-        await bot.process_commands(message)
-
+    else: await bot.process_commands(message)
 
 async def genpost(api, header, json):
     async with aiohttp.ClientSession() as session:
         async with session.post(api, headers=header, json=json) as resp:
             return await resp.json()
-
 
 @bot.command()
 async def gen(ctx, *, text):
@@ -341,24 +320,17 @@ async def gen(ctx, *, text):
     output = await genpost(API_URL2, header2, payload2)
     await ctx.send(
         embed=discord.Embed(
-            title="Generated text", description=output[0]["generated_text"], color=color
-        )
-    )
+            title="Generated text", 
+            description=output[0]["generated_text"], 
+            color=color
+        ))
 
 
 @bot.event
 async def on_message_delete(message):
-    if not message.channel.id in list(deleted_messages.keys()):
-        deleted_messages[message.channel.id] = []
-    if len(message.embeds) <= 0:
-        deleted_messages[message.channel.id].append(
-            (str(message.author.id), message.content)
-        )
-    else:
-        deleted_messages[message.channel.id].append(
-            (str(message.author.id), message.embeds[0], True)
-        )
-
+    if not message.channel.id in list(deleted_messages.keys()): deleted_messages[message.channel.id] = []
+    if len(message.embeds) <= 0: deleted_messages[message.channel.id].append((str(message.author.id), message.content))
+    else: deleted_messages[message.channel.id].append((str(message.author.id), message.embeds[0], True))
 
 @bot.event
 async def on_reaction_add(reaction, user):
@@ -369,27 +341,15 @@ async def on_reaction_add(reaction, user):
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
                 await reaction.remove(user)
             try:
-                sub = reddit.subreddit(
-                    default_topic[str(reaction.message.guild.id)]
-                ).random()
-                embed = discord.Embed(
-                    description="**Caption:\n**{}".format(sub.title), color=color
-                )
-                embed.set_author(
-                    name="Post by: {}".format(sub.author), icon_url=url_reddit_author
-                )
+                sub = reddit.subreddit(default_topic[str(reaction.message.guild.id)]).random()
+                embed = discord.Embed(description=f"**Caption:\n**{sub.title}", color=color)
+                embed.set_author(name=f"Post by: {sub.author}", icon_url=url_reddit_author)
                 embed.set_thumbnail(url=url_reddit_thumbnail)
                 embed.set_image(url=sub.url)
-                embed.set_footer(
-                    text="🔺: {}   🔻: {}   💬: {}".format(
-                        sub.ups, sub.downs, sub.num_comments
-                    )
-                )
+                embed.set_footer(text=f"🔺: {sub.ups}   🔻: {sub.downs}   💬: {sub.num_comments}")
                 await reaction.message.edit(embed=embed)
             except Exception:
-                embed = discord.Embed(
-                    description="Default topic is not set", color=color
-                )
+                embed = discord.Embed(description="Default topic is not set", color=color)
                 embed.set_author(name="Uh oh...", icon_url=url_reddit_author)
                 await reaction.message.edit(embed=embed)
 
@@ -409,65 +369,44 @@ async def on_reaction_add(reaction, user):
         if reaction.emoji == "🕸":
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
                 await reaction.remove(user)
-                embed = discord.Embed(
-                    title="🕸Mutual Guilds🕸",
-                    description="\n".join(
-                        [servers.name for servers in user.mutual_guilds]
-                    ),
-                    color=color,
-                )
+                embed = discord.Embed(title="🕸Mutual Guilds🕸",
+                                    description="\n".join([servers.name for servers in user.mutual_guilds]),
+                                    color=color)
                 embed.set_thumbnail(url=random.choice(url_thumbnails))
                 embed.set_footer(text="New Features Coming Soon 🛠")
                 await reaction.message.edit(embed=embed)
 
         # MUSIC PLAYER
-        voice = discord.utils.get(
-            bot.voice_clients, guild=reaction.message.guild)
+        voice = discord.utils.get(bot.voice_clients, guild=reaction.message.guild)
         voice_client = reaction.message.guild.voice_client
         playing = reaction.message.guild.voice_client.is_playing()
         pause = reaction.message.guild.voice_client.is_paused()
 
         # SERVER QUEUE
-        operation_view = "SELECT * FROM music_queue WHERE server={}".format(
-            str(reaction.message.guild.id)
-        )
+        operation_view = f"SELECT * FROM music_queue WHERE server={str(reaction.message.guild.id)}"
         cursor.execute(operation_view)
         server_queue = cursor.fetchall()
-        members_in_vc = [
-            str(names) for names in reaction.message.guild.voice_client.channel.members
-        ]
+        members_in_vc = [str(names) for names in reaction.message.guild.voice_client.channel.members]
         string = ""
 
         if reaction.emoji == "🔼":
-            if str(user) != str(bot.user) and reaction.message.author == bot.user:
+            if str(user) != str(bot.user) and reaction.message.author == bot.user: 
                 await reaction.remove(user)
                 index = server_index[str(reaction.message.guild.id)]
                 try:
                     index -= 10
                     for song in server_queue[index: index + 20]:
-                        string += (
-                            str(index)
-                            + ") "
-                            + f"{song[0]}\n".replace(" - YouTube", " ")
-                        )
+                        string += (str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " "))
                         index += 1
                     embed = discord.Embed(description=string, color=color)
-                    embed.set_author(
-                        name=f"{reaction.message.guild.name}'s Playlist",
-                        icon_url=url_author_music,
-                    )
+                    embed.set_author(name=f"{reaction.message.guild.name}'s Playlist", icon_url=url_author_music)
                     embed.set_thumbnail(url=random.choice(url_thumbnail_music))
-                    embed.set_footer(
-                        text=f"Number Of Songs: {len(server_queue)}")
+                    embed.set_footer(text=f"Number Of Songs: {len(server_queue)}")
                     await reaction.message.edit(embed=embed)
 
                 except KeyError:
-                    embed = discord.Embed(
-                        description=random.choice(default_index), color=color
-                    )
-                    embed.set_author(
-                        name="Spider-Punk Radio™", icon_url=url_author_music
-                    )
+                    embed = discord.Embed(description=random.choice(default_index), color=color)
+                    embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
         if reaction.emoji == "🔽":
@@ -476,29 +415,19 @@ async def on_reaction_add(reaction, user):
                 index = server_index[str(reaction.message.guild.id)]
                 try:
                     for song in server_queue[index: index + 20]:
-                        string += (
-                            str(index)
-                            + ") "
-                            + f"{song[0]}\n".replace(" - YouTube", " ")
-                        )
+                        string += (str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " "))
                         index += 1
                     embed = discord.Embed(description=string, color=color)
-                    embed.set_author(
-                        name=f"{reaction.message.guild.name}'s Playlist",
-                        icon_url=url_author_music,
-                    )
+                    embed.set_author(name=f"{reaction.message.guild.name}'s Playlist",icon_url=url_author_music,)
                     embed.set_thumbnail(url=random.choice(url_thumbnail_music))
                     embed.set_footer(text=f"Number Of Songs: {len(server_queue)}")
                     index += 10
                     await reaction.message.edit(embed=embed)
                 except KeyError:
-                        embed = discord.Embed(
-                            description=random.choice(default_index), color=color
-                        )
-                        embed.set_author(
-                            name="Spider-Punk Radio™", icon_url=url_author_music
-                        )
+                        embed = discord.Embed( description=random.choice(default_index), color=color)
+                        embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                         await reaction.message.edit(embed=embed)
+                        
         if reaction.emoji == "🔠":
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
                 await reaction.remove(user)
@@ -506,49 +435,27 @@ async def on_reaction_add(reaction, user):
                     index = server_index[str(reaction.message.guild.id)] - 10
                     if server_index[str(reaction.message.guild.id)] > 10:
                         for song in server_queue[index: index + 20]:
-                            string += (
-                                str(index)
-                                + ") "
-                                + f"{song[0]}\n".replace(" - YouTube", " ")
-                            )
+                            string += ( str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " "))
                             index += 1
                         embed = discord.Embed(description=string, color=color)
-                        embed.set_author(
-                            name=f"{reaction.message.guild.name}'s Playlist",
-                            icon_url=url_author_music,
-                        )
-                        embed.set_thumbnail(
-                            url=random.choice(url_thumbnail_music))
-                        embed.set_footer(
-                            text=f"Number Of Songs: {len(server_queue)}")
+                        embed.set_author(name=f"{reaction.message.guild.name}'s Playlist", icon_url=url_author_music)
+                        embed.set_thumbnail(url=random.choice(url_thumbnail_music))
+                        embed.set_footer(text=f"Number Of Songs: {len(server_queue)}")
                         await reaction.message.edit(embed=embed)
                     else:
                         index = server_index[str(reaction.message.guild.id)]
                         for song in server_queue[index: index + 20]:
-                            string += (
-                                str(index)
-                                + ") "
-                                + f"{song[0]}\n".replace(" - YouTube", " ")
-                            )
+                            string += (str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " "))
                             index += 1
                         embed = discord.Embed(description=string, color=color)
-                        embed.set_author(
-                            name=f"{reaction.message.guild.name}'s Playlist",
-                            icon_url=url_author_music,
-                        )
-                        embed.set_thumbnail(
-                            url=random.choice(url_thumbnail_music))
-                        embed.set_footer(
-                            text=f"Number Of Songs: {len(server_queue)}")
+                        embed.set_author(name=f"{reaction.message.guild.name}'s Playlist", icon_url=url_author_music)
+                        embed.set_thumbnail(url=random.choice(url_thumbnail_music))
+                        embed.set_footer(text=f"Number Of Songs: {len(server_queue)}")
                         await reaction.message.edit(embed=embed)
 
                 except KeyError:
-                    embed = discord.Embed(
-                        description=random.choice(default_index), color=color
-                    )
-                    embed.set_author(
-                        name="Spider-Punk Radio™", icon_url=url_author_music
-                    )
+                    embed = discord.Embed(description=random.choice(default_index), color=color )
+                    embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
         if reaction.emoji == "▶":
@@ -559,137 +466,62 @@ async def on_reaction_add(reaction, user):
                         if server_index[str(reaction.message.guild.id)] is not None:
                             if pause == True:
                                 voice_client.resume()
-                                embed = discord.Embed(
-                                    description="Song has resumed playing 🎸",
-                                    color=color,
-                                )
-                                embed.set_author(
-                                    name="Spider-Punk Radio™", icon_url=url_author_music
-                                )
-                                embed.set_footer(
-                                    text="Voice Channel Bitrate: {} kbps".format(
-                                        reaction.message.guild.voice_client.channel.bitrate
-                                        / 1000
-                                    )
-                                )
+                                embed = discord.Embed(description="Song has resumed playing 🎸", color=color)
+                                embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
+                                embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                                 await reaction.message.edit(embed=embed)
                             else:
                                 if playing == True:
-                                    embed = discord.Embed(
-                                        description="Song is not paused 🤔", color=color
-                                    )
-                                    embed.set_author(
-                                        name="Spider-Punk Radio™",
-                                        icon_url=url_author_music,
-                                    )
-                                    embed.set_footer(
-                                        text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps"
-                                    )
+                                    embed = discord.Embed(description="Song is not paused 🤔", color=color)
+                                    embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
+                                    embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                                     await reaction.message.edit(embed=embed)
-
                                 else:
-                                    embed = discord.Embed(
-                                        description="Nothing is playing right now ❗",
-                                        color=color,
-                                    )
-                                    embed.set_author(
-                                        name="Spider-Punk Radio™",
-                                        icon_url=url_author_music,
-                                    )
-                                    embed.set_footer(
-                                        text="Voice Channel Bitrate: {} kbps".format(
-                                            reaction.message.guild.voice_client.channel.bitrate
-                                            / 1000
-                                        )
-                                    )
+                                    embed = discord.Embed(description="Nothing is playing right now ❗", color=color)
+                                    embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
+                                    embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                                     await reaction.message.edit(embed=embed)
-
                         else:
-
                             if playing != True:
                                 voice_client.resume()
-                                embed = discord.Embed(
-                                    description="Song has resumed playing ▶",
-                                    color=color,
-                                )
-                                embed.set_author(
-                                    name="Spider-Punk Radio™", icon_url=url_author_music
-                                )
-                                embed.set_footer(
-                                    text="Voice Channel Bitrate: {} kbps".format(
-                                        reaction.message.guild.voice_client.channel.bitrate
-                                        / 1000
-                                    )
-                                )
+                                embed = discord.Embed(description="Song has resumed playing ▶", color=color)
+                                embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
+                                embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                                 await reaction.message.edit(embed=embed)
-
                             else:
-                                embed = discord.Embed(
-                                    description="Song is already playing 🎸", color=color
-                                )
-                                embed.set_author(
-                                    name="Spider-Punk Radio™", icon_url=url_author_music
-                                )
-                                embed.set_footer(
-                                    text="Voice Channel Bitrate: {} kbps".format(
-                                        reaction.message.guild.voice_client.channel.bitrate
-                                        / 1000
-                                    )
-                                )
+                                embed = discord.Embed(description="Song is already playing 🎸", color=color)
+                                embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
+                                embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                                 await reaction.message.edit(embed=embed)
-
                     except Exception as e:
                         embed = discord.Embed(description=str(e), color=color)
-                        embed.set_author(
-                            name="Error", icon_url=url_author_music)
+                        embed.set_author(name="Error", icon_url=url_author_music)
                         await reaction.message.edit(embed=embed)
-
                 else:
                     users = set()
-                    message = await reaction.message.channel.fetch_message(
-                        reaction.message
-                    )
+                    message = await reaction.message.channel.fetch_message(reaction.message)
                     for reaction in message.reactions:
                         async for user in reaction.users():
                             users.add(user)
                     str1 = ",".join([str(users)])
                     pre_li = str1.replace("{", "").replace("}", "")
                     li = list(pre_li.split(","))  # li[-1]
-                    embed = discord.Embed(
-                        description=f"Connect to the voice channel first 🔊", color=color
-                    )
-                    embed.set_author(
-                        name="Spider-Punk Radio™", icon_url=url_author_music
-                    )
+                    embed = discord.Embed(description=f"Connect to the voice channel first 🔊", color=color)
+                    embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
         if reaction.emoji == "⏸":
-
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
                 await reaction.remove(user)
-
                 if members_in_vc.count(str(user)) > 0:
-
                     try:
-
                         if playing == True:
                             voice_client.pause()
-                            embed = discord.Embed(
-                                description="Song is paused ⏸", color=color
-                            )
-                            embed.set_author(
-                                name="Spider-Punk Radio™", icon_url=url_author_music
-                            )
-                            embed.set_footer(
-                                text="Voice Channel Bitrate: {} kbps".format(
-                                    reaction.message.guild.voice_client.channel.bitrate
-                                    / 1000
-                                )
-                            )
+                            embed = discord.Embed(description="Song is paused ⏸", color=color)
+                            embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
+                            embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                             await reaction.message.edit(embed=embed)
-
                         else:
-
                             if pause == True:
                                 embed = discord.Embed(
                                     description="Song is already paused ⏸", color=color
@@ -2075,10 +1907,9 @@ async def python_shell(ctx, *, expression):
         await ctx.send(embed=embed)
 
     else:
-
         try:
             embed_acc = discord.Embed(
-                title=str(expression), description=str(eval(expression)), color=color
+                description=f"**Input**\n{str(expression)}\n**Output**\n{str(eval(expression))}", color=color
             )
             embed_acc.set_author(name="Python Shell",
                                  icon_url=url_author_python)

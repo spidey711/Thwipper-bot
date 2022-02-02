@@ -37,7 +37,7 @@ bot = commands.Bot(
     intents=intents,
     case_insensitive=True,
 )
-color = discord.Color.from_rgb(223, 31, 45)
+color = discord.Color.gold()
 bot.remove_command("help")
 # Enviroment Variables
 global auth
@@ -564,7 +564,7 @@ async def on_reaction_add(reaction, user):
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
                             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
-                            embed.set_footer(text="Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
+                            embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                             await reaction.message.edit(embed=embed)
                             voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                     except IndexError:

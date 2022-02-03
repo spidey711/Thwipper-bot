@@ -37,7 +37,7 @@ bot = commands.Bot(
     intents=intents,
     case_insensitive=True,
 )
-color = discord.Color.gold()
+color = discord.Color.lighter_gray()
 bot.remove_command("help")
 # Enviroment Variables
 global auth

@@ -1008,48 +1008,28 @@ async def on_reaction_add(reaction, user):
                     )
                     await reaction.message.edit(embed=embed)
 
-
 # ---------------------------------------------- STANDARD ----------------------------------------------------
-
 
 @bot.command(aliases=["spidey", "spiderman", "webslinger", "webhead", "wallcrawler"])
 async def spiderman_signal(ctx):
 
     number_of_requests()
 
-    calls = [
-        f"{ctx.author.name} is calling you!",
-        f"Your aid has been requested by {ctx.author.name}.",
-        f"{ctx.author.name} has got something for ya.",
-        f"{ctx.author.name} requires your assistance.",
-        f"{ctx.author.name} has called.",
-    ]
+    calls = [f"{ctx.author.name} is calling you!", f"Your aid has been requested by {ctx.author.name}.", f"{ctx.author.name} has got something for ya.", f"{ctx.author.name} requires your assistance.", f"{ctx.author.name} has called."]
     embed = discord.Embed(description=random.choice(calls), color=color)
     embed.set_image(url=random.choice(hello_urls))
     await ctx.send("<@!622497106657148939>")
     await ctx.send(embed=embed)
 
 
-@bot.command(
-    aliases=["hello", "hi", "hey", "hey there",
-             "salut", "kon'nichiwa", "hola", "aloha"]
-)
+@bot.command(aliases=["hello", "hi", "hey", "hey there", "salut", "kon'nichiwa", "hola", "aloha"])
 async def greet_bot(ctx):
 
     number_of_requests()
 
-    greetings = [
-        f"Hey {ctx.author.name}!",
-        f"Hi {ctx.author.name}!",
-        f"How's it going {ctx.author.name}?",
-        f"What can I do for you {ctx.author.name}?",
-        f"What's up {ctx.author.name}?",
-        f"Hello {ctx.author.name}!",
-        f"So {ctx.author.name}, how's your day going?",
-    ]
+    greetings = [f"Hey {ctx.author.name}!", f"Hi {ctx.author.name}!", f"How's it going {ctx.author.name}?", f"What can I do for you {ctx.author.name}?", f"What's up {ctx.author.name}?", f"Hello {ctx.author.name}!", f"So {ctx.author.name}, how's your day going?"]
     embed = discord.Embed(color=color)
-    embed.set_author(name=random.choice(greetings),
-                     icon_url=ctx.author.avatar_url)
+    embed.set_author(name=random.choice(greetings), icon_url=ctx.author.avatar_url)
     embed.set_image(url=random.choice(hello_urls))
     await ctx.send(embed=embed)
 
@@ -1058,8 +1038,8 @@ async def greet_bot(ctx):
 async def embed_help(ctx):
 
     number_of_requests()
-
     message = await ctx.send(embed=help_menu())
+
     await message.add_reaction("⬅")
     await message.add_reaction("🕸")
     await message.add_reaction("➡")
@@ -1071,23 +1051,15 @@ async def get_quips(ctx):
     number_of_requests()
 
     try:
-        embed = discord.Embed(
-            title=random.choice(titles),
-            description=random.choice(dialogue_list),
-            color=color,
-        )
+        embed = discord.Embed(title=random.choice(titles), description=random.choice(dialogue_list), color=color)
         embed.set_thumbnail(url=random.choice(url_thumbnails))
-        embed.set_footer(text=random.choice(footers),
-                         icon_url=bot.user.avatar_url)
+        embed.set_footer(text=random.choice(footers), icon_url=bot.user.avatar_url)
         await ctx.send(embed=embed)
         print("Quip successfully sent!")
-
     except Exception as e:
         embed = discord.Embed(title="Error", description=str(e), color=color)
 
-
 # ----------------------------------------------- INTERNET ---------------------------------------------
-
 
 @bot.command(aliases=["imdb"])
 async def IMDb_movies(ctx, *, movie_name=None):
@@ -1095,20 +1067,17 @@ async def IMDb_movies(ctx, *, movie_name=None):
     number_of_requests()
 
     if movie_name is None:
-        embed = discord.Embed(description=random.choice(
-            imdb_responses), color=color)
+        embed = discord.Embed(description=random.choice(imdb_responses), color=color)
         embed.set_author(name="Ahem ahem", icon_url=url_imdb_author)
         await ctx.send(embed=embed)
 
     if movie_name is not None:
-
         try:
             db = imdb.IMDb()
             movie = db.search_movie(movie_name)
             title = movie[0]["title"]
             movie_summary = (
-                db.get_movie(movie[0].getID())
-                .summary()
+                db.get_movie(movie[0].getID()).summary()
                 .replace("=", "")
                 .replace("Title", "**Title**")
                 .replace("Movie", "")
@@ -1123,22 +1092,13 @@ async def IMDb_movies(ctx, *, movie_name=None):
                 .replace("Runtime", "**Runtime**")
             )
             movie_cover = movie[0]["full-size cover url"]
-            embed = discord.Embed(
-                title="🎬 {} 🍿".format(title), description=movie_summary, color=color
-            )
+            embed = discord.Embed(title="🎬 {} 🍿".format(title), description=movie_summary, color=color)
             embed.set_thumbnail(url=url_imdb_thumbnail)  # 🎥 🎬 📽
             embed.set_image(url=movie_cover)
             await ctx.send(embed=embed)
-
         except Exception:
-            embed = discord.Embed(
-                description="I couldn't find `{}`.\nTry again and make sure you enter the correct movie name.".format(
-                    movie_name
-                ),
-                color=color,
-            )
-            embed.set_author(name="Movie Not Found 💬",
-                             icon_url=url_imdb_author)
+            embed = discord.Embed(description="I couldn't find `{}`.\nTry again and make sure you enter the correct movie name.".format(movie_name), color=color)
+            embed.set_author(name="Movie Not Found 💬", icon_url=url_imdb_author)
             await ctx.send(embed=embed)
 
 
@@ -1146,42 +1106,26 @@ async def IMDb_movies(ctx, *, movie_name=None):
 async def reddit_memes(ctx, *, topic):
 
     number_of_requests()
+    sub = reddit.subreddit(topic).random()
 
     if str(ctx.guild.id) not in default_topic:
         default_topic[str(ctx.guild.id)] = str(topic)
-
-    else:
-        pass
-
+    else: pass
     if str(ctx.guild.id) in default_topic:
         default_topic[str(ctx.guild.id)] = str(topic)
 
-    sub = reddit.subreddit(topic).random()
-
     try:
-        embed = discord.Embed(
-            description="**Caption:\n**{}".format(sub.title), color=color
-        )
-        embed.set_author(
-            name="Post by: {}".format(sub.author), icon_url=url_reddit_author
-        )
+        embed = discord.Embed(description="**Caption:\n**{}".format(sub.title), color=color)
+        embed.set_author(name="Post by: {}".format(sub.author), icon_url=url_reddit_author)
         embed.set_thumbnail(url=url_reddit_thumbnail)
         embed.set_image(url=sub.url)
-        embed.set_footer(
-            text="🔺: {}   🔻: {}   💬: {}".format(
-                sub.ups, sub.downs, sub.num_comments)
-        )
+        embed.set_footer(text="🔺: {}   🔻: {}   💬: {}".format(sub.ups, sub.downs, sub.num_comments))
         message = await ctx.send(embed=embed)
         await message.add_reaction("🖱")
-
     except Exception:
         default_topic[str(ctx.guild.id)] = ""
-        embed = discord.Embed(
-            description="Looks like the subreddit is either banned or does not exist 🤔",
-            color=color,
-        )
-        embed.set_author(name="Subreddit Not Found",
-                         icon_url=url_reddit_author)
+        embed = discord.Embed(description="Looks like the subreddit is either banned or does not exist 🤔", color=color)
+        embed.set_author(name="Subreddit Not Found", icon_url=url_reddit_author)
         await ctx.send(embed=embed)
 
 
@@ -1191,31 +1135,18 @@ async def wikipedia_results(ctx, *, thing_to_search):
     number_of_requests()
 
     try:
-
         try:
             title = wikipedia.page(thing_to_search)
-            embed = discord.Embed(
-                description=wikipedia.summary(thing_to_search), color=color
-            )
+            embed = discord.Embed(description=wikipedia.summary(thing_to_search), color=color)
             embed.set_author(name=title.title, icon_url=url_wiki)
-            embed.add_field(
-                name="Search References",
-                value=", ".join(
-                    [x for x in wikipedia.search(thing_to_search)][:5]),
-                inline=False,
-            )
-            embed.set_footer(
-                text="Searched by: {}".format(ctx.author.name),
-                icon_url=ctx.author.avatar_url,
-            )
+            embed.add_field(name="Search References", value=", ".join([x for x in wikipedia.search(thing_to_search)][:5]), inline=False)
+            embed.set_footer(text="Searched by: {}".format(ctx.author.name), icon_url=ctx.author.avatar_url)
             await ctx.send(embed=embed)
             print("Results for wikipedia search sent...")
-
         except wikipedia.PageError as pe:
             embed = discord.Embed(description=str(pe), color=color)
             embed.set_author(name="Error", icon_url=url_wiki)
-            await ctx.send(embed=embed)
-
+            await ctx.send(embed=embed)    
     except wikipedia.DisambiguationError as de:
         embed = discord.Embed(description=str(de), color=color)
         embed.set_author(name="Hmm...", icon_url=url_wiki)
@@ -1226,28 +1157,16 @@ async def wikipedia_results(ctx, *, thing_to_search):
 async def google_results(ctx, *, thing_to_search):
 
     number_of_requests()
+    results = ""
 
-    results = " "
-
-    for result in search(
-        thing_to_search,
-        tld="com",
-        lang="en",
-        safe="off",
-        num=6,
-        start=0,
-        stop=10,
-        pause=1.0,
-    ):
+    for result in search(thing_to_search, tld="com", lang="en", safe="off", num=6, start=0, stop=10, pause=1.0):
         results += result + "\n"
 
     await ctx.send("Search results for: **{}**".format(thing_to_search))
     await ctx.send(results)
     print("Results for google search sent...")
 
-
 # ------------------------------------------------- UTILITY -------------------------------------------------
-
 
 @bot.command(aliases=["delete", "del"])
 async def clear(ctx, text, num=10000000000000):
@@ -1257,7 +1176,6 @@ async def clear(ctx, text, num=10000000000000):
 
     if str(text) == "WEB":
         await ctx.channel.purge(limit=num)
-
     else:
         await ctx.send("Incorrect Password")
 
@@ -1266,12 +1184,8 @@ async def clear(ctx, text, num=10000000000000):
 async def stop_program(ctx):
 
     number_of_requests()
+    msgs = [f"Bye {ctx.author.name}!", f"See ya {ctx.author.name}!", f"Till next time {ctx.author.name}!"]
 
-    msgs = [
-        f"Bye {ctx.author.name}!",
-        f"See ya {ctx.author.name}!",
-        f"Till next time {ctx.author.name}!",
-    ]
     if ctx.author.id == 622497106657148939:
         try:
             voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
@@ -1300,7 +1214,6 @@ async def replicate_user_text(ctx, *, text):
 async def conduct_poll(ctx, ems=None, title=None, *, description=None):
 
     number_of_requests()
-
     poll_channel = None
 
     for i in ctx.guild.channels:
@@ -1309,58 +1222,33 @@ async def conduct_poll(ctx, ems=None, title=None, *, description=None):
                 send_to = i.name = j
                 poll_channel = discord.utils.get(
                     ctx.guild.channels, name=send_to)
-
+                
     if title is not None:
-
         if "_" in title:
             title = title.replace("_", " ")
-
+            
     if ems is not None and title is not None and description is not None:
-        embed = discord.Embed(
-            title=f"Topic: {title}", description=description, color=color
-        )
-        embed.set_footer(
-            text=f"Conducted by: {ctx.author.name}", icon_url=ctx.author.avatar_url
-        )
+        embed = discord.Embed(title=f"Topic: {title}", description=description, color=color)
+        embed.set_footer(text=f"Conducted by: {ctx.author.name}", icon_url=ctx.author.avatar_url)
         message = await poll_channel.send(embed=embed)
 
         if ems == "y/n" or ems == "yes/no":
             await message.add_reaction("✅")
             await message.add_reaction("❌")
-
         elif ems == "t/t" or ems == "this/that":
             await message.add_reaction("👈🏻")
             await message.add_reaction("👉🏻")
-
         else:
             emojis = list(ems.split(","))
-
             for emoji in emojis:
                 await message.add_reaction(emoji)
-
         if ctx.channel.name != poll_channel:
-            await ctx.send(
-                embed=discord.Embed(
-                    description="Poll Sent Successfully 👍🏻", color=color
-                )
-            )
-
+            await ctx.send(embed=discord.Embed(description="Poll Sent Successfully 👍🏻", color=color))
+    
     elif title is None and description is None and ems is None:
-        embed = discord.Embed(
-            title="Polls",
-            description="Command: `_polls emojis title description`",
-            color=color,
-        )
-        embed.add_field(
-            name="Details",
-            value="`emojis:` enter emojis for the poll and they will be added as reactions\n`title:` give a title to your poll.\n`description:` tell everyone what the poll is about.",
-            inline=False,
-        )
-        embed.add_field(
-            name="Notes",
-            value="To add reactions to poll the multiple emojis should be separated by a `,`.\nIf you wish to use default emojis, `y/n` for yes or no and `t/t` for this or that.\nIf the title happens to be more than one word long, use `_` in place of spaces as demonstrated below.\nExample: `The_Ultimate_Choice` will be displayed in the title of poll as `The Ultimate Choice`.",
-            inline=False,
-        )
+        embed = discord.Embed( title="Polls", description="Command: `_polls emojis title description`", color=color)
+        embed.add_field(name="Details", value="`emojis:` enter emojis for the poll and they will be added as reactions\n`title:` give a title to your poll.\n`description:` tell everyone what the poll is about.", inline=False)
+        embed.add_field(name="Notes", value="To add reactions to poll the multiple emojis should be separated by a `,`.\nIf you wish to use default emojis, `y/n` for yes or no and `t/t` for this or that.\nIf the title happens to be more than one word long, use `_` in place of spaces as demonstrated below.\nExample: `The_Ultimate_Choice` will be displayed in the title of poll as `The Ultimate Choice`.", inline=False)
         embed.set_thumbnail(url=random.choice(url_thumbnails))
         await ctx.send(embed=embed)
 
@@ -1373,10 +1261,7 @@ async def total_requests(ctx):
     operation = "SELECT MAX(number) FROM requests"
     cursor.execute(operation)
     total = cursor.fetchall()
-    embed = discord.Embed(
-        description=f"""**Requests Made:\n**{str(total).replace("[(", " ").replace(",)]", " ")}""",
-        color=color,
-    )
+    embed = discord.Embed(description=f"""**Requests Made:\n**{str(total).replace("[(", " ").replace(",)]", " ")}""", color=color)
     await ctx.send(embed=embed)
 
 
@@ -1395,31 +1280,20 @@ async def snipe(ctx):
 
     try:
         message = deleted_messages[ctx.channel.id][-1]
-
+    
         if len(message) < 3:
-            embed = discord.Embed(
-                title="Deleted Message", description=message[1], color=color
-            )
-            embed.set_footer(
-                text=f"Sent by: {bot.get_user(int(message[0]))}",
-                icon_url=bot.get_user(int(message[0])).avatar_url,
-            )
+            embed = discord.Embed(title="Deleted Message", description=message[1], color=color)
+            embed.set_footer(text=f"Sent by: {bot.get_user(int(message[0]))}", icon_url=bot.get_user(int(message[0])).avatar_url,)
             await ctx.send(embed=embed)
-
+    
         else:
             embed = discord.Embed(description="Embed deleted 👇🏻", color=color)
-            embed.set_author(
-                name=bot.get_user(int(message[0])),
-                icon_url=bot.get_user(int(message[0])).avatar_url,
-            )
+            embed.set_author(name=bot.get_user(int(message[0])), icon_url=bot.get_user(int(message[0])).avatar_url)
             await ctx.send(embed=embed)
             await ctx.send(embed=message[1])
-
+    
     except KeyError:
-        await ctx.send(
-            embed=discord.Embed(
-                description="There is nothing to web up 🕸", color=color)
-        )
+        await ctx.send(embed=discord.Embed(description="There is nothing to web up 🕸", color=color))
 
 
 @bot.command(aliases=["pfp"])
@@ -1428,21 +1302,12 @@ async def user_pfp(ctx, member: discord.Member = None):
     number_of_requests()
 
     if member is None:
-        embed = discord.Embed(
-            title="Profile Picture : {}".format(ctx.author.name), color=color
-        )
+        embed = discord.Embed(title="Profile Picture : {}".format(ctx.author.name), color=color)
         embed.set_image(url=ctx.author.avatar_url)
-
     else:
-        embed = discord.Embed(
-            title="Profile Picture : {}".format(member.name), color=color
-        )
+        embed = discord.Embed(title="Profile Picture : {}".format(member.name), color=color)
         embed.set_image(url=member.avatar_url)
-
-    embed.set_footer(
-        text=random.choice(compliments),
-        icon_url="https://i.pinimg.com/236x/9f/9c/11/9f9c11d4eaa3d99bc9a8ece092f5e979.jpg",
-    )
+    embed.set_footer(text=random.choice(compliments))
     await ctx.send(embed=embed)
 
 
@@ -1487,15 +1352,10 @@ async def server_information(ctx):
     embed.add_field(name="Role Count", value=f"`{role_count}`", inline=True)
     embed.add_field(name="Region", value=f"`{region}`", inline=True)
     embed.add_field(name="Server ID", value=f"`{ID}`", inline=False)
-    embed.add_field(name="Description",
-                    value=f"```{description}```", inline=False)
-    embed.set_footer(
-        text=f"Created on {ctx.guild.created_at.__format__('%A, %B %d, %Y @ %H:%M:%S')}",
-        icon_url=ctx.author.avatar_url,
-    )
+    embed.add_field(name="Description", value=f"```{description}```", inline=False)
+    embed.set_footer(text=f"Created on {ctx.guild.created_at.__format__('%A, %B %d, %Y @ %H:%M:%S')}", icon_url=ctx.author.avatar_url)
     embed.set_image(url=icon)
     await ctx.send(embed=embed)
-
 
 # --------------------------------------- ENCRYPER DECRYPTER ---------------------------------
 

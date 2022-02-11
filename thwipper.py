@@ -1004,8 +1004,7 @@ async def on_reaction_add(reaction, user):
                         color=color,
                     )
                     embed.set_author(
-                        name="Spider-Punk Radio™", icon_url=url_author_music
-                    )
+                        name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
 # ---------------------------------------------- STANDARD ----------------------------------------------------

@@ -29,7 +29,7 @@ except ImportError as ie:
     print(ie)
 
 # SETUP
-prefixes = ["t!", "_", "|"]
+prefixes = ["t!", "_"]
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(
@@ -37,7 +37,7 @@ bot = commands.Bot(
     intents=intents,
     case_insensitive=True,
 )
-color = discord.Color.lighter_gray()
+color = discord.Color.from_rgb(223, 31, 45)
 bot.remove_command("help")
 # Enviroment Variables
 global auth
@@ -101,7 +101,7 @@ def help_menu():
         help_toggle = 0
         embed_help_menu.add_field(
             name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",
-            value="`hello` to greet bot\n`help` to get this menu\n`quips` to get a famous dialogue or plot\n`@Thwipper` to get more info about thwipper",
+            value="`hello` to greet bot\n`help` to get this menu\n`img` to see cool spiderman photos\n`quips` to get a famous dialogue\n`@Thwipper` to get more info about thwipper",
             inline=False,
         )
         embed_help_menu.set_image(url=bot.user.avatar_url)
@@ -344,7 +344,7 @@ async def on_reaction_add(reaction, user):
                 sub = reddit.subreddit(default_topic[str(reaction.message.guild.id)]).random()
                 embed = discord.Embed(description=f"**Caption:\n**{sub.title}", color=color)
                 embed.set_author(name=f"Post by: {sub.author}", icon_url=url_reddit_author)
-                embed.set_thumbnail(url=url_reddit_thumbnail)
+                # embed.set_thumbnail(url=url_reddit_thumbnail)
                 embed.set_image(url=sub.url)
                 embed.set_footer(text=f"🔺: {sub.ups}   🔻: {sub.downs}   💬: {sub.num_comments}")
                 await reaction.message.edit(embed=embed)
@@ -1009,18 +1009,6 @@ async def on_reaction_add(reaction, user):
 
 # ---------------------------------------------- STANDARD ----------------------------------------------------
 
-@bot.command(aliases=["spidey", "spiderman", "webslinger", "webhead", "wallcrawler"])
-async def spiderman_signal(ctx):
-
-    number_of_requests()
-
-    calls = [f"{ctx.author.name} is calling you!", f"Your aid has been requested by {ctx.author.name}.", f"{ctx.author.name} has got something for ya.", f"{ctx.author.name} requires your assistance.", f"{ctx.author.name} has called."]
-    embed = discord.Embed(description=random.choice(calls), color=color)
-    embed.set_image(url=random.choice(hello_urls))
-    await ctx.send("<@!622497106657148939>")
-    await ctx.send(embed=embed)
-
-
 @bot.command(aliases=["hello", "hi", "hey", "hey there", "salut", "kon'nichiwa", "hola", "aloha"])
 async def greet_bot(ctx):
 
@@ -1029,6 +1017,17 @@ async def greet_bot(ctx):
     greetings = [f"Hey {ctx.author.name}!", f"Hi {ctx.author.name}!", f"How's it going {ctx.author.name}?", f"What can I do for you {ctx.author.name}?", f"What's up {ctx.author.name}?", f"Hello {ctx.author.name}!", f"So {ctx.author.name}, how's your day going?"]
     embed = discord.Embed(color=color)
     embed.set_author(name=random.choice(greetings), icon_url=ctx.author.avatar_url)
+    embed.set_image(url=random.choice(hello_urls))
+    await ctx.send(random.choice(greetings))
+
+
+@bot.command(aliases=["img"])
+async def sendCoolPhotos(ctx):
+    
+    number_of_requests()
+    
+    embed = discord.Embed(color=color)
+    embed.set_author(name="", icon_url=ctx.author.avatar_url)
     embed.set_image(url=random.choice(hello_urls))
     await ctx.send(embed=embed)
 
@@ -1116,7 +1115,7 @@ async def reddit_memes(ctx, *, topic):
     try:
         embed = discord.Embed(description="**Caption:\n**{}".format(sub.title), color=color)
         embed.set_author(name="Post by: {}".format(sub.author), icon_url=url_reddit_author)
-        embed.set_thumbnail(url=url_reddit_thumbnail)
+        # embed.set_thumbnail(url=url_reddit_thumbnail)
         embed.set_image(url=sub.url)
         embed.set_footer(text="🔺: {}   🔻: {}   💬: {}".format(sub.ups, sub.downs, sub.num_comments))
         message = await ctx.send(embed=embed)
@@ -1183,18 +1182,10 @@ async def clear(ctx, text, num=10000000000000):
 async def stop_program(ctx):
 
     number_of_requests()
-    msgs = [f"Bye {ctx.author.name}!", f"See ya {ctx.author.name}!", f"Till next time {ctx.author.name}!"]
 
     if ctx.author.id == 622497106657148939:
-        try:
-            voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-            voice.stop()
-            await voice.disconnect()
-        except:
-            pass
         conn.commit()
-        await ctx.send(random.choice(msgs))
-        print(random.choice(msgs))
+        await ctx.send("Alright, see ya!")
         exit()
     else:
         await ctx.send("Access Denied")
@@ -1219,8 +1210,7 @@ async def conduct_poll(ctx, ems=None, title=None, *, description=None):
         for j in poll_channels:
             if i.name == j:
                 send_to = i.name = j
-                poll_channel = discord.utils.get(
-                    ctx.guild.channels, name=send_to)
+                poll_channel = discord.utils.get(ctx.guild.channels, name=send_to)
                 
     if title is not None:
         if "_" in title:
@@ -1262,14 +1252,6 @@ async def total_requests(ctx):
     total = cursor.fetchall()
     embed = discord.Embed(description=f"""**Requests Made:\n**{str(total).replace("[(", " ").replace(",)]", " ")}""", color=color)
     await ctx.send(embed=embed)
-
-
-@bot.command(aliases=["troll"])
-async def troll_snipe(ctx):
-
-    await ctx.channel.purge(limit=1)
-    await ctx.send(random.choice(troll_links))
-    await ctx.channel.purge(limit=1)
 
 
 @bot.command(aliases=["web"])

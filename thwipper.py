@@ -339,20 +339,8 @@ async def on_reaction_add(reaction, user):
 
     number_of_requests()
 
-    # MUSIC PLAYER
-    voice = discord.utils.get(bot.voice_clients, guild=reaction.message.guild)
-    voice_client = reaction.message.guild.voice_client
-    playing = reaction.message.guild.voice_client.is_playing()
-    pause = reaction.message.guild.voice_client.is_paused()
-
-    # SERVER QUEUE
-    operation_view = f"SELECT * FROM music_queue WHERE server={str(reaction.message.guild.id)}"
-    cursor.execute(operation_view)
-    server_queue = cursor.fetchall()
-    members_in_vc = [str(names) for names in reaction.message.guild.voice_client.channel.members]
-    string = ""
-
     if not user.bot:
+
         if reaction.emoji == "🖱":
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
                 await reaction.remove(user)
@@ -395,6 +383,19 @@ async def on_reaction_add(reaction, user):
                 embed.set_footer(text="New Features Coming Soon 🛠")
                 await reaction.message.edit(embed=embed)
 
+
+        # MUSIC PLAYER
+        voice = discord.utils.get(bot.voice_clients, guild=reaction.message.guild)
+        voice_client = reaction.message.guild.voice_client
+        playing = reaction.message.guild.voice_client.is_playing()
+        pause = reaction.message.guild.voice_client.is_paused()
+
+        # SERVER QUEUE
+        operation_view = f"SELECT * FROM music_queue WHERE server={str(reaction.message.guild.id)}"
+        cursor.execute(operation_view)
+        server_queue = cursor.fetchall()
+        members_in_vc = [str(names) for names in reaction.message.guild.voice_client.channel.members]
+        string = ""
 
         if reaction.emoji == "🔼":
             

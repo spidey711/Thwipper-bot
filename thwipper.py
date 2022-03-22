@@ -22,7 +22,7 @@ try:
     import urllib.request
     import youtube_dl
     import wikipedia
-    from googlesearch import search
+    import googlesearch
     from cryptography.fernet import Fernet
     print("All modules and libraries imported...")
 except ImportError as ie:
@@ -966,7 +966,7 @@ async def google_results(ctx, *, thing_to_search):
     number_of_requests()
     results = ""
 
-    for result in search(thing_to_search, tld="com", lang="en", safe="off", num=6, start=0, stop=10, pause=1.0):
+    for result in googlesearch.search(thing_to_search, 7, "en"):
         results += result + "\n"
 
     await ctx.send("Search results for: **{}**".format(thing_to_search))

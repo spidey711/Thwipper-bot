@@ -936,6 +936,15 @@ async def reddit_memes(ctx, *, topic):
         await ctx.send(embed=embed)
 
 
+
+@bot.command(aliases=["steam"])
+async def steam_games_info(ctx, *, game=None):
+    if game is not None:
+        pass
+    else:
+        pass
+
+
 @bot.command(aliases=["wiki", "w"])
 async def wikipedia_results(ctx, *, thing_to_search):
 

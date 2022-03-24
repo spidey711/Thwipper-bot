@@ -3,7 +3,7 @@
 _<h2>🕷 What is Thwipper? 🕷</h2>_
 Everything you need to keep the members of the server entertained, this bot has it. 
 Thwipper is inspired from my favorite fictional character Spider-Man. Its name is the onomatopoeia of Spider-Man using his web-shooters. Here is the link to invite: [Thwip!](https://discord.com/api/oauth2/authorize?client_id=837686974516035644&permissions=36924480&scope=bot)<br>
-Prefixes => `t! | _`<br>
+Prefixes => `_`, `t!`<br>
 
 <!-- <img src="\spiderman.png"></img> -->
 <img src="https://wallpapercave.com/dwp1x/wp2127917.jpg"></img>

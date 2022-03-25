@@ -1510,7 +1510,7 @@ async def queue_song(ctx, *, name=None):
                 embed = discord.Embed(description=random.choice(empty_queue), color=color)
                 embed.set_author(name=f"{ctx.guild.name}'s Playlist", icon_url=url_author_music)
                 embed.set_thumbnail(url=random.choice(url_thumbnail_music))
-                embed.set_footer(text="Queue songs by using _q song, t!q song, |q song")
+                embed.set_footer(text="Pull up the help menu with _help or t!help")
                 await ctx.send(embed=embed)
 
 
@@ -2082,16 +2082,13 @@ async def clear_song_queue(ctx):
     songs = cursor.fetchall()
 
     if len(songs) > 0:
-        operation_clear_song = "DELETE FROM music_queue WHERE server={}".format(
-            str(ctx.guild.id)
-        )
+        operation_clear_song = "DELETE FROM music_queue WHERE server={}".format(str(ctx.guild.id))
         cursor.execute(operation_clear_song)
         message = await ctx.send("Queue Cleared")
         await message.add_reaction("✅")
 
     else:
-        embed_empty = discord.Embed(
-            description=random.choice(empty_queue), color=color)
+        embed_empty = discord.Embed(description=random.choice(empty_queue), color=color)
         embed_empty.set_author(name="Hmm...", icon_url=url_author_music)
         await ctx.send(embed=embed_empty)
 

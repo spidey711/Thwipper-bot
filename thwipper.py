@@ -6,7 +6,7 @@ try:
     from links import *
     from responses import *
     from dotenv import load_dotenv
-    import mysql.connector as ms
+    import mysql.connector
     import os
     import random
     import calendar
@@ -28,7 +28,7 @@ try:
 except ImportError as ie:
     print(ie)
 
-# SETUP
+# Setup
 prefixes = ["t!", "_"]
 intents = discord.Intents.default()
 intents.members = True
@@ -39,15 +39,29 @@ bot = commands.Bot(
 )
 color = discord.Color.from_rgb(223, 31, 45)
 bot.remove_command("help")
+
 # Enviroment Variables
 global auth
 load_dotenv(".env")
 auth = os.getenv("transformer_auth")
-# SNIPE
-deleted_messages = {}
-# NUMBER OF REQUESTS
-num = 0
-# MUSIC
+
+# Database
+conn = mysql.connector.connect(
+    user="root",
+    host="localhost",
+    password=os.getenv("sql_pass"),
+    database="discord"
+)
+cursor = conn.cursor()
+    # test database for sql shell in bot
+conn_test = mysql.connector.connect(
+    user="root",
+    host="localhost",
+    passwd=os.getenv("sql_pass"),
+    database="discord_sql_func"   
+)
+cursor_test = conn_test.cursor()
+# Audio
 server_index = {}
 FFMPEG_OPTS = {
     "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",
@@ -61,39 +75,27 @@ ydl_op = {
             "preferredcodec": "mp3",
             "preferredquality": "128",
         }],}
-# DEFAULT TIMEZONE
-default_tz = "Asia/Kolkata"
-# ENCRYPTER DECRYPTER
-key = Fernet.generate_key()
-cipher = Fernet(key)
-# REDDIT
+# Reddit
 reddit = praw.Reddit(
     client_id=os.getenv("reddit_client_id"),
     client_secret=os.getenv("reddit_client_secret"),
     user_agent=os.getenv("reddit_user_agent"),
     username=os.getenv("reddit_username"),
-    password=os.getenv("reddit_userpass"),
+    password=os.getenv("reddit_userpass")
 )
 default_topic = {}
-# HELP MENU
-help_toggle = 0
-# QUIPS
-dialogue_list = []
-# SQL
-conn = ms.connect(
-    user="root",
-    host="localhost",
-    password=os.getenv("sql_pass"),
-    database="discord"
-)
-cursor = conn.cursor()
+# Key for ED
+key = Fernet.generate_key()
+cipher = Fernet(key)
+# Snipe, Number of requests, timezone (default), help page number, quip list
+deleted_messages, num, default_tz, help_toggle, dialogue_list = {}, 0, "Asia/Kolkata", 0, []
 
 # ---------------------------------------------- NON ASYNC FUNCTIONS -----------------------------------------
 
 def help_menu():
     global help_toggle
 
-    embed_help_menu = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸", description="Prefixes: t! _ |", color=color)
+    embed_help_menu = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸", description="Prefixes: `_` `t!`", color=color)
     embed_help_menu.set_thumbnail(url=random.choice(url_thumbnails))
     embed_help_menu.set_footer(text="New Features Coming Soon 🛠")
 
@@ -101,57 +103,50 @@ def help_menu():
         help_toggle = 0
         embed_help_menu.add_field(
             name="𝗦𝘁𝗮𝗻𝗱𝗮𝗿𝗱",
-            value="`hello` to greet bot\n`help` to get this menu\n`img` to see cool spiderman photos\n`quips` to get a famous dialogue\n`@Thwipper` to get more info about thwipper",
+            value="`_hello` to greet bot\n`_help` to get this menu\n`_img` to see cool spiderman photos\n`_quips` to get a famous dialogue\n`@Thwipper` to get more info about thwipper",
             inline=False,
         )
         embed_help_menu.set_image(url=bot.user.avatar_url)
     if help_toggle == 1:
         embed_help_menu.add_field(
             name="𝗜𝗻𝘁𝗲𝗿𝗻𝗲𝘁",
-            value="w `topic` for wikipedia\ng `topic` to google\nimdb `movie` to get movie details from IMDb\n reddit `topic` to get reddit memes",
+            value="`_wiki topic` for wikipedia\n`_g topic` to google\n`_imdb movie` to get movie details from IMDb\n `_reddit topic` to get reddit memes",
             inline=False,
         )
         embed_help_menu.set_image(url=help_page1)
     if help_toggle == 2:
         embed_help_menu.add_field(
-            name="𝗗𝗧𝗖",
-            value="dt `timezone` to get IST date and time\ncal `year` `month` to get calendar\nNote: The default timezone is set as `Asia/Kolkata`",
-            inline=False,
-        )
-        embed_help_menu.set_image(url=help_page2)
-    if help_toggle == 3:
-        embed_help_menu.add_field(
             name="𝗦𝗵𝗲𝗹𝗹𝘀",
-            value="; `query` to use SQL Shell\npy `expression` for python shell\npydoc `function` to get information about that python function\nNote: The functions, when using `pydoc` command, will not be executed. Try without `()`.",
+            value="`_; query` to running simple queries\n`_py expression` for running simple code\n`_pydoc function` to get information about that python function\n\nNotes:-\nThe functions, when using `pydoc` command, will not be executed. Try without `()`.\nThere is a test database connected with the SQL command, so you can run whatever queries you like.",
             inline=False,
         )
         embed_help_menu.set_image(url=help_page3)
-    if help_toggle == 4:
+    if help_toggle == 3:
         embed_help_menu.add_field(
             name="𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗲𝗿 𝗗𝗲𝗰𝗿𝘆𝗽𝘁𝗲𝗿",
             value="hush `en` `text` to encrypt message\nhush `dec` `text` to decrypt message\n",
             inline=False,
         )
         embed_help_menu.set_image(url=help_page4)
-    if help_toggle == 5:
+    if help_toggle == 4:
         embed_help_menu.add_field(
             name="𝗦𝗽𝗶𝗱𝗲𝗿-𝗣𝘂𝗻𝗸 𝗥𝗮𝗱𝗶𝗼™",
             value="🔉 `cn` to get the bot to join voice channel\n🔇 `dc` to remove bot from voice channel\n🎶 p `name` or `index` to play songs\n▶ `res` to resume a song\n⏸ `pause` to pause a song\n⏹ `st` to stop a song\n🔂 `rep` to repeat song\n⏭ `skip` to skip song\n⏮ `prev` for previous song\n*️⃣ `songinfo` to get current song\n🔠 lyrics `song name` to display queue\n🔼 `q` scroll queue `up`\n🔽 `q` scroll queue `down`\n✔ q `name` to add a song to the queue\n❌ rem `index` to remove song from queue\n💥 `cq` to clear queue",
             inline=False,
         )
         embed_help_menu.set_image(url=help_page5)
-    if help_toggle == 6:
+    if help_toggle == 5:
         embed_help_menu.add_field(
             name="𝗕𝗶𝗿𝘁𝗵𝗱𝗮𝘆𝘀",
             value="addbday `mention` `month` `day` to add a user's birthday from DB\n`bday` to get thwipper to wish the members\nrembday `mention` to remove a member's birthday.",
             inline=False,
         )
         embed_help_menu.set_image(url=help_page6)
-    if help_toggle == 7 or help_toggle > 7:
-        help_toggle = 7
+    if help_toggle == 6 or help_toggle > 6:
+        help_toggle = 6
         embed_help_menu.add_field(
             name="𝗨𝘁𝗶𝗹𝗶𝘁𝘆",
-            value="`req` to get number of requests\n`web` to see deleted message\n`ping` to get bot's latency\n`serverinfo` to get server's information\npfp `mention` to get user's profile picture\n`setbit` to set quality of bitrate\n`polls` to see how to conduct a poll",
+            value="`req` to get number of requests\n`web` to see deleted message\n`ping` to get bot's latency\n`serverinfo` to get server's information\npfp `mention` to get user's profile picture\n`setbit` to set quality of bitrate\n`polls` to see how to conduct a poll\ndt `timezone` to get IST date and time\ncal `year` `month` to get calendar\nNote: The default timezone is set as `Asia/Kolkata`",
             inline=False
         )
         embed_help_menu.set_image(url=help_page7)
@@ -340,7 +335,6 @@ async def on_reaction_add(reaction, user):
     number_of_requests()
 
     if not user.bot:
-
         if reaction.emoji == "🖱":
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
                 await reaction.remove(user)
@@ -1250,13 +1244,15 @@ async def sql_shell(ctx, *, expression):
 
     try:
         output = ""
-        cursor.execute(expression)
+        cursor_test.execute(expression)
 
-        for item in cursor.fetchall():
+        for item in cursor_test.fetchall():
             output += str(item) + "\n"
-
-        conn.commit()
-        embed = discord.Embed(title=str(expression), description=str(output), color=color)
+        if output == "":
+            output = "---"
+        
+        conn_test.commit()
+        embed = discord.Embed(description=f"**Query**\n{str(expression)}\n**Output**\n{str(output)}", color=color)
         embed.set_author(name="MySQL Shell", icon_url=url_author_sql)
         await ctx.send(embed=embed)
 

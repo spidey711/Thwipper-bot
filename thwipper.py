@@ -933,10 +933,7 @@ async def reddit_memes(ctx, *, topic):
 
 @bot.command(aliases=["steam"])
 async def steam_games_info(ctx, *, game=None):
-    if game is not None:
-        pass
-    else:
-        pass
+    await ctx.send("Feature under work...")
 
 
 @bot.command(aliases=["wiki", "w"])
@@ -1073,18 +1070,15 @@ async def snipe(ctx):
 
     try:
         message = deleted_messages[ctx.channel.id][-1]
-    
         if len(message) < 3:
             embed = discord.Embed(title="Deleted Message", description=message[1], color=color)
             embed.set_footer(text=f"Sent by: {bot.get_user(int(message[0]))}", icon_url=bot.get_user(int(message[0])).avatar_url,)
             await ctx.send(embed=embed)
-    
         else:
             embed = discord.Embed(description="Embed deleted 👇🏻", color=color)
             embed.set_author(name=bot.get_user(int(message[0])), icon_url=bot.get_user(int(message[0])).avatar_url)
             await ctx.send(embed=embed)
-            await ctx.send(embed=message[1])
-    
+            await ctx.send(embed=message[1])    
     except KeyError:
         await ctx.send(embed=discord.Embed(description="There is nothing to web up 🕸", color=color))
 
@@ -1151,7 +1145,6 @@ async def server_information(ctx):
     await ctx.send(embed=embed)
 
 # --------------------------------------- ENCRYPER DECRYPTER ---------------------------------
-
 
 @bot.command(aliases=["hush"])
 async def encrypt_data(ctx, mode, *, message):

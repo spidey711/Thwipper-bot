@@ -16,7 +16,7 @@ url_imdb_thumbnail = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7zF
 url_imdb_author = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIBpxdv4v3OFXNUQaoN_v_q2GPheL44f4iTTb_JSnJIKe4x6Qio7onD3hyDSWwK6AuZrU&usqp=CAU"
 help_page1 = "https://images6.alphacoders.com/813/thumbbig-813100.webp"
 help_page2 = "https://wallpapercave.com/wp/wp3158861.jpg"
-help_page3 = "https://wallpapercave.com/wp/wp9505029.jpg"
+help_page3 = "https://wallpapercave.com/w/wp2234539.jpg"
 help_page4 = "https://c4.wallpaperflare.com/wallpaper/693/694/388/blue-chip-color-fee-wallpaper-preview.jpg"
 help_page5 = "https://wallpapercave.com/wp/wp9505029.jpg"
 help_page6 = "https://i.imgflip.com/440eii.jpg"

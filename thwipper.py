@@ -99,59 +99,79 @@ def help_menu():
 
     embed_help_menu = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸", description="Prefixes: `_` `t!`", color=color)
     embed_help_menu.set_thumbnail(url=random.choice(url_thumbnails))
-    embed_help_menu.set_footer(text="New Features Coming Soon 🛠")
+    embed_help_menu.set_footer(text="New Features Coming Soon ⚙️")
 
     if help_toggle == 0 or help_toggle < 0:
         help_toggle = 0
         embed_help_menu.add_field(
             name="Standard",
             value="`_hello` to greet bot\n`_help` to get this menu\n`_img` to see cool spiderman photos\n`_quips` to get a famous dialogue\n`@Thwipper` to get more info about thwipper",
-            inline=False,
+            inline=False
         )
         embed_help_menu.set_image(url=bot.user.avatar_url)
     if help_toggle == 1:
         embed_help_menu.add_field(
             name="The Web",
             value="`_wiki topic` for wikipedia\n`_g topic` to google\n`_imdb movie` to get movie details from IMDb\n `_reddit topic` to get reddit memes",
-            inline=False,
+            inline=False
         )
         embed_help_menu.set_image(url=help_page1)
     if help_toggle == 2:
         embed_help_menu.add_field(
             name="Shells",
-            value="`_; query` to running simple queries\n`_py expression` for running simple code\n`_pydoc function` to get information about that python function\n\nNotes:-\nThe functions, when using `pydoc` command, will not be executed. Try without `()`.\nThere is a test database connected with the SQL command, so you can run whatever queries you like.",
-            inline=False,
+            value="`_; query` to running simple queries\n`_py expression` for running simple code\n`_pydoc function` to get information about that python function",
+            inline=False
         )
-        embed_help_menu.set_image(url=help_page3)
+        embed_help_menu.add_field(
+            name="Notes",
+            value="Functions, when using `pydoc` command, will not be executed. Try without `()`.\nThere is a test database connected with the SQL command, so you can run whatever queries you like.",
+            inline=False
+        )
+        embed_help_menu.set_image(url=help_page2)
     if help_toggle == 3:
         embed_help_menu.add_field(
             name="Encrypter Decrypter",
-            value="hush `en` `text` to encrypt message\nhush `dec` `text` to decrypt message\n",
+            value="`_hush en text`to encrypt message\n`_hush dec text` to decrypt message\n",
             inline=False,
         )
-        embed_help_menu.set_image(url=help_page4)
+        embed_help_menu.set_image(url=help_page3)
     if help_toggle == 4:
         embed_help_menu.add_field(
-            name="Spider-Punk Radio™",
-            value="🔉 `cn` to get the bot to join voice channel\n🔇 `dc` to remove bot from voice channel\n🎶 p `name` or `index` to play songs\n▶ `res` to resume a song\n⏸ `pause` to pause a song\n⏹ `st` to stop a song\n🔂 `rep` to repeat song\n⏭ `skip` to skip song\n⏮ `prev` for previous song\n*️⃣ `songinfo` to get current song\n🔠 lyrics `song name` to display queue\n🔼 `q` scroll queue `up`\n🔽 `q` scroll queue `down`\n✔ q `name` to add a song to the queue\n❌ rem `index` to remove song from queue\n💥 `cq` to clear queue",
+            name="Spider-Punk Radio™\n\nVoice Controls",
+            value="🔉 `_cn` to get the bot to join voice channel\n🔇 `_dc` to remove bot from voice channel",
             inline=False,
         )
-        embed_help_menu.set_image(url=help_page5)
+        embed_help_menu.add_field(
+            name="Player Controls",
+            value="🎶 `_p name/index` to play songs\n▶ `_res` to resume a song\n⏸ `_pause` to pause a song\n⏹ `_st` to stop a song\n🔂 `_rep` to repeat song\n⏭ `_skip` to skip song\n⏮ `_prev` for previous song\n*️⃣ `_songinfo` to get current song",
+            inline=False
+        )
+        embed_help_menu.add_field(
+            name="Queue Controls",
+            value="🔼 `_q` scroll queue `up`\n🔽 `_q` scroll queue `down`\n🔠 `_lyrics name` to display current song's lyrics\n*️⃣ `_songinfo` to get current song's info\n✅ `_q name` to add a song to the queue\n❌ `_rem index` to remove song from queue\n💥 `_cq` to clear queue",
+            inline=False
+        )
+        embed_help_menu.set_image(url=help_page4)
     if help_toggle == 5:
         embed_help_menu.add_field(
             name="Birthdays",
-            value="addbday `mention` `month` `day` to add a user's birthday from DB\n`bday` to get thwipper to wish the members\nrembday `mention` to remove a member's birthday.",
-            inline=False,
+            value="`_addbday mention month day` to add a member's birthday\n`_bday` to get thwipper to wish the members of your server\n`_rembday mention` to remove a member's birthday",
+            inline=False
         )
-        embed_help_menu.set_image(url=help_page6)
+        embed_help_menu.set_image(url=help_page5)
     if help_toggle == 6 or help_toggle > 6:
         help_toggle = 6
         embed_help_menu.add_field(
             name="Utility",
-            value="`req` to get number of requests\n`web` to see deleted message\n`ping` to get bot's latency\n`serverinfo` to get server's information\npfp `mention` to get user's profile picture\n`setbit` to set quality of bitrate\n`polls` to see how to conduct a poll\ndt `timezone` to get IST date and time\ncal `year` `month` to get calendar\nNote: The default timezone is set as `Asia/Kolkata`",
+            value="`_req` to get number of used commands\n`_web` to see deleted message\n`_ping` to get bot's latency\n`_serverinfo` to get server's information\n`_pfp mention` to get user's profile picture\n`_setbit` to set quality of bitrate\n`_polls` to see how to conduct a poll\n`_dt timezone` to get date and time\n`_cal year month` to get calendar",
             inline=False
         )
-        embed_help_menu.set_image(url=help_page7)
+        embed_help_menu.add_field(
+            name="Notes",
+            value="The default timezone for `_dt` is set as `Asia/Kolkata`. Check above on how to get date time of your timezone.",
+            inline=False
+        )
+        embed_help_menu.set_image(url=help_page6)
     return embed_help_menu
 
 
@@ -1123,33 +1143,15 @@ async def encrypt_data(ctx, mode, *, message):
     try:
         
         if mode == "en":
-            embed = discord.Embed(
-                title="Message Encrpyted",
-                description="```{}```".format(str(cipher.encrypt(res)))
-                .replace("b'", "")
-                .replace("'", ""),
-                color=color
-            )
-            embed.set_thumbnail(url=url_en_dec)
             await ctx.channel.purge(limit=1)
-            await ctx.send(embed=embed)
+            await ctx.send("**Message Encrypted 🔐**\n```{}```".format(str(cipher.encrypt(res).decode('utf-8'))))
         
         if mode == "dec":
-            embed = discord.Embed(
-                title="Message Decrypted",
-                description="```{}```".format(str(cipher.decrypt(res)))
-                .replace("b'", "")
-                .replace("'", ""),
-                color=color
-            )
-            embed.set_thumbnail(url=url_en_dec)
             await ctx.channel.purge(limit=1)
-            await ctx.send(embed=embed)
+            await ctx.send("**Message Decrypted 🔓**\n```{}```".format(str(cipher.decrypt(res).decode('utf-8'))))
 
-    except Exception as e:
-        embed = discord.Embed(title="Error", description=str(e), color=color)
-        embed.set_thumbnail(url=url_en_dec)
-        await ctx.send(embed=embed)
+    except Exception as error:
+        await ctx.send("**Error**\nSorry, I was not able to decode that. Perhaps its already decoded? 🤔\n{}".format(error))
 
 # ------------------------------------- DATE TIME CALENDAR ---------------------------------------------
 

@@ -143,7 +143,7 @@ def help_menu():
         )
         embed_help_menu.add_field(
             name="Player Controls",
-            value="🎶 `_p name/index` to play songs\n▶ `_res` to resume a song\n⏸ `_pause` to pause a song\n⏹ `_st` to stop a song\n🔂 `_rep` to repeat song\n⏭ `_skip` to skip song\n⏮ `_prev` for previous song\n*️⃣ `_songinfo` to get current song",
+            value="🎶 `_p name/index` to play songs\n▶ `_res` to resume a song\n⏸ `_pause` to pause a song\n⏹ `_st` to stop a song\n🔂 `_rep` to repeat song\n⏭ `_skip` to skip song\n⏮ `_prev` for previous song",
             inline=False
         )
         embed_help_menu.add_field(

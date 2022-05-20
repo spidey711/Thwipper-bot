@@ -37,13 +37,12 @@ bot = commands.Bot(
     intents=intents,
     case_insensitive=True,
 )
-color = discord.Color.from_rgb(223, 31, 45)
+color = discord.Color.from_rgb(10,43,78)
 bot.remove_command("help")
 
 # Enviroment Variables
 global auth
 load_dotenv(".env")
-auth = os.getenv("transformer_auth")
 
 # Database
 conn = mysql.connector.connect(
@@ -105,7 +104,7 @@ def help_menu():
         help_toggle = 0
         embed_help_menu.add_field(
             name="Standard",
-            value="`_hello` to greet bot\n`_help` to get this menu\n`_img` to see cool spiderman photos\n`_quips` to get a famous dialogue\n`@Thwipper` to get more info about thwipper",
+            value="`_hello` to greet bot\n`_help` to get this menu\n`_gif` or `_img `to see cool spiderman photos and GIFs\n`_quips` to get a famous dialogue\n`@Thwipper` to get more info about thwipper",
             inline=False
         )
         embed_help_menu.set_image(url=bot.user.avatar_url)
@@ -181,7 +180,9 @@ def time_converter(seconds):
     if hours == 0: 
         return "%02d mins %02d secs" % (mins, secs)
     if hours > 0: 
-        return "%d hrs %02d mins %02d secs" % (hours, mins, secs)
+        if len(str(secs)) == 1:
+            secs = "0" + str(secs)
+            return "%d hrs %02d mins %02d secs" % (hours, mins, secs)
 
 
 def youtube_download(ctx, url):
@@ -264,74 +265,21 @@ async def on_ready():
         conn.commit()
     updation.start()
 
-
-async def transformer(api, header, json):
-    async with aiohttp.ClientSession() as session:
-        async with session.post(api, headers=header, json=json) as resp:
-            return await resp.json()
-
-
 @bot.event
 async def on_message(message):
-    headeras = {"Authorization": auth}
-    API_URL = ("https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill")
-
-    if message.content.lower().startswith("thwip"):
-        past_respose = []
-        generated = []
-        input_text = message.content.lower().replace("thwip", "")
-        payload = {
-            "inputs": {
-                "past_user_inputs": past_respose,
-                "generated_responses": generated,
-                "text": input_text,
-            },
-        }
-        output = await transformer(API_URL, header=headeras, json=payload)
-        if len(past_respose) < 100:
-            past_respose.append(input_text)
-            generated.append(output["generated_text"])
-        else:
-            past_respose.pop(0)
-            generated.pop(0)
-            past_respose.append(input_text)
-            generated.append(output["generated_text"])
-        await message.reply(output["generated_text"])
-
-    if f"<@!{bot.user.id}>" == message.content:
+    if f"<@{bot.user.id}>" == message.content:
         number_of_requests()
         embed = discord.Embed(
-            title="About",
-            description=f"Hi {message.author.name}!\nI am Thwipper. My name comes from the onomatopoeia of Spider-Man's Webshooters. I have lots of cool features including memes and a music player. More exiciting features are on their way, stay tuned and have fun with them 😎",
+            title="Your friendly neighborhood spider-bot",
+            description=f"Hi {message.author.name}!\nI am `Thwipper`. My name comes from the onomatopoeia of Spider-Man's Webshooters. Pretty slick, eh? I have lots of cool features that you may find interesting. Check them out with `_help` command. As always, more exciting features are always in the works. Stay tuned and have fun with them. _Excelsior!_",
             color=color
         )
-        embed.add_field(name="Owner", value="[Tamonud](https://github.com/spidey711)", inline=True)
-        embed.add_field(name="Source Code", value="[Thwipper](https://github.com/spidey711/Thwipper-bot)", inline=True)
+        embed.add_field(name="Made by", value="[Tamonud](https://www.github.com/spidey711)", inline=True)
+        embed.add_field(name="Source Code", value="[Github Repo](https://www.github.com/spidey711/Thwipper-bot)", inline=True)
         embed.set_thumbnail(url=bot.user.avatar_url)
-        # embed.set_image(url="https://txt.1001fonts.net/img/txt/dHRmLjcyLjAwMDAwMC5WRWhYU1ZCUVJWSSwuMA,,/lazenby-computer.liquid.png")
-        embed.set_footer(text="Type _help for command menu", icon_url=message.author.avatar_url)
         await message.reply(embed=embed)
-    else: 
+    else:
         await bot.process_commands(message)
-
-
-async def genpost(api, header, json):
-    async with aiohttp.ClientSession() as session:
-        async with session.post(api, headers=header, json=json) as resp:
-            return await resp.json()
-
-@bot.command()
-async def gen(ctx, *, text):
-    API_URL2 = "https://api-inference.huggingface.co/models/EleutherAI/gpt-neo-2.7B"
-    header2 = {"Authorization": auth}
-    payload2 = {
-        "inputs": text,
-        "parameters": {
-            "max_new_tokens": 250, "return_full_text": True
-        },
-    }
-    output = await genpost(API_URL2, header2, payload2)
-    await ctx.send(embed=discord.Embed(title="Generated text", description=output[0]["generated_text"], color=color))
 
 @bot.event
 async def on_message_delete(message):
@@ -344,9 +292,7 @@ async def on_message_delete(message):
 
 @bot.event
 async def on_reaction_add(reaction, user):
-
     number_of_requests()
-
     if not user.bot:
         
         if reaction.emoji == "🖱":
@@ -801,7 +747,7 @@ async def greet_bot(ctx):
     await ctx.send(random.choice(greetings))
 
 
-@bot.command(aliases=["img"])
+@bot.command(aliases=["img", "gif"])
 async def sendCoolPhotos(ctx):
     
     number_of_requests()
@@ -2036,9 +1982,7 @@ async def clear_song_queue(ctx):
 
 @bot.command(aliases=["thwip"])
 async def thwipper(ctx):
-
     number_of_requests()
-
     await ctx.send(embed=discord.Embed(title="*Thwip!*", color=color))
 
 

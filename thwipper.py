@@ -37,7 +37,7 @@ bot = commands.Bot(
     intents=intents,
     case_insensitive=True,
 )
-color = discord.Color.from_rgb(10,43,78)
+color = discord.Color.from_rgb(68, 123, 190)
 bot.remove_command("help")
 
 # Enviroment Variables

@@ -28,5 +28,4 @@ Especially `ffmpeg` as it is required to play music.
 <a href="https://ffmpeg.org/download.html">Install ffmpeg here</a><br>
 To install other dependencies required, use `pip install [dependency]`.<br>
 
-Thanks to [Alvin](https://github.com/alvinbengeorge) for helping out with web scraping.<br>
-Thanks to [Yash](https://github.com/YashVardhan-AI) for implementing the chat bot.
+Thanks to [Alvin](https://github.com/alvinbengeorge) for helping out with web scraping.

@@ -271,7 +271,7 @@ async def on_message(message):
         number_of_requests()
         embed = discord.Embed(
             title="Your friendly neighborhood spider-bot",
-            description=f"Hi {message.author.name}!\nI am `Thwipper`. My name comes from the onomatopoeia of Spider-Man's Webshooters. Pretty slick, eh? I have lots of cool features that you may find interesting. Check them out with `_help` command. As always, more exciting features are always in the works. Stay tuned and have fun with them. _Excelsior!_",
+            description=f"Hi {message.author.name}!\nI am `Thwipper`. My name comes from the onomatopoeia of Spider-Man's Webshooters. Pretty slick, eh? I have lots of cool features that you may find interesting. Check them out with `_help` command. As always, more exciting features are always in the works. Stay tuned and have fun with them.\n_Excelsior!_",
             color=color
         )
         embed.add_field(name="Made by", value="[Tamonud](https://www.github.com/spidey711)", inline=True)

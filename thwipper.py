@@ -737,7 +737,6 @@ async def on_reaction_add(reaction, user):
 
 @bot.command(aliases=["hello", "hi", "hey", "hey there", "salut", "kon'nichiwa", "hola", "aloha"])
 async def greet_bot(ctx):
-
     number_of_requests()
 
     greetings = [f"Hey {ctx.author.name}!", f"Hi {ctx.author.name}!", f"How's it going {ctx.author.name}?", f"What can I do for you {ctx.author.name}?", f"What's up {ctx.author.name}?", f"Hello {ctx.author.name}!", f"So {ctx.author.name}, how's your day going?"]
@@ -749,7 +748,6 @@ async def greet_bot(ctx):
 
 @bot.command(aliases=["img", "gif"])
 async def sendCoolPhotos(ctx):
-    
     number_of_requests()
     
     embed = discord.Embed(color=color)
@@ -760,7 +758,6 @@ async def sendCoolPhotos(ctx):
 
 @bot.command(aliases=["help", "use"])
 async def embed_help(ctx):
-
     number_of_requests()
     
     message = await ctx.send(embed=help_menu())
@@ -771,7 +768,6 @@ async def embed_help(ctx):
 
 @bot.command(aliases=["quips"])
 async def get_quips(ctx):
-
     number_of_requests()
 
     try:
@@ -788,7 +784,6 @@ async def get_quips(ctx):
 
 @bot.command(aliases=["imdb"])
 async def IMDb_movies(ctx, *, movie_name=None):
-
     number_of_requests()
 
     if movie_name is None:
@@ -797,7 +792,6 @@ async def IMDb_movies(ctx, *, movie_name=None):
         await ctx.send(embed=embed)
 
     if movie_name is not None:
-        
         try:
             db = imdb.IMDb()
             movie = db.search_movie(movie_name)
@@ -831,7 +825,6 @@ async def IMDb_movies(ctx, *, movie_name=None):
 
 @bot.command(aliases=["reddit", "rd"])
 async def reddit_memes(ctx, *, topic):
-
     number_of_requests()
     
     sub = reddit.subreddit(topic).random()
@@ -862,7 +855,6 @@ async def steam_games_info(ctx, *, game=None):
 
 @bot.command(aliases=["wiki", "w"])
 async def wikipedia_results(ctx, *, thing_to_search):
-
     number_of_requests()
 
     try:
@@ -880,7 +872,7 @@ async def wikipedia_results(ctx, *, thing_to_search):
             embed = discord.Embed(description=str(pe), color=color)
             embed.set_author(name="Error", icon_url=url_wiki)
             await ctx.send(embed=embed)    
-    
+            
     except wikipedia.DisambiguationError as de:
         embed = discord.Embed(description=str(de), color=color)
         embed.set_author(name="Hmm...", icon_url=url_wiki)
@@ -889,10 +881,9 @@ async def wikipedia_results(ctx, *, thing_to_search):
 
 @bot.command(aliases=["google", "g"])
 async def google_results(ctx, *, thing_to_search):
-
     number_of_requests()
-    results = ""
 
+    results = ""
     for result in googlesearch.search(thing_to_search, 7, "en"):
         results += result + "\n"
 
@@ -916,11 +907,13 @@ async def clear(ctx, text, num=10000000000000):
 
 @bot.command(aliases=["[X]"])
 async def stop_program(ctx):
-
-    number_of_requests()
-
+    
+    voice_client = ctx.message.guild.voice_client
     if ctx.author.id == 622497106657148939:
         conn.commit()
+        try:
+            await voice_client.disconnect()
+        except: pass
         await ctx.send("Alright, see ya!")
         exit()
     else:
@@ -929,7 +922,6 @@ async def stop_program(ctx):
 
 @bot.command(aliases=["say"])
 async def replicate_user_text(ctx, *, text):
-
     number_of_requests()
 
     await ctx.channel.purge(limit=1)
@@ -938,7 +930,6 @@ async def replicate_user_text(ctx, *, text):
 
 @bot.command(aliases=["polls", "poll"])
 async def conduct_poll(ctx, emojis=None, title=None, *, description=None):
-
     number_of_requests()
 
     poll_channel = None
@@ -980,7 +971,6 @@ async def conduct_poll(ctx, emojis=None, title=None, *, description=None):
 
 @bot.command(aliases=["req", "requests"])
 async def total_requests(ctx):
-
     number_of_requests()
 
     operation = "SELECT MAX(number) FROM requests"
@@ -992,7 +982,6 @@ async def total_requests(ctx):
 
 @bot.command(aliases=["web"])
 async def snipe(ctx):
-
     number_of_requests()
 
     try:
@@ -1015,7 +1004,6 @@ async def snipe(ctx):
 
 @bot.command(aliases=["pfp"])
 async def user_pfp(ctx, member: discord.Member = None):
-
     number_of_requests()
 
     if member is None:
@@ -1031,7 +1019,6 @@ async def user_pfp(ctx, member: discord.Member = None):
 
 @bot.command(aliases=["ping"])
 async def get_ping(ctx):
-
     number_of_requests()
 
     ping = round(bot.latency * 1000)
@@ -1054,7 +1041,6 @@ async def get_ping(ctx):
 
 @bot.command(aliases=["serverinfo", "si"])
 async def server_information(ctx):
-
     number_of_requests()
 
     name = str(ctx.guild.name)
@@ -1082,7 +1068,6 @@ async def server_information(ctx):
 
 @bot.command(aliases=["hush"])
 async def encrypt_data(ctx, mode, *, message):
-
     number_of_requests()
 
     res = message.encode()
@@ -1103,38 +1088,28 @@ async def encrypt_data(ctx, mode, *, message):
 
 @bot.command(aliases=["dt"])
 async def date_time_ist(ctx, timezone=None):
-
     number_of_requests()
 
+    embed = discord.Embed(color=color)
     if timezone is None:
         tzinfo = pytz.timezone(default_tz)
-        dateTime = datetime.datetime.now(tz=tzinfo)
-        embed = discord.Embed(color=color)
-        embed.add_field(name="Date", value="%s/%s/%s" % (dateTime.day, dateTime.month, dateTime.year), inline=True)
-        embed.add_field(name="Time", value="%s:%s:%s" % (dateTime.hour, dateTime.minute, dateTime.second), inline=True)
-        embed.set_footer(text=f"Timezone : {default_tz}")
-        # embed.set_thumbnail(url=url_dtc)
-        await ctx.send(embed=embed)
-
+        embed.set_footer(text=f"Timezone: {default_tz}")
     else:
         tzinfo = pytz.timezone(timezone)
-        dateTime = datetime.datetime.now(tz=tzinfo)
-        embed = discord.Embed(color=color)
-        embed.add_field(name="Date", value="%s/%s/%s" % (dateTime.day, dateTime.month, dateTime.year), inline=True)
-        embed.add_field(name="Time", value="%s:%s:%s" % (dateTime.hour, dateTime.minute, dateTime.second), inline=True)
-        # embed.set_thumbnail(url=url_dtc)
-        embed.set_footer(text=f"Timezone : {timezone}")
-        await ctx.send(embed=embed)
+        embed.set_footer(text=f"Timezone: {timezone}")
+    dateTime = datetime.datetime.now(tz=tzinfo)
+    embed.add_field(name="Date", value="%s/%s/%s" % (dateTime.day, dateTime.month, dateTime.year), inline=True)
+    embed.add_field(name="Time", value="%s:%s:%s" % (dateTime.hour, dateTime.minute, dateTime.second), inline=True)
+    await ctx.send(embed=embed)
 
 
 @bot.command(aliases=["cal"])
 async def get_calendar(ctx, year, month):
-
     number_of_requests()
-
+    
     try:
-        embed = discord.Embed(title="Calendar", description="```{}```".format(calendar.month(int(year), int(month))), color=color)
-        embed.set_thumbnail(url=url_dtc)
+        embed = discord.Embed(description="```{}```".format(calendar.month(int(year), int(month))), color=color)
+        embed.set_author(name="Calendar")
         await ctx.send(embed=embed)
         
     except IndexError:
@@ -1146,7 +1121,6 @@ async def get_calendar(ctx, year, month):
 
 @bot.command(aliases=[";"])
 async def sql_shell(ctx, *, expression):
-
     number_of_requests()
 
     try:
@@ -1170,7 +1144,6 @@ async def sql_shell(ctx, *, expression):
 
 @bot.command(aliases=["py"])
 async def python_shell(ctx, *, expression):
-
     number_of_requests()
 
     if expression in denied or denied[-2] in expression or denied[-1] in expression:
@@ -1191,7 +1164,6 @@ async def python_shell(ctx, *, expression):
 
 @bot.command(aliases=["pydoc"])
 async def function_info(ctx, func):
-
     number_of_requests()
 
     try:
@@ -1216,11 +1188,9 @@ async def function_info(ctx, func):
 
 @bot.command(aliases=["cn", "connect"])
 async def join_vc(ctx):
-
     number_of_requests()
 
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-
     try:
 
         if not ctx.message.author.voice:
@@ -1249,16 +1219,13 @@ async def join_vc(ctx):
 
 @bot.command(aliases=["dc", "disconnect"])
 async def leave_vc(ctx):
-
     number_of_requests()
 
     try:
-
         if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
             voice_client = ctx.message.guild.voice_client
 
             try:
-
                 if voice_client.is_connected():
                     embed = discord.Embed(description=f"Disconnected from {ctx.guild.voice_client.channel.name}", color=color)
                     embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
@@ -1284,7 +1251,6 @@ async def leave_vc(ctx):
 
 @bot.command(aliases=["setbit", "bit"])
 async def set_bitrate(ctx, kbps):
-
     number_of_requests()
 
     for items in ydl_op["postprocessors"]:
@@ -1296,7 +1262,6 @@ async def set_bitrate(ctx, kbps):
 
 @bot.command(aliases=["queue", "q"])
 async def queue_song(ctx, *, name=None):
-
     number_of_requests()
 
     if ctx.author.id not in [member.id for member in ctx.guild.voice_client.channel.members]:
@@ -1305,7 +1270,6 @@ async def queue_song(ctx, *, name=None):
         await ctx.send(embed=embed)
 
     else:
-
         if name is not None:
             # WEB SCRAPE
             name = name.replace(" ", "+")
@@ -1346,7 +1310,6 @@ async def queue_song(ctx, *, name=None):
             songs = cursor.fetchall()
 
             if len(songs) > 0:
-
                 try:
                     string = ""
 
@@ -1416,7 +1379,6 @@ async def queue_song(ctx, *, name=None):
 
 @bot.command(aliases=["play", "p"])
 async def play_music(ctx, *, char):
-
     number_of_requests()
 
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
@@ -1566,7 +1528,6 @@ async def play_music(ctx, *, char):
 
 @bot.command(aliases=["songinfo"])
 async def fetch_current_song(ctx):
-
     number_of_requests()
 
     global server_index
@@ -1615,7 +1576,6 @@ async def fetch_current_song(ctx):
 
 @bot.command(aliases=["prev", "previous"])
 async def previous_song(ctx):
-
     number_of_requests()
 
     global server_index
@@ -1626,7 +1586,6 @@ async def previous_song(ctx):
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
 
     if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
-
         try:
             URL_queue = youtube_download(ctx, server_queue[server_index[str(ctx.guild.id)]][1])
 
@@ -1691,7 +1650,6 @@ async def previous_song(ctx):
 
 @bot.command(aliases=["rep", "repeat"])
 async def repeat_song(ctx):
-
     number_of_requests()
 
     operation = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
@@ -1757,7 +1715,6 @@ async def repeat_song(ctx):
 
 @bot.command(aliases=["skip", "next"])
 async def skip_song(ctx):
-
     number_of_requests()
 
     global server_index
@@ -1768,7 +1725,6 @@ async def skip_song(ctx):
     voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
 
     if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
-
         try:
             URL_queue = youtube_download(ctx, server_queue[server_index[str(ctx.guild.id)]][1])
 
@@ -1833,7 +1789,6 @@ async def skip_song(ctx):
 
 @bot.command(aliases=["pause"])
 async def pause_song(ctx):
-
     number_of_requests()
 
     voice_client = ctx.message.guild.voice_client
@@ -1841,13 +1796,11 @@ async def pause_song(ctx):
     playing = ctx.voice_client.is_playing()
 
     if ctx.author.id in [mem.id for mem in ctx.voice_client.channel.members]:
-
         try:
             if playing == True:
                 voice_client.pause()
                 message = await ctx.send("Song paused")
                 await message.add_reaction("⏸")
-
             else:
                 if pause == True:
                     embed = discord.Embed(description="Song is already paused ❗", color=color)
@@ -1872,7 +1825,6 @@ async def pause_song(ctx):
 
 @bot.command(aliases=["resume", "res"])
 async def resume_song(ctx):
-
     number_of_requests()
 
     voice_client = ctx.message.guild.voice_client
@@ -1880,7 +1832,6 @@ async def resume_song(ctx):
     playing = ctx.voice_client.is_playing()
 
     if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
-
         try:
             if pause == True:
                 voice_client.resume()
@@ -1912,7 +1863,6 @@ async def resume_song(ctx):
 
 @bot.command(aliases=["stop", "st"])
 async def stop_song(ctx):
-
     number_of_requests()
 
     voice_client = ctx.message.guild.voice_client
@@ -1920,7 +1870,6 @@ async def stop_song(ctx):
     playing = ctx.voice_client.is_playing()
 
     if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
-
         try:
             if playing == True or pause == True:
                 voice_client.stop()
@@ -1945,7 +1894,6 @@ async def stop_song(ctx):
 
 @bot.command(aliases=["rem", "remove"])
 async def remove_song(ctx, index):
-
     number_of_requests()
 
     operation_view = 'SELECT * FROM music_queue WHERE server="{}"'.format(str(ctx.guild.id))
@@ -1960,7 +1908,6 @@ async def remove_song(ctx, index):
 
 @bot.command(aliases=["clear_queue", "cq"])
 async def clear_song_queue(ctx):
-
     number_of_requests()
 
     operation_queue = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
@@ -1980,15 +1927,8 @@ async def clear_song_queue(ctx):
 
 # -------------------------------------------------- EXTRA ---------------------------------------------------------
 
-@bot.command(aliases=["thwip"])
-async def thwipper(ctx):
-    number_of_requests()
-    await ctx.send(embed=discord.Embed(title="*Thwip!*", color=color))
-
-
 @bot.command(aliases=["addbday"])
 async def add_user_bday(ctx, member: discord.Member, month, day):
-
     number_of_requests()
 
     op_check = "SELECT mem_id FROM birthdays"
@@ -2003,14 +1943,12 @@ async def add_user_bday(ctx, member: discord.Member, month, day):
             await ctx.send(embed=discord.Embed(description="{}'s birthday added to database".format(member.display_name), color=color))
         else:
             await ctx.send(embed=discord.Embed(description="{}'s birthday is already added in my database".format(member.display_name), color=color))
-
     except Exception as e:
         await ctx.send(str(e))
 
 
 @bot.command(aliases=["rembday"])
 async def remove_user_bday(ctx, member: discord.Member):
-
     number_of_requests()
 
     op_check = "SELECT mem_id FROM birthdays"
@@ -2025,14 +1963,12 @@ async def remove_user_bday(ctx, member: discord.Member):
             await ctx.send(embed=discord.Embed(description="{}'s birthday removed from database".format(member.display_name), color=color))
         else:
             await ctx.send(embed=discord.Embed(description="{}'s birthday does not exist in my database".format(member.display_name), color=color))
-
     except Exception as e:
         await ctx.send(str(e))
 
 
 @bot.command(aliases=["bday"])
 async def check_user_bdays_and_wish(ctx):
-
     number_of_requests()
 
     op_check = "SELECT * FROM birthdays"
@@ -2060,7 +1996,7 @@ async def check_user_bdays_and_wish(ctx):
             embed = discord.Embed(title=random.choice(wishes), description=random.choice(descriptions), color=color)
             embed.set_image(url=random.choice(url_bdays_spiderman))
             embed.set_thumbnail(url=bot.get_user(int(bday[0])).avatar_url)
-            await channel.send(f"<@!{bot.get_user(int(bday[0])).id}>")
+            await channel.send(f"<@{bot.get_user(int(bday[0])).id}>")
             message = await channel.send(embed=embed)
 
             await ctx.send(embed=discord.Embed(description="Wish Sent 🥳", color=color))

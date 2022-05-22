@@ -7,7 +7,7 @@ compliments = ["Man, the daily bugle would pay a lot for this 🤩", "This is a 
 
 # Channels
 poll_channels = ['polls','poll','🔺-polls-🔻']
-announcement_channels = ['announcements','bot-announcement','📢-announcements']
+announcement_channels = ['announcements','bot-announcement','📢-announcements','announcement']
 
 # Music 
 connections = ["Ready to rock 'n roll, let's go 🎸","Alright then, time to vibe 🌃","So, what do you want to play? 🤔","Man, I am so down for some music right now 🎼","I like trap beats at night and heavy rock 'n roll during the day 🎤", "Is it just me or does LoFi sometimes gets you drowsy? 😴"]

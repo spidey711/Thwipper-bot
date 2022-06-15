@@ -1,7 +1,6 @@
 # Imports
 try:
     import discord
-    from discord.utils import get
     from discord.ext import commands, tasks
     from links import *
     from responses import *
@@ -809,7 +808,7 @@ async def IMDb_movies(ctx, *, movie_name=None):
                 .replace("Language", "**Language**")
                 .replace("Rating", "**Rating**")
                 .replace("Plot", "**Plot**")
-                .replace("Runtime", "**Runtime**")
+                .replace("Runtime", "**Runtime (mins)**")
             )
             movie_cover = movie[0]["full-size cover url"]
             embed = discord.Embed(title="🎬 {} 🍿".format(title), description=movie_summary, color=color)
@@ -1341,7 +1340,7 @@ async def queue_song(ctx, *, name=None):
 
                     else:
                         index = server_index[str(ctx.guild.id)]
-                        for song in songs[index: index + 20]:
+                        for song in songs[index:]:
                             string += (str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " "))
                             index += 1
 
@@ -1934,15 +1933,16 @@ async def add_user_bday(ctx, member: discord.Member, month, day):
     op_check = "SELECT mem_id FROM birthdays"
     cursor.execute(op_check)
     memIDs = cursor.fetchall()
+    toggle = 0
 
     try:
-        a = str([memID for memID in memIDs]).replace("('", "").replace("',)", "")
-        if str(member.id) not in a:
-            op_insert = "INSERT INTO birthdays(mem_id, mem_month, mem_day)VALUES('{a}',{b},{c})".format(a=member.id, b=month, c=day)
-            cursor.execute(op_insert)
-            await ctx.send(embed=discord.Embed(description="{}'s birthday added to database".format(member.display_name), color=color))
-        else:
-            await ctx.send(embed=discord.Embed(description="{}'s birthday is already added in my database".format(member.display_name), color=color))
+        for tup_memID in memIDs:
+            if str(member.id) in tup_memID:
+                await ctx.send(embed=discord.Embed(description=f"{member.name}'s birthday is already in my database 🤔", color=color))
+                toggle = 1
+        if toggle == 0:
+            cursor.execute(f"INSERT INTO birthdays VALUES('{member.id}', {month}, {day}, '{ctx.guild.id}')")
+            await ctx.send(embed=discord.Embed(description=f"{member.name}'s birthday added to database 👍🏻", color=color))
     except Exception as e:
         await ctx.send(str(e))
 
@@ -1954,15 +1954,17 @@ async def remove_user_bday(ctx, member: discord.Member):
     op_check = "SELECT mem_id FROM birthdays"
     cursor.execute(op_check)
     memIDs = cursor.fetchall()
+    toggle = 0
 
     try:
-        a = str([memID for memID in memIDs]).replace("('", "").replace("',)", "")
-        if str(member.id) in a:
-            op_insert = "DELETE FROM birthdays WHERE mem_id={}".format(member.id)
-            cursor.execute(op_insert)
-            await ctx.send(embed=discord.Embed(description="{}'s birthday removed from database".format(member.display_name), color=color))
-        else:
-            await ctx.send(embed=discord.Embed(description="{}'s birthday does not exist in my database".format(member.display_name), color=color))
+        for tup_memID in memIDs:
+            if str(member.id) in tup_memID:
+                op_insert = "DELETE FROM birthdays WHERE mem_id={}".format(member.id)
+                cursor.execute(op_insert)
+                await ctx.send(embed=discord.Embed(description="{}'s birthday removed from database 👍🏻".format(member.display_name), color=color))
+                toggle = 1
+        if toggle == 0:
+            await ctx.send(embed=discord.Embed(description="{}'s birthday does not exist in my database 🤔".format(member.display_name), color=color))
     except Exception as e:
         await ctx.send(str(e))
 
@@ -2010,4 +2012,4 @@ async def check_user_bdays_and_wish(ctx):
     if toggle == 0:
         await ctx.send(embed=discord.Embed(description=random.choice(none_today), color=color))
 
-# --------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------

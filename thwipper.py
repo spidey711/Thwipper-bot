@@ -1,7 +1,7 @@
 # Imports
 try:
-    import discord
-    from discord.ext import commands, tasks
+    import nextcord
+    from nextcord.ext import commands, tasks
     from links import *
     from responses import *
     from dotenv import load_dotenv
@@ -17,26 +17,26 @@ try:
     import pytube
     import imdb
     import requests
-    import aiohttp
     import urllib.request
     import youtube_dl
     import wikipedia
     import googlesearch
     from cryptography.fernet import Fernet
-    print("All modules and libraries imported...")
+    print("All modules and libraries imported.")
 except ImportError as ie:
     print(ie)
 
 # Setup
 prefixes = ["t!", "_"]
-intents = discord.Intents.default()
+intents = nextcord.Intents.default()
 intents.members = True
+intents.message_content = True
 bot = commands.Bot(
     command_prefix=[prefix for prefix in prefixes],
     intents=intents,
     case_insensitive=True,
 )
-color = discord.Color.from_rgb(68, 123, 190)
+color = nextcord.Color.from_rgb(68, 123, 190)
 bot.remove_command("help")
 
 # Enviroment Variables
@@ -44,21 +44,26 @@ global auth
 load_dotenv(".env")
 
 # Database
-conn = mysql.connector.connect(
-    user="root",
-    host="localhost",
-    password=os.getenv("sql_pass"),
-    database="discord"
-)
-cursor = conn.cursor()
-    # test database for sql shell
-conn_test = mysql.connector.connect(
-    user="root",
-    host="localhost",
-    passwd=os.getenv("sql_pass"),
-    database="discord_sql_func"   
-)
-cursor_test = conn_test.cursor()
+try:
+    conn = mysql.connector.connect(
+        user="root",
+        host="localhost",
+        password=os.getenv("sql_pass"),
+        database="discord"
+    )
+    cursor = conn.cursor()
+        # test database for sql shell
+    conn_test = mysql.connector.connect(
+        user="root",
+        host="localhost",
+        passwd=os.getenv("sql_pass"),
+        database="discord_sql_func"   
+    )
+    cursor_test = conn_test.cursor()
+    print("Connection to discord databases established.")
+except Exception as error:
+    print(error)
+
 # Audio
 server_index = {}
 FFMPEG_OPTS = {
@@ -75,6 +80,7 @@ ydl_op = {
         }
     ],
 }
+
 # Reddit
 reddit = praw.Reddit(
     client_id=os.getenv("reddit_client_id"),
@@ -84,9 +90,11 @@ reddit = praw.Reddit(
     password=os.getenv("reddit_userpass")
 )
 default_topic = {}
+
 # Key for ED
 key = Fernet.generate_key()
 cipher = Fernet(key)
+
 # Snipe, Number of requests, timezone (default), help page number, quip list
 deleted_messages, num, default_tz, help_toggle, dialogue_list = {}, 0, "Asia/Kolkata", 0, []
 
@@ -95,7 +103,7 @@ deleted_messages, num, default_tz, help_toggle, dialogue_list = {}, 0, "Asia/Kol
 def help_menu():
     global help_toggle
 
-    embed_help_menu = discord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸", description="Prefixes: `_` `t!`", color=color)
+    embed_help_menu = nextcord.Embed(title="🕸𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗠𝗲𝗻𝘂🕸", description="Prefixes: `_` `t!`", color=color)
     embed_help_menu.set_thumbnail(url=random.choice(url_thumbnails))
     embed_help_menu.set_footer(text="New Features Coming Soon ⚙️")
 
@@ -106,7 +114,7 @@ def help_menu():
             value="`_hello` to greet bot\n`_help` to get this menu\n`_gif` or `_img `to see cool spiderman photos and GIFs\n`_quips` to get a famous dialogue\n`@Thwipper` to get more info about thwipper",
             inline=False
         )
-        embed_help_menu.set_image(url=bot.user.avatar_url)
+        embed_help_menu.set_image(url=bot.user.avatar.url)
     if help_toggle == 1:
         embed_help_menu.add_field(
             name="The Web",
@@ -202,6 +210,9 @@ def number_of_requests():
     num += 1
     requests_query()
 
+def play_music(voice, URL_queue):
+    voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+
 # ----------------------------------------- EVENTS --------------------------------------
 
 @bot.event
@@ -247,7 +258,7 @@ async def on_ready():
         while True:
             for status in status_list:
                 await asyncio.sleep(300)
-                await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=status))
+                await bot.change_presence(activity=nextcord.Activity(type=nextcord.ActivityType.playing, name=status))
     multiple_statuses.start()
 
     # UPDATION
@@ -268,14 +279,14 @@ async def on_ready():
 async def on_message(message):
     if f"<@{bot.user.id}>" == message.content:
         number_of_requests()
-        embed = discord.Embed(
+        embed = nextcord.Embed(
             title="Your friendly neighborhood spider-bot",
             description=f"Hi {message.author.name}!\nI am `Thwipper`. My name comes from the onomatopoeia of Spider-Man's Webshooters. Pretty slick, eh? I have lots of cool features that you may find interesting. Check them out with `_help` command. As always, more exciting features are always in the works. Stay tuned and have fun with them.\n_Excelsior!_",
             color=color
         )
         embed.add_field(name="Made by", value="[Tamonud](https://www.github.com/spidey711)", inline=True)
         embed.add_field(name="Source Code", value="[Github Repo](https://www.github.com/spidey711/Thwipper-bot)", inline=True)
-        embed.set_thumbnail(url=bot.user.avatar_url)
+        embed.set_thumbnail(url=bot.user.avatar.url)
         await message.reply(embed=embed)
     else:
         await bot.process_commands(message)
@@ -299,14 +310,14 @@ async def on_reaction_add(reaction, user):
                 await reaction.remove(user)
             try:
                 sub = reddit.subreddit(default_topic[str(reaction.message.guild.id)]).random()
-                embed = discord.Embed(description=f"**Caption:\n**{sub.title}", color=color)
+                embed = nextcord.Embed(description=f"**Caption:\n**{sub.title}", color=color)
                 embed.set_author(name=f"Post by: {sub.author}", icon_url=url_reddit_author)
                 # embed.set_thumbnail(url=url_reddit_thumbnail)
                 embed.set_image(url=sub.url)
                 embed.set_footer(text=f"🔺: {sub.ups}   🔻: {sub.downs}   💬: {sub.num_comments}")
                 await reaction.message.edit(embed=embed)
             except Exception:
-                embed = discord.Embed(description="Default topic is not set", color=color)
+                embed = nextcord.Embed(description="Default topic is not set", color=color)
                 embed.set_author(name="Uh oh...", icon_url=url_reddit_author)
                 await reaction.message.edit(embed=embed)
 
@@ -330,15 +341,17 @@ async def on_reaction_add(reaction, user):
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
                 await reaction.remove(user)
 
-                embed = discord.Embed(title="🕸Mutual Guilds🕸", description="\n".join([servers.name for servers in user.mutual_guilds]), color=color)
+                embed = nextcord.Embed(title="🕸Mutual Guilds🕸", description="\n".join([servers.name for servers in user.mutual_guilds]), color=color)
                 embed.set_thumbnail(url=random.choice(url_thumbnails))
                 embed.set_footer(text="New Features Coming Soon 🛠")
                 await reaction.message.edit(embed=embed)
 
 
         # MUSIC PLAYER
-        voice = discord.utils.get(bot.voice_clients, guild=reaction.message.guild)
+        voice = nextcord.utils.get(bot.voice_clients, guild=reaction.message.guild)
         voice_client = reaction.message.guild.voice_client
+        if not voice_client:
+            return 
         playing = reaction.message.guild.voice_client.is_playing()
         pause = reaction.message.guild.voice_client.is_paused()
 
@@ -349,6 +362,28 @@ async def on_reaction_add(reaction, user):
         members_in_vc = [str(names) for names in reaction.message.guild.voice_client.channel.members]
         string = ""
 
+
+        if reaction.emoji == "🔇":
+            if str(user) != str(bot.user) and reaction.message.author == bot.user:
+                await reaction.remove(user)
+                if members_in_vc.count(str(user)) > 0:
+                    try:        
+                        if voice_client.is_connected():
+                            embed = nextcord.Embed(description=f"Disconnected from {reaction.message.guild.voice_client.channel.name}", color=color)
+                            embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
+                            embed.set_footer(text=random.choice(disconnections))
+                            await reaction.message.edit(embed=embed)
+                            await voice_client.disconnect()
+                    except AttributeError:
+                        embed = nextcord.Embed(description="I am not connected to a voice channel", color=color)
+                        embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
+                        await reaction.message.edit(embed=embed)
+                else:
+                    embed = nextcord.Embed(description="Connect to the voice channel first 🔊", color=color)
+                    embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
+                    await reaction.message.edit(embed=embed)
+
+
         if reaction.emoji == "🔼":
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
                 await reaction.remove(user)
@@ -358,7 +393,7 @@ async def on_reaction_add(reaction, user):
                         for song in server_queue[index: index - 20]:
                             string += ( str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " "))
                             index += 1
-                        embed = discord.Embed(description=string, color=color)
+                        embed = nextcord.Embed(description=string, color=color)
                         embed.set_author(name=f"{reaction.message.guild.name}'s Playlist", icon_url=url_author_music)
                         embed.set_thumbnail(url=random.choice(url_thumbnail_music))
                         embed.set_footer(text=f"Number Of Songs: {len(server_queue)}")
@@ -368,13 +403,13 @@ async def on_reaction_add(reaction, user):
                         for song in server_queue[index: index + 20]:
                             string += (str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " "))
                             index += 1
-                        embed = discord.Embed(description=string, color=color)
+                        embed = nextcord.Embed(description=string, color=color)
                         embed.set_author(name=f"{reaction.message.guild.name}'s Playlist", icon_url=url_author_music)
                         embed.set_thumbnail(url=random.choice(url_thumbnail_music))
                         embed.set_footer(text=f"Number Of Songs: {len(server_queue)}")
                         await reaction.message.edit(embed=embed)
                 except KeyError:
-                    embed = discord.Embed(description=random.choice(default_index), color=color )
+                    embed = nextcord.Embed(description=random.choice(default_index), color=color )
                     embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
@@ -388,7 +423,7 @@ async def on_reaction_add(reaction, user):
                         for song in server_queue[index: index + 20]:
                             string += ( str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " "))
                             index += 1
-                        embed = discord.Embed(description=string, color=color)
+                        embed = nextcord.Embed(description=string, color=color)
                         embed.set_author(name=f"{reaction.message.guild.name}'s Playlist", icon_url=url_author_music)
                         embed.set_thumbnail(url=random.choice(url_thumbnail_music))
                         embed.set_footer(text=f"Number Of Songs: {len(server_queue)}")
@@ -398,13 +433,13 @@ async def on_reaction_add(reaction, user):
                         for song in server_queue[index: index + 20]:
                             string += (str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " "))
                             index += 1
-                        embed = discord.Embed(description=string, color=color)
+                        embed = nextcord.Embed(description=string, color=color)
                         embed.set_author(name=f"{reaction.message.guild.name}'s Playlist", icon_url=url_author_music)
                         embed.set_thumbnail(url=random.choice(url_thumbnail_music))
                         embed.set_footer(text=f"Number Of Songs: {len(server_queue)}")
                         await reaction.message.edit(embed=embed)
                 except KeyError:
-                    embed = discord.Embed(description=random.choice(default_index), color=color )
+                    embed = nextcord.Embed(description=random.choice(default_index), color=color )
                     embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
@@ -412,7 +447,7 @@ async def on_reaction_add(reaction, user):
         if reaction.emoji == "🔠":
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
                 await reaction.remove(user)
-                embed = discord.Embed(description="Working on lyrics...", color=color)
+                embed = nextcord.Embed(description="Working on lyrics...", color=color)
                 embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                 embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                 await reaction.message.edit(embed=embed)
@@ -426,39 +461,39 @@ async def on_reaction_add(reaction, user):
                         if server_index[str(reaction.message.guild.id)] is not None:
                             if pause == True:
                                 voice_client.resume()
-                                embed = discord.Embed(description="Song has resumed playing 🎸", color=color)
+                                embed = nextcord.Embed(description="Song has resumed playing 🎸", color=color)
                                 embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                                 embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                                 await reaction.message.edit(embed=embed)
                             else:
                                 if playing == True:
-                                    embed = discord.Embed(description="Song is not paused 🤔", color=color)
+                                    embed = nextcord.Embed(description="Song is not paused 🤔", color=color)
                                     embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                                     embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                                     await reaction.message.edit(embed=embed)
                                 else:
-                                    embed = discord.Embed(description="Nothing is playing right now ❗", color=color)
+                                    embed = nextcord.Embed(description="Nothing is playing right now ❗", color=color)
                                     embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                                     embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                                     await reaction.message.edit(embed=embed)
                         else:
                             if playing != True:
                                 voice_client.resume()
-                                embed = discord.Embed(description="Song has resumed playing ▶", color=color)
+                                embed = nextcord.Embed(description="Song has resumed playing ▶", color=color)
                                 embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                                 embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                                 await reaction.message.edit(embed=embed)
                             else:
-                                embed = discord.Embed(description="Song is already playing 🎸", color=color)
+                                embed = nextcord.Embed(description="Song is already playing 🎸", color=color)
                                 embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                                 embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                                 await reaction.message.edit(embed=embed)
                     except Exception as e:
-                        embed = discord.Embed(description=str(e), color=color)
+                        embed = nextcord.Embed(description=str(e), color=color)
                         embed.set_author(name="Error", icon_url=url_author_music)
                         await reaction.message.edit(embed=embed)
                 else:
-                    embed = discord.Embed(description=f"Connect to the voice channel first 🔊", color=color)
+                    embed = nextcord.Embed(description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
@@ -470,27 +505,27 @@ async def on_reaction_add(reaction, user):
                     try:
                         if playing == True:
                             voice_client.pause()
-                            embed = discord.Embed(description="Song is paused ⏸", color=color)
+                            embed = nextcord.Embed(description="Song is paused ⏸", color=color)
                             embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                             embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                             await reaction.message.edit(embed=embed)
                         else:
                             if pause == True:
-                                embed = discord.Embed(description="Song is already paused ⏸", color=color)
+                                embed = nextcord.Embed(description="Song is already paused ⏸", color=color)
                                 embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                                 embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                                 await reaction.message.edit(embed=embed)
                             else:
-                                embed = discord.Embed(description="No song playing currently ❗", color=color)
+                                embed = nextcord.Embed(description="No song playing currently ❗", color=color)
                                 embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                                 embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                                 await reaction.message.edit(embed=embed)
                     except Exception as e:
-                        embed = discord.Embed(description=str(e), color=color)
+                        embed = nextcord.Embed(description=str(e), color=color)
                         embed.set_author(name="Error", icon_url=url_author_music)
                         await reaction.message.edit(embed=embed)
                 else:
-                    embed = discord.Embed(description=f"Connect to the voice channel first 🔊", color=color)
+                    embed = nextcord.Embed(description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
@@ -503,30 +538,30 @@ async def on_reaction_add(reaction, user):
                     try:
                         URL_queue = youtube_download(reaction.message, server_queue[server_index[str(reaction.message.guild.id)]][1])
                         if playing != True:
-                            embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)],).replace(" - YouTube", " "), color=color,)
+                            embed = nextcord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)],).replace(" - YouTube", " "), color=color,)
                             embed.set_author(name="Now playing", icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
                             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
                             embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                             await reaction.message.edit(embed=embed)
-                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                         else:
                             voice.stop()
-                            embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)]).replace(" - YouTube", " "), color=color)
+                            embed = nextcord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)]).replace(" - YouTube", " "), color=color)
                             embed.set_author(name="Now playing", icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
                             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
                             embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                             await reaction.message.edit(embed=embed)
-                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                     except IndexError:
-                        embed = discord.Embed(description="Looks like there is no song at this index", color=color)
+                        embed = nextcord.Embed(description="Looks like there is no song at this index", color=color)
                         embed.set_author(name="Oops...", icon_url=url_author_music)
                         await reaction.message.edit(embed=embed)
                 else:
-                    embed = discord.Embed(description=f"Connect to the voice channel first 🔊", color=color)
+                    embed = nextcord.Embed(description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
@@ -539,7 +574,7 @@ async def on_reaction_add(reaction, user):
                     try:
                         URL_queue = youtube_download(reaction.message, server_queue[server_index[str(reaction.message.guild.id)]][1])
                         if playing != True:
-                            embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(
+                            embed = nextcord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(
                                 a=server_queue[server_index[str(reaction.message.guild.id)]][0], 
                                 b=server_index[str(reaction.message.guild.id)]).replace(" - YouTube", " "), 
                                 color=color
@@ -550,23 +585,23 @@ async def on_reaction_add(reaction, user):
                             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
                             embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                             await reaction.message.edit(embed=embed)
-                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                         else:
                             voice.stop()
-                            embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)]).replace(" - YouTube", " "), color=color)
+                            embed = nextcord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)]).replace(" - YouTube", " "), color=color)
                             embed.set_author(name="Now Playing", icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
                             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
                             embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                             await reaction.message.edit(embed=embed)
-                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                     except IndexError:
-                        embed = discord.Embed(description="Looks like there is no song at this index", color=color)
+                        embed = nextcord.Embed(description="Looks like there is no song at this index", color=color)
                         embed.set_author(name="Oops...", icon_url=url_author_music)
                         await reaction.message.edit(embed=embed)
                 else:
-                    embed = discord.Embed(description=f"Connect to the voice channel first 🔊", color=color)
+                    embed = nextcord.Embed(description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
@@ -578,21 +613,21 @@ async def on_reaction_add(reaction, user):
                     try:
                         if playing == True or pause == True:
                             voice_client.stop()
-                            embed = discord.Embed(description="Song has been stopped ⏹", color=color)
+                            embed = nextcord.Embed(description="Song has been stopped ⏹", color=color)
                             embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
                             await reaction.message.edit(embed=embed)
                         else:
-                            embed = discord.Embed(description="Nothing is playing at the moment❗", color=color)
+                            embed = nextcord.Embed(description="Nothing is playing at the moment❗", color=color)
                             embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
                             await reaction.message.edit(embed=embed)
                     except Exception as e:
-                        embed = discord.Embed(description=str(e), color=color)
+                        embed = nextcord.Embed(description=str(e), color=color)
                         embed.set_author(name="Error", icon_url=url_author_music)
                         await reaction.message.edit(embed=embed)
                 else:
-                    embed = discord.Embed(description=f"Connect to the voice channel first 🔊", color=color)
+                    embed = nextcord.Embed(description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
@@ -601,13 +636,13 @@ async def on_reaction_add(reaction, user):
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
                 await reaction.remove(user)
                 if len(server_queue) <= 0:
-                    embed = discord.Embed(description=random.choice(empty_queue), color=color)
+                    embed = nextcord.Embed(description=random.choice(empty_queue), color=color)
                     embed.set_author(name="Uh oh...", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
                 else:    
                     try:   
                         try:
-                            embed = discord.Embed(
+                            embed = nextcord.Embed(
                                 description="**Song: **{a}\n**Index: **{b}\n**Views: **{c}\n**Description: **\n{d}".format(
                                     a=server_queue[server_index[str(reaction.message.guild.id)]][0],
                                     b=server_index[str(reaction.message.guild.id)],
@@ -620,8 +655,8 @@ async def on_reaction_add(reaction, user):
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
                             await reaction.message.edit(embed=embed)
                         # if description crosses embed length
-                        except discord.errors.HTTPException: 
-                            embed = discord.Embed(description="**Song: **{a}\n**Index: **{b}\n**Views: **{c}\n**Description: **\n{d}".format(
+                        except nextcord.errors.HTTPException: 
+                            embed = nextcord.Embed(description="**Song: **{a}\n**Index: **{b}\n**Views: **{c}\n**Description: **\n{d}".format(
                                     a=server_queue[server_index[str(reaction.message.guild.id)]][0],
                                     b=server_index[str(reaction.message.guild.id)],
                                     c=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).views,
@@ -633,7 +668,7 @@ async def on_reaction_add(reaction, user):
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
                             await reaction.message.edit(embed=embed) 
                     except KeyError:
-                        embed = discord.Embed(description=random.choice(default_index), color=color)
+                        embed = nextcord.Embed(description=random.choice(default_index), color=color)
                         embed.set_author(name="Uh oh...", icon_url=url_author_music)
                         await reaction.message.edit(embed=embed)
 
@@ -645,51 +680,30 @@ async def on_reaction_add(reaction, user):
                     try:
                         URL_queue = youtube_download(reaction.message, server_queue[server_index[str(reaction.message.guild.id)]][1])
                         if reaction.message.guild.voice_client.is_playing() != True:
-                            embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(reaction.message.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+                            embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(reaction.message.guild.id)]][0]).replace(" - YouTube", " "), color=color)
                             embed.set_author(name="Repeating Song", icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
                             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
                             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
                             await reaction.message.edit(embed=embed)
-                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                         else:
                             voice.stop()
-                            embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(reaction.message.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+                            embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(reaction.message.guild.id)]][0]).replace(" - YouTube", " "), color=color)
                             embed.set_author(name="Repeating Song", icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
                             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
                             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
                             await reaction.message.edit(embed=embed)
-                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                     except Exception as e:
-                        embed = discord.Embed(description=str(e), color=color)
+                        embed = nextcord.Embed(description=str(e), color=color)
                         embed.set_author(name="Error", icon_url=url_author_music)
                         await reaction.message.edit(embed=embed)
                 else:
-                    embed = discord.Embed(description=f"Connect to the voice channel first 🔊", color=color)
-                    embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
-                    await reaction.message.edit(embed=embed)
-
-
-        if reaction.emoji == "🔇":
-            if str(user) != str(bot.user) and reaction.message.author == bot.user:
-                await reaction.remove(user)
-                if members_in_vc.count(str(user)) > 0:
-                    try:        
-                        if voice_client.is_connected():
-                            embed = discord.Embed(description=f"Disconnected from {reaction.message.guild.voice_client.channel.name}", color=color)
-                            embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
-                            embed.set_footer(text=random.choice(disconnections))
-                            await reaction.message.edit(embed=embed)
-                            await voice_client.disconnect()
-                    except AttributeError:
-                        embed = discord.Embed(description="I am not connected to a voice channel", color=color)
-                        embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
-                        await reaction.message.edit(embed=embed)
-                else:
-                    embed = discord.Embed(description="Connect to the voice channel first 🔊", color=color)
+                    embed = nextcord.Embed(description=f"Connect to the voice channel first 🔊", color=color)
                     embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
         
@@ -709,26 +723,26 @@ async def on_reaction_add(reaction, user):
                     server_index[str(reaction.message.guild.id)] = queue_index
                     URL_shuffle = youtube_download(reaction.message, random_song[1])
                     if reaction.message.guild.voice_client.is_playing() == False:
-                        embed = discord.Embed(description=f"**Song: **{random_song[0]}\n**Queue Index: **{queue_index}".replace(" - YouTube", " "), color=color)
+                        embed = nextcord.Embed(description=f"**Song: **{random_song[0]}\n**Queue Index: **{queue_index}".replace(" - YouTube", " "), color=color)
                         embed.set_author(name="Shuffle Play", icon_url=url_author_music)
                         embed.set_thumbnail(url=pytube.YouTube(url=random_song[1]).thumbnail_url)
                         embed.add_field(name="Uploader", value=pytube.YouTube(url=random_song[1]).author, inline=True)
                         embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=random_song[1]).length), inline=True)
                         embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                         await reaction.message.edit(embed=embed)
-                        voice.play(discord.FFmpegPCMAudio(URL_shuffle, **FFMPEG_OPTS))
+                        voice.play(nextcord.FFmpegPCMAudio(URL_shuffle, **FFMPEG_OPTS))
                     else:
                         voice.stop()
-                        embed = discord.Embed(description=f"**Song: **{random_song[0]}\n**Queue Index: **{queue_index}".replace(" - YouTube", " "), color=color)
+                        embed = nextcord.Embed(description=f"**Song: **{random_song[0]}\n**Queue Index: **{queue_index}".replace(" - YouTube", " "), color=color)
                         embed.set_author(name="Shuffle Play", icon_url=url_author_music)
                         embed.set_thumbnail(url=pytube.YouTube(url=random_song[1]).thumbnail_url)
                         embed.add_field(name="Uploader", value=pytube.YouTube(url=random_song[1]).author, inline=True)
                         embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=random_song[1]).length), inline=True)
                         embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
                         await reaction.message.edit(embed=embed)
-                        voice.play(discord.FFmpegPCMAudio(URL_shuffle, **FFMPEG_OPTS))
+                        voice.play(nextcord.FFmpegPCMAudio(URL_shuffle, **FFMPEG_OPTS))
                 else:
-                    embed = discord.Embed(description=f"Connect to a voice channel first 🔊", color=color)
+                    embed = nextcord.Embed(description=f"Connect to a voice channel first 🔊", color=color)
                     embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                     await reaction.message.edit(embed=embed)
 
@@ -739,8 +753,8 @@ async def greet_bot(ctx):
     number_of_requests()
 
     greetings = [f"Hey {ctx.author.name}!", f"Hi {ctx.author.name}!", f"How's it going {ctx.author.name}?", f"What can I do for you {ctx.author.name}?", f"What's up {ctx.author.name}?", f"Hello {ctx.author.name}!", f"So {ctx.author.name}, how's your day going?"]
-    embed = discord.Embed(color=color)
-    embed.set_author(name=random.choice(greetings), icon_url=ctx.author.avatar_url)
+    embed = nextcord.Embed(color=color)
+    embed.set_author(name=random.choice(greetings), icon_url=ctx.author.avatar.url)
     embed.set_image(url=random.choice(hello_urls))
     await ctx.send(random.choice(greetings))
 
@@ -749,8 +763,8 @@ async def greet_bot(ctx):
 async def sendCoolPhotos(ctx):
     number_of_requests()
     
-    embed = discord.Embed(color=color)
-    embed.set_author(name="", icon_url=ctx.author.avatar_url)
+    embed = nextcord.Embed(color=color)
+    embed.set_author(name="", icon_url=ctx.author.avatar.url)
     embed.set_image(url=random.choice(hello_urls))
     await ctx.send(embed=embed)
 
@@ -770,14 +784,14 @@ async def get_quips(ctx):
     number_of_requests()
 
     try:
-        embed = discord.Embed(title=random.choice(titles), description=random.choice(dialogue_list), color=color)
+        embed = nextcord.Embed(title=random.choice(titles), description=random.choice(dialogue_list), color=color)
         embed.set_thumbnail(url=random.choice(url_thumbnails))
-        embed.set_footer(text=random.choice(footers), icon_url=bot.user.avatar_url)
+        embed.set_footer(text=random.choice(footers), icon_url=bot.user.avatar.url)
         await ctx.send(embed=embed)
         print("Quip successfully sent!")
 
     except Exception as e:
-        embed = discord.Embed(title="Error", description=str(e), color=color)
+        embed = nextcord.Embed(title="Error", description=str(e), color=color)
 
 # ----------------------------------------------- INTERNET ---------------------------------------------
 
@@ -786,7 +800,7 @@ async def IMDb_movies(ctx, *, movie_name=None):
     number_of_requests()
 
     if movie_name is None:
-        embed = discord.Embed(description=random.choice(imdb_responses), color=color)
+        embed = nextcord.Embed(description=random.choice(imdb_responses), color=color)
         embed.set_author(name="Ahem ahem", icon_url=url_imdb_author)
         await ctx.send(embed=embed)
 
@@ -811,13 +825,13 @@ async def IMDb_movies(ctx, *, movie_name=None):
                 .replace("Runtime", "**Runtime (mins)**")
             )
             movie_cover = movie[0]["full-size cover url"]
-            embed = discord.Embed(title="🎬 {} 🍿".format(title), description=movie_summary, color=color)
+            embed = nextcord.Embed(title="🎬 {} 🍿".format(title), description=movie_summary, color=color)
             embed.set_thumbnail(url=url_imdb_thumbnail)  # 🎥 🎬 📽
             embed.set_image(url=movie_cover)
             await ctx.send(embed=embed)
         
         except Exception:
-            embed = discord.Embed(description="I couldn't find `{}`.\nTry again and make sure you enter the correct movie name.".format(movie_name), color=color)
+            embed = nextcord.Embed(description="I couldn't find `{}`.\nTry again and make sure you enter the correct movie name.".format(movie_name), color=color)
             embed.set_author(name="Movie Not Found 💬", icon_url=url_imdb_author)
             await ctx.send(embed=embed)
 
@@ -833,7 +847,7 @@ async def reddit_memes(ctx, *, topic):
         default_topic[str(ctx.guild.id)] = str(topic)
 
     try:
-        embed = discord.Embed(description="**Caption:\n**{}".format(sub.title), color=color)
+        embed = nextcord.Embed(description="**Caption:\n**{}".format(sub.title), color=color)
         embed.set_author(name="Post by: {}".format(sub.author), icon_url=url_reddit_author)
         # embed.set_thumbnail(url=url_reddit_thumbnail)
         embed.set_image(url=sub.url)
@@ -842,7 +856,7 @@ async def reddit_memes(ctx, *, topic):
         await message.add_reaction("🖱")
     except Exception:
         default_topic[str(ctx.guild.id)] = ""
-        embed = discord.Embed(description="Looks like the subreddit is either banned or does not exist 🤔", color=color)
+        embed = nextcord.Embed(description="Looks like the subreddit is either banned or does not exist 🤔", color=color)
         embed.set_author(name="Subreddit Not Found", icon_url=url_reddit_author)
         await ctx.send(embed=embed)
 
@@ -860,20 +874,20 @@ async def wikipedia_results(ctx, *, thing_to_search):
     
         try:
             title = wikipedia.page(thing_to_search)
-            embed = discord.Embed(description=wikipedia.summary(thing_to_search), color=color)
+            embed = nextcord.Embed(description=wikipedia.summary(thing_to_search), color=color)
             embed.set_author(name=title.title, icon_url=url_wiki)
             embed.add_field(name="Search References", value=", ".join([x for x in wikipedia.search(thing_to_search)][:5]), inline=False)
-            embed.set_footer(text="Searched by: {}".format(ctx.author.name), icon_url=ctx.author.avatar_url)
+            embed.set_footer(text="Searched by: {}".format(ctx.author.name), icon_url=ctx.author.avatar.url)
             await ctx.send(embed=embed)
             print("Results for wikipedia search sent...")
     
         except wikipedia.PageError as pe:
-            embed = discord.Embed(description=str(pe), color=color)
+            embed = nextcord.Embed(description=str(pe), color=color)
             embed.set_author(name="Error", icon_url=url_wiki)
             await ctx.send(embed=embed)    
             
     except wikipedia.DisambiguationError as de:
-        embed = discord.Embed(description=str(de), color=color)
+        embed = nextcord.Embed(description=str(de), color=color)
         embed.set_author(name="Hmm...", icon_url=url_wiki)
         await ctx.send(embed=embed)
 
@@ -936,15 +950,15 @@ async def conduct_poll(ctx, emojis=None, title=None, *, description=None):
         for j in poll_channels:
             if i.name == j:
                 send_to = i.name = j
-                poll_channel = discord.utils.get(ctx.guild.channels, name=send_to)
+                poll_channel = nextcord.utils.get(ctx.guild.channels, name=send_to)
                 
     if title is not None:
         if "_" in title:
             title = title.replace("_", " ")
             
     if emojis is not None and title is not None and description is not None:
-        embed = discord.Embed(title=f"Topic: {title}", description=description, color=color)
-        embed.set_footer(text=f"Conducted by: {ctx.author.name}", icon_url=ctx.author.avatar_url)
+        embed = nextcord.Embed(title=f"Topic: {title}", description=description, color=color)
+        embed.set_footer(text=f"Conducted by: {ctx.author.name}", icon_url=ctx.author.avatar.url)
         message = await poll_channel.send(embed=embed)
 
         if emojis == "y/n" or emojis == "yes/no":
@@ -958,10 +972,10 @@ async def conduct_poll(ctx, emojis=None, title=None, *, description=None):
             for emoji in emojis_list:
                 await message.add_reaction(emoji)
         if ctx.channel.name != poll_channel:
-            await ctx.send(embed=discord.Embed(description="Poll Sent Successfully 👍🏻", color=color))
+            await ctx.send(embed=nextcord.Embed(description="Poll Sent Successfully 👍🏻", color=color))
     
     elif title is None and description is None and emojis is None:
-        embed = discord.Embed( title="Polls", description="Command: `_polls emojis title description`", color=color)
+        embed = nextcord.Embed( title="Polls", description="Command: `_polls emojis title description`", color=color)
         embed.add_field(name="Details", value="`emojis:` enter emojis for the poll and they will be added as reactions\n`title:` give a title to your poll.\n`description:` tell everyone what the poll is about.", inline=False)
         embed.add_field(name="Notes", value="To add reactions to poll the multiple emojis should be separated by a `,`.\nIf you wish to use default emojis, `y/n` for yes or no and `t/t` for this or that.\nIf the title happens to be more than one word long, use `_` in place of spaces as demonstrated below.\nExample: `The_Ultimate_Choice` will be displayed in the title of poll as `The Ultimate Choice`.", inline=False)
         embed.set_thumbnail(url=random.choice(url_thumbnails))
@@ -975,7 +989,7 @@ async def total_requests(ctx):
     operation = "SELECT MAX(number) FROM requests"
     cursor.execute(operation)
     total = cursor.fetchall()
-    embed = discord.Embed(description=f"""**Requests Made:\n**{str(total).replace("[(", " ").replace(",)]", " ")}""", color=color)
+    embed = nextcord.Embed(description=f"""**Requests Made:\n**{str(total).replace("[(", " ").replace(",)]", " ")}""", color=color)
     await ctx.send(embed=embed)
 
 
@@ -987,31 +1001,31 @@ async def snipe(ctx):
         message = deleted_messages[ctx.channel.id][-1]
     
         if len(message) < 3:
-            embed = discord.Embed(title="Deleted Message", description=message[1], color=color)
-            embed.set_footer(text=f"Sent by: {bot.get_user(int(message[0]))}", icon_url=bot.get_user(int(message[0])).avatar_url,)
+            embed = nextcord.Embed(title="Deleted Message", description=message[1], color=color)
+            embed.set_footer(text=f"Sent by: {bot.get_user(int(message[0]))}", icon_url=bot.get_user(int(message[0])).avatar.url,)
             await ctx.send(embed=embed)
     
         else:
-            embed = discord.Embed(description="Embed deleted 👇🏻", color=color)
-            embed.set_author(name=bot.get_user(int(message[0])), icon_url=bot.get_user(int(message[0])).avatar_url)
+            embed = nextcord.Embed(description="Embed deleted 👇🏻", color=color)
+            embed.set_author(name=bot.get_user(int(message[0])), icon_url=bot.get_user(int(message[0])).avatar.url)
             await ctx.send(embed=embed)
             await ctx.send(embed=message[1])    
     
     except KeyError:
-        await ctx.send(embed=discord.Embed(description="There is nothing to web up 🕸", color=color))
+        await ctx.send(embed=nextcord.Embed(description="There is nothing to web up 🕸", color=color))
 
 
 @bot.command(aliases=["pfp"])
-async def user_pfp(ctx, member: discord.Member = None):
+async def user_pfp(ctx, member: nextcord.Member = None):
     number_of_requests()
 
     if member is None:
-        embed = discord.Embed(title="Profile Picture : {}".format(ctx.author.name), color=color)
-        embed.set_image(url=ctx.author.avatar_url)
+        embed = nextcord.Embed(title="Profile Picture : {}".format(ctx.author.name), color=color)
+        embed.set_image(url=ctx.author.avatar.url)
     
     else:
-        embed = discord.Embed(title="Profile Picture : {}".format(member.name), color=color)
-        embed.set_image(url=member.avatar_url)
+        embed = nextcord.Embed(title="Profile Picture : {}".format(member.name), color=color)
+        embed.set_image(url=member.avatar.url)
     embed.set_footer(text=random.choice(compliments))
     await ctx.send(embed=embed)
 
@@ -1026,15 +1040,15 @@ async def get_ping(ctx):
     c3 = "🔴"
     
     if ping >= 350:
-        embed = discord.Embed(description=f"{c3} {ping} ms", color=color)
+        embed = nextcord.Embed(description=f"{c3} {ping} ms", color=color)
         await ctx.send(embed=embed)
     
     elif ping <= 320:
-        embed = discord.Embed(description=f"{c1} {ping} ms", color=color)
+        embed = nextcord.Embed(description=f"{c1} {ping} ms", color=color)
         await ctx.send(embed=embed)
     
     elif ping > 320 and ping < 350:
-        embed = discord.Embed(description=f"{c2} {ping} ms", color=color)
+        embed = nextcord.Embed(description=f"{c2} {ping} ms", color=color)
         await ctx.send(embed=embed)
 
 
@@ -1048,18 +1062,18 @@ async def server_information(ctx):
     owner = str(ctx.guild.owner)
     region = str(ctx.guild.region)
     num_mem = str(ctx.guild.member_count)
-    icon = str(ctx.guild.icon_url)
+    icon = str(ctx.guild.icon.url if ctx.guild.icon else None)
     role_count = len(ctx.guild.roles)
     # bots_list = [bot.mention for bot in ctx.guild.members if bot.bot]
 
-    embed = discord.Embed(title=f"📚 {name} 📚", color=color)
+    embed = nextcord.Embed(title=f"📚 {name} 📚", color=color)
     embed.add_field(name="Owner", value=f"`{owner}`", inline=True)
     embed.add_field(name="Member Count", value=f"`{num_mem}`", inline=True)
     embed.add_field(name="Role Count", value=f"`{role_count}`", inline=True)
-    embed.add_field(name="Region", value=f"`{region}`", inline=True)
+    # embed.add_field(name="Region", value=f"`{region}`", inline=True)
     embed.add_field(name="Server ID", value=f"`{ID}`", inline=False)
     embed.add_field(name="Description", value=f"```{description}```", inline=False)
-    embed.set_footer(text=f"Created on {ctx.guild.created_at.__format__('%A, %B %d, %Y @ %H:%M:%S')}", icon_url=ctx.author.avatar_url)
+    embed.set_footer(text=f"Created on {ctx.guild.created_at.__format__('%A, %B %d, %Y @ %H:%M:%S')}", icon_url=ctx.author.avatar.url)
     embed.set_image(url=icon)
     await ctx.send(embed=embed)
 
@@ -1089,7 +1103,7 @@ async def encrypt_data(ctx, mode, *, message):
 async def date_time_ist(ctx, timezone=None):
     number_of_requests()
 
-    embed = discord.Embed(color=color)
+    embed = nextcord.Embed(color=color)
     if timezone is None:
         tzinfo = pytz.timezone(default_tz)
         embed.set_footer(text=f"Timezone: {default_tz}")
@@ -1107,12 +1121,12 @@ async def get_calendar(ctx, year, month):
     number_of_requests()
     
     try:
-        embed = discord.Embed(description="```{}```".format(calendar.month(int(year), int(month))), color=color)
+        embed = nextcord.Embed(description="```{}```".format(calendar.month(int(year), int(month))), color=color)
         embed.set_author(name="Calendar")
         await ctx.send(embed=embed)
         
     except IndexError:
-        embed = discord.Embed(description="{}, this month doesn't exist 📆".format(ctx.author.name), color=color)
+        embed = nextcord.Embed(description="{}, this month doesn't exist 📆".format(ctx.author.name), color=color)
         embed.set_author(name="Calendar", icon_url=url_dtc)
         await ctx.send(embed=embed)
 
@@ -1131,12 +1145,12 @@ async def sql_shell(ctx, *, expression):
             output = "---"
             
         conn_test.commit()
-        embed = discord.Embed(description=f"**Query**\n{str(expression)}\n**Output**\n{str(output)}", color=color)
+        embed = nextcord.Embed(description=f"**Query**\n{str(expression)}\n**Output**\n{str(output)}", color=color)
         embed.set_author(name="MySQL Shell", icon_url=url_author_sql)
         await ctx.send(embed=embed)
         
     except Exception as e:
-        embed_err = discord.Embed(title="Error", description=str(e), color=color)
+        embed_err = nextcord.Embed(title="Error", description=str(e), color=color)
         embed_err.set_author(name="MySQL Shell", icon_url=url_author_sql)
         await ctx.send(embed=embed_err)
 
@@ -1146,17 +1160,17 @@ async def python_shell(ctx, *, expression):
     number_of_requests()
 
     if expression in denied or denied[-2] in expression or denied[-1] in expression:
-        embed = discord.Embed(description=random.choice(denied_responses), color=color)
+        embed = nextcord.Embed(description=random.choice(denied_responses), color=color)
         embed.set_author(name="Access Denied", icon_url=url_author_python)
         await ctx.send(embed=embed)
 
     else:
         try:
-            embed_acc = discord.Embed(description=f"**Input**\n{str(expression)}\n**Output**\n{str(eval(expression))}", color=color)
+            embed_acc = nextcord.Embed(description=f"**Input**\n{str(expression)}\n**Output**\n{str(eval(expression))}", color=color)
             embed_acc.set_author(name="Python Shell", icon_url=url_author_python)
             await ctx.send(embed=embed_acc)
         except Exception as e:
-            embed_err = discord.Embed(title="Error", description=str(e), color=color)
+            embed_err = nextcord.Embed(title="Error", description=str(e), color=color)
             embed_err.set_author(name="Python Shell", icon_url=url_author_python)
             await ctx.send(embed=embed_err)
 
@@ -1168,18 +1182,18 @@ async def function_info(ctx, func):
     try:
 
         if "(" in [char for char in func] and ")" in [char for char in func]:
-            embed = discord.Embed(description=random.choice(no_functions), color=color)
+            embed = nextcord.Embed(description=random.choice(no_functions), color=color)
             embed.set_author(name="Access Denied", icon_url=url_author_python)
             await ctx.send(embed=embed)
 
         else:
             function = eval(func)
-            embed = discord.Embed(description=function.__doc__, color=color)
+            embed = nextcord.Embed(description=function.__doc__, color=color)
             embed.set_author(name="Info: {}".format(func), icon_url=url_author_python)
             await ctx.send(embed=embed)
 
     except Exception as e:
-        embed = discord.Embed(description=str(e), color=color)
+        embed = nextcord.Embed(description=str(e), color=color)
         embed.set_author(name="Error", icon_url=url_author_python)
         await ctx.send(embed=embed)
 
@@ -1189,29 +1203,29 @@ async def function_info(ctx, func):
 async def join_vc(ctx):
     number_of_requests()
 
-    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    voice = nextcord.utils.get(bot.voice_clients, guild=ctx.guild)
     try:
 
         if not ctx.message.author.voice:
-            embed = discord.Embed(description="{}, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+            embed = nextcord.Embed(description="{}, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
             embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
             await ctx.send(embed=embed)
 
         if voice == None:
             channel = ctx.message.author.voice.channel
             await channel.connect()
-            embed = discord.Embed(description=f"Connected to {ctx.guild.voice_client.channel.name}", color=color)
+            embed = nextcord.Embed(description=f"Connected to {ctx.guild.voice_client.channel.name}", color=color)
             embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
             embed.set_footer(text=random.choice(connections))
             await ctx.send(embed=embed)
 
         if voice != None:
-            embed = discord.Embed(description="Already connected to a voice channel ✅", color=color)
+            embed = nextcord.Embed(description="Already connected to a voice channel ✅", color=color)
             embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
             await ctx.send(embed=embed)
 
     except Exception as e:
-        embed = discord.Embed(description="Error:\n" + str(e), color=color)
+        embed = nextcord.Embed(description="Error:\n" + str(e), color=color)
         embed.set_author(name="Error", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -1226,24 +1240,24 @@ async def leave_vc(ctx):
 
             try:
                 if voice_client.is_connected():
-                    embed = discord.Embed(description=f"Disconnected from {ctx.guild.voice_client.channel.name}", color=color)
+                    embed = nextcord.Embed(description=f"Disconnected from {ctx.guild.voice_client.channel.name}", color=color)
                     embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                     embed.set_footer(text=random.choice(disconnections))
                     await ctx.send(embed=embed)
                     await voice_client.disconnect()
 
             except AttributeError:
-                embed = discord.Embed(description="I am not connected to a voice channel", color=color)
+                embed = nextcord.Embed(description="I am not connected to a voice channel", color=color)
                 embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                 await ctx.send(embed=embed)
 
         else:
-            embed = discord.Embed(description="{}, buddy, connect to the voice channel first 🔊".format(ctx.author.name), color=color)
+            embed = nextcord.Embed(description="{}, buddy, connect to the voice channel first 🔊".format(ctx.author.name), color=color)
             embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
             await ctx.send(embed=embed)
 
     except AttributeError:
-        embed = discord.Embed(description="I am not connected to a voice channel", color=color)
+        embed = nextcord.Embed(description="I am not connected to a voice channel", color=color)
         embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -1254,7 +1268,7 @@ async def set_bitrate(ctx, kbps):
 
     for items in ydl_op["postprocessors"]:
         items["preferredquality"] = str(kbps)
-        embed = discord.Embed(description="**Bitrate:** {} kbps".format(kbps), color=color)
+        embed = nextcord.Embed(description="**Bitrate:** {} kbps".format(kbps), color=color)
         embed.set_author(name="Audio Quality", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -1263,8 +1277,8 @@ async def set_bitrate(ctx, kbps):
 async def queue_song(ctx, *, name=None):
     number_of_requests()
 
-    if ctx.author.id not in [member.id for member in ctx.guild.voice_client.channel.members]:
-        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+    if ctx.author.id not in ([member.id for member in ctx.guild.voice_client.channel.members] if ctx.guild.voice_client else []):
+        embed = nextcord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
         embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -1293,13 +1307,13 @@ async def queue_song(ctx, *, name=None):
                     for position in range(len(check_list)):
                         if url == check_list[position]:
                             return position
-                embed = discord.Embed(description=f"{random.choice(already_queued)}\nSong Postion: {song_position()}", color=color)
+                embed = nextcord.Embed(description=f"{random.choice(already_queued)}\nSong Postion: {song_position()}", color=color)
                 embed.set_author(name="Already Queued", icon_url=url_author_music)
                 await ctx.send(embed=embed)
             else:
                 operation_add_song = f"""INSERT INTO music_queue(song_name, song_url, server)VALUES("{name_of_the_song}","{url}","{str(ctx.guild.id)}")"""
                 cursor.execute(operation_add_song)
-                embed = discord.Embed(description=f"{name_of_the_song}".replace(" - YouTube", " "), color=color)
+                embed = nextcord.Embed(description=f"{name_of_the_song}".replace(" - YouTube", " "), color=color)
                 embed.set_author(name="Song added", icon_url=url_author_music)
                 await ctx.send(embed=embed)
 
@@ -1319,7 +1333,7 @@ async def queue_song(ctx, *, name=None):
                             string += (str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " "))
                             index += 1
 
-                        embed = discord.Embed(description=string, color=color)
+                        embed = nextcord.Embed(description=string, color=color)
                         embed.set_author(name=f"{ctx.guild.name}'s Playlist", icon_url=url_author_music)
                         embed.set_thumbnail(url=random.choice(url_thumbnail_music))
                         embed.set_footer(text=f"Number Of Songs: {len(songs)}")
@@ -1344,7 +1358,7 @@ async def queue_song(ctx, *, name=None):
                             string += (str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " "))
                             index += 1
 
-                        embed = discord.Embed(description=string, color=color)
+                        embed = nextcord.Embed(description=string, color=color)
                         embed.set_author(name=f"{ctx.guild.name}'s Playlist", icon_url=url_author_music)
                         embed.set_thumbnail(url=random.choice(url_thumbnail_music))
                         embed.set_footer(text=f"Number Of Songs: {len(songs)}")
@@ -1364,12 +1378,12 @@ async def queue_song(ctx, *, name=None):
                         await player.add_reaction("🔇") # disconnect
 
                 except KeyError:
-                    embed = discord.Embed(description=random.choice(default_index), color=color)
+                    embed = nextcord.Embed(description=random.choice(default_index), color=color)
                     embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                     await ctx.send(embed=embed)
 
             else:
-                embed = discord.Embed(description=random.choice(empty_queue), color=color)
+                embed = nextcord.Embed(description=random.choice(empty_queue), color=color)
                 embed.set_author(name=f"{ctx.guild.name}'s Playlist", icon_url=url_author_music)
                 embed.set_thumbnail(url=random.choice(url_thumbnail_music))
                 embed.set_footer(text="Pull up the help menu with _help or t!help")
@@ -1380,7 +1394,7 @@ async def queue_song(ctx, *, name=None):
 async def play_music(ctx, *, char):
     number_of_requests()
 
-    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    voice = nextcord.utils.get(bot.voice_clients, guild=ctx.guild)
     try:
 
         if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
@@ -1408,14 +1422,14 @@ async def play_music(ctx, *, char):
                     URL_direct = youtube_download(ctx, url)
 
                     if ctx.voice_client.is_playing() != True:
-                        embed = discord.Embed(description="**Song: **{}".format(name_of_the_song).replace(" - YouTube", " "), color=color)
+                        embed = nextcord.Embed(description="**Song: **{}".format(name_of_the_song).replace(" - YouTube", " "), color=color)
                         embed.set_author(name="Now playing", url=url, icon_url=url_author_music)
                         embed.set_thumbnail(url=pytube.YouTube(url=url).thumbnail_url)
                         embed.add_field(name="Uploader", value=pytube.YouTube(url=url).author, inline=True)
                         embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
                         embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=url).length), inline=True)
                         player = await ctx.send(embed=embed)
-                        voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
+                        voice.play(nextcord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
 
                         await player.add_reaction("▶")  # resume
                         await player.add_reaction("⏸")  # pause
@@ -1424,14 +1438,14 @@ async def play_music(ctx, *, char):
 
                     else:
                         voice.stop()
-                        embed = discord.Embed(description="**Song: **{}".format(name_of_the_song).replace( " - YouTube", " "), color=color)
+                        embed = nextcord.Embed(description="**Song: **{}".format(name_of_the_song).replace( " - YouTube", " "), color=color)
                         embed.set_author(name="Now playing", url=url, icon_url=url_author_music)
                         embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
                         embed.set_thumbnail(url=pytube.YouTube(url=url).thumbnail_url)
                         embed.add_field(name="Uploader", value=pytube.YouTube(url=url).author, inline=True)
                         embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=url).length), inline=True)
                         player = await ctx.send(embed=embed)
-                        voice.play(discord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
+                        voice.play(nextcord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
 
                         await player.add_reaction("▶")  # resume
                         await player.add_reaction("⏸")  # pause
@@ -1453,7 +1467,7 @@ async def play_music(ctx, *, char):
                         URL_queue = youtube_download(ctx, server_queue[int(char)][1])
 
                         if ctx.voice_client.is_playing() != True:
-                            embed = discord.Embed(
+                            embed = nextcord.Embed(
                                 description="**Song: **{a}\n**Queue Index: **{b}".format(
                                     a=server_queue[int(char)][0], 
                                     b=char
@@ -1463,7 +1477,7 @@ async def play_music(ctx, *, char):
                             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[int(char)][1]).author, inline=True)
                             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length), inline=True)
-                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                             player = await ctx.send(embed=embed)
 
                             await player.add_reaction("⏮")  # previous track
@@ -1481,14 +1495,14 @@ async def play_music(ctx, *, char):
 
                         else:
                             voice.stop()
-                            embed = discord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[int(char)][0], b=char).replace(" - YouTube", " "), color=color)
+                            embed = nextcord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[int(char)][0], b=char).replace(" - YouTube", " "), color=color)
                             embed.set_author(name="Now playing", icon_url=url_author_music)
                             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[int(char)][1]).thumbnail_url)
                             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
                             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[int(char)][1]).author, inline=True)
                             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length), inline=True)
                             player = await ctx.send(embed=embed)
-                            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
 
                             # previous track
                             await player.add_reaction("⏮")
@@ -1505,22 +1519,22 @@ async def play_music(ctx, *, char):
                             await player.add_reaction("🔇") # disconnect
 
                     except IndexError:
-                        embed = discord.Embed(description="Looks like there is no song at this index", color=color)
+                        embed = nextcord.Embed(description="Looks like there is no song at this index", color=color)
                         embed.set_author(name="Oops...", icon_url=url_author_music)
                         await ctx.send(embed=embed)
 
             except AttributeError:
-                embed = discord.Embed(description="I am not connected to a voice channel".format(ctx.author.name), color=color)
+                embed = nextcord.Embed(description="I am not connected to a voice channel".format(ctx.author.name), color=color)
                 embed.set_author(name="Voice", icon_url=url_author_music)
                 await ctx.send(embed=embed)
 
         else:
-            embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+            embed = nextcord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
             embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
             await ctx.send(embed=embed)
 
     except AttributeError:
-        embed = discord.Embed(description="I am not connected to a voice channel".format(ctx.author.name), color=color)
+        embed = nextcord.Embed(description="I am not connected to a voice channel".format(ctx.author.name), color=color)
         embed.set_author(name="Voice", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -1535,13 +1549,13 @@ async def fetch_current_song(ctx):
     server_queue = cursor.fetchall()
 
     if len(server_queue) <= 0:
-        embed = discord.Embed(description="There are no songs in the queue currently 🤔")
+        embed = nextcord.Embed(description="There are no songs in the queue currently 🤔")
         embed.set_author(name="Uh oh...", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
     else:
         try:
-            embed = discord.Embed(
+            embed = nextcord.Embed(
                 description="**Song: **{a}\n**Index: **{b}\n**Views: **{c}\n**Description: **\n{d}".format(
                     a=server_queue[server_index[str(ctx.guild.id)]][0],
                     b=server_index[str(ctx.guild.id)],
@@ -1568,7 +1582,7 @@ async def fetch_current_song(ctx):
             await player.add_reaction("🔇") # disconnect
 
         except KeyError:
-            embed = discord.Embed(description=random.choice(default_index), color=color)
+            embed = nextcord.Embed(description=random.choice(default_index), color=color)
             embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
             await ctx.send(embed=embed)
 
@@ -1582,21 +1596,21 @@ async def previous_song(ctx):
     operation = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
     cursor.execute(operation)
     server_queue = cursor.fetchall()
-    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    voice = nextcord.utils.get(bot.voice_clients, guild=ctx.guild)
 
     if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
         try:
             URL_queue = youtube_download(ctx, server_queue[server_index[str(ctx.guild.id)]][1])
 
             if ctx.voice_client.is_playing() != True:
-                embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+                embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
                 embed.set_author(name="Now playing", icon_url=url_author_music)
                 embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
                 embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
                 embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
                 embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
                 player = await ctx.send(embed=embed)
-                voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
 
                 await player.add_reaction("⏮")  # previous track
                 await player.add_reaction("▶")  # resume
@@ -1613,14 +1627,14 @@ async def previous_song(ctx):
 
             else:
                 voice.stop()
-                embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+                embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
                 embed.set_author(name="Now playing", icon_url=url_author_music)
                 embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
                 embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
                 embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
                 embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
                 player = await ctx.send(embed=embed)
-                voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
 
                 await player.add_reaction("⏮")  # previous track
                 await player.add_reaction("▶")  # resume
@@ -1636,16 +1650,16 @@ async def previous_song(ctx):
                 await player.add_reaction("🔇") # disconnect
 
         except IndexError:
-            embed = discord.Embed(description="Looks like there is no song at this index", color=color)
+            embed = nextcord.Embed(description="Looks like there is no song at this index", color=color)
             embed.set_author(name="Oops...", icon_url=url_author_music)
             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
             await ctx.send(embed=embed)
 
     else:
-        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+        embed = nextcord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
         embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
         await ctx.send(embed=embed)
-
+        
 
 @bot.command(aliases=["rep", "repeat"])
 async def repeat_song(ctx):
@@ -1654,20 +1668,20 @@ async def repeat_song(ctx):
     operation = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
     cursor.execute(operation)
     server_queue = cursor.fetchall()
-    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
-
+    voice = nextcord.utils.get(bot.voice_clients, guild=ctx.guild)
+    
     try:
         URL_queue = youtube_download(ctx, server_queue[server_index[str(ctx.guild.id)]][1])
 
         if ctx.voice_client.is_playing() != True:
-            embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+            embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
             embed.set_author(name="Repeating Song", icon_url=url_author_music)
             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
             player = await ctx.send(embed=embed)
-            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS), after=lambda e: play_music(voice, URL_queue))
 
             await player.add_reaction("⏮")  # previous track
             await player.add_reaction("▶")  # resume
@@ -1684,14 +1698,14 @@ async def repeat_song(ctx):
 
         else:
             voice.stop()
-            embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+            embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
             embed.set_author(name="Repeating Song", icon_url=url_author_music)
             embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
             embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
             embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
             player = await ctx.send(embed=embed)
-            voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS), after=lambda e: play_music(voice, URL_queue))
 
             await player.add_reaction("⏮")  # previous track
             await player.add_reaction("▶")  # resume
@@ -1707,7 +1721,7 @@ async def repeat_song(ctx):
             await player.add_reaction("🔇") # disconnect
 
     except Exception as e:
-        embed = discord.Embed(description=str(e), color=color)
+        embed = nextcord.Embed(description=str(e), color=color)
         embed.set_author(name="Error", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -1721,21 +1735,21 @@ async def skip_song(ctx):
     operation = "SELECT * FROM music_queue WHERE server={}".format(str(ctx.guild.id))
     cursor.execute(operation)
     server_queue = cursor.fetchall()
-    voice = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    voice = nextcord.utils.get(bot.voice_clients, guild=ctx.guild)
 
     if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
         try:
             URL_queue = youtube_download(ctx, server_queue[server_index[str(ctx.guild.id)]][1])
 
             if ctx.voice_client.is_playing() != True:
-                embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+                embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
                 embed.set_author(name="Now Playing", icon_url=url_author_music)
                 embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
                 embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
                 embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
                 embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
                 player = await ctx.send(embed=embed)
-                voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
                 
                 await player.add_reaction("⏮")  # previous track
                 await player.add_reaction("▶")  # resume
@@ -1752,14 +1766,14 @@ async def skip_song(ctx):
             
             else:
                 voice.stop()
-                embed = discord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+                embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
                 embed.set_author(name="Now playing", icon_url=url_author_music)
                 embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
                 embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
                 embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
                 embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
                 player = await ctx.send(embed=embed)
-                voice.play(discord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
 
                 await player.add_reaction("⏮")  # previous track
                 await player.add_reaction("▶")  # resume
@@ -1775,13 +1789,13 @@ async def skip_song(ctx):
                 await player.add_reaction("🔇") # disconnect
 
         except IndexError:
-            embed = discord.Embed(description="Looks like there is no song at this index", color=color)
+            embed = nextcord.Embed(description="Looks like there is no song at this index", color=color)
             embed.set_author(name="Oops...", icon_url=url_author_music)
             embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
             await ctx.send(embed=embed)
 
     else:
-        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+        embed = nextcord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
         embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -1802,22 +1816,22 @@ async def pause_song(ctx):
                 await message.add_reaction("⏸")
             else:
                 if pause == True:
-                    embed = discord.Embed(description="Song is already paused ❗", color=color)
+                    embed = nextcord.Embed(description="Song is already paused ❗", color=color)
                     embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
                     await ctx.send(embed=embed)
                 else:
-                    embed = discord.Embed(
+                    embed = nextcord.Embed(
                         description="No song playing currently ❗", color=color)
                     embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
                     await ctx.send(embed=embed)
 
         except Exception as e:
-            embed = discord.Embed(description=str(e), color=color)
+            embed = nextcord.Embed(description=str(e), color=color)
             embed.set_author(name="Error", icon_url=url_author_music)
             await ctx.send(embed=embed)
 
     else:
-        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+        embed = nextcord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
         embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -1839,23 +1853,23 @@ async def resume_song(ctx):
 
             else:
                 if playing == True:
-                    embed = discord.Embed(description="Song is not paused 🤔", color=color)
+                    embed = nextcord.Embed(description="Song is not paused 🤔", color=color)
                     embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                     embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
                     await ctx.send(embed=embed)
                 else:
-                    embed = discord.Embed(description="Nothing is playing right now", color=color)
+                    embed = nextcord.Embed(description="Nothing is playing right now", color=color)
                     embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                     embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
                     await ctx.send(embed=embed)
 
         except Exception as e:
-            embed = discord.Embed(description=str(e), color=color)
+            embed = nextcord.Embed(description=str(e), color=color)
             embed.set_author(name="Error", icon_url=url_author_music)
             await ctx.send(embed=embed)
 
     else:
-        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+        embed = nextcord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
         embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -1875,18 +1889,18 @@ async def stop_song(ctx):
                 message = await ctx.send("Song stopped")
                 await message.add_reaction("⏹")
             else:
-                embed = discord.Embed(description="Nothing is playing right now", color=color)
+                embed = nextcord.Embed(description="Nothing is playing right now", color=color)
                 embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
                 embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
                 await ctx.send(embed=embed)
 
         except Exception as e:
-            embed = discord.Embed(description=str(e), color=color)
+            embed = nextcord.Embed(description=str(e), color=color)
             embed.set_author(name="Error", icon_url=url_author_music)
             await ctx.send(embed=embed)
 
     else:
-        embed = discord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+        embed = nextcord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
         embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -1898,7 +1912,7 @@ async def remove_song(ctx, index):
     operation_view = 'SELECT * FROM music_queue WHERE server="{}"'.format(str(ctx.guild.id))
     cursor.execute(operation_view)
     songs = cursor.fetchall()
-    embed = discord.Embed(description="{}".format(songs[int(index)][0]), color=color)
+    embed = nextcord.Embed(description="{}".format(songs[int(index)][0]), color=color)
     embed.set_author(name="Song removed", icon_url=url_author_music)
     await ctx.send(embed=embed)
     operation_remove = ("DELETE FROM music_queue WHERE song_url = '{a}' AND server='{b}'".format(a=songs[int(index)][1], b=str(ctx.guild.id)))
@@ -1920,14 +1934,14 @@ async def clear_song_queue(ctx):
         await message.add_reaction("✅")
 
     else:
-        embed_empty = discord.Embed(description=random.choice(empty_queue), color=color)
+        embed_empty = nextcord.Embed(description=random.choice(empty_queue), color=color)
         embed_empty.set_author(name="Hmm...", icon_url=url_author_music)
         await ctx.send(embed=embed_empty)
 
 # -------------------------------------------------- EXTRA ---------------------------------------------------------
 
 @bot.command(aliases=["addbday"])
-async def add_user_bday(ctx, member: discord.Member, month, day):
+async def add_user_bday(ctx, member: nextcord.Member, month, day):
     number_of_requests()
 
     op_check = "SELECT mem_id FROM birthdays"
@@ -1938,17 +1952,17 @@ async def add_user_bday(ctx, member: discord.Member, month, day):
     try:
         for tup_memID in memIDs:
             if str(member.id) in tup_memID:
-                await ctx.send(embed=discord.Embed(description=f"{member.name}'s birthday is already in my database 🤔", color=color))
+                await ctx.send(embed=nextcord.Embed(description=f"{member.name}'s birthday is already in my database 🤔", color=color))
                 toggle = 1
         if toggle == 0:
             cursor.execute(f"INSERT INTO birthdays VALUES('{member.id}', {month}, {day}, '{ctx.guild.id}')")
-            await ctx.send(embed=discord.Embed(description=f"{member.name}'s birthday added to database 👍🏻", color=color))
+            await ctx.send(embed=nextcord.Embed(description=f"{member.name}'s birthday added to database 👍🏻", color=color))
     except Exception as e:
         await ctx.send(str(e))
 
 
 @bot.command(aliases=["rembday"])
-async def remove_user_bday(ctx, member: discord.Member):
+async def remove_user_bday(ctx, member: nextcord.Member):
     number_of_requests()
 
     op_check = "SELECT mem_id FROM birthdays"
@@ -1961,10 +1975,10 @@ async def remove_user_bday(ctx, member: discord.Member):
             if str(member.id) in tup_memID:
                 op_insert = "DELETE FROM birthdays WHERE mem_id={}".format(member.id)
                 cursor.execute(op_insert)
-                await ctx.send(embed=discord.Embed(description="{}'s birthday removed from database 👍🏻".format(member.display_name), color=color))
+                await ctx.send(embed=nextcord.Embed(description="{}'s birthday removed from database 👍🏻".format(member.display_name), color=color))
                 toggle = 1
         if toggle == 0:
-            await ctx.send(embed=discord.Embed(description="{}'s birthday does not exist in my database 🤔".format(member.display_name), color=color))
+            await ctx.send(embed=nextcord.Embed(description="{}'s birthday does not exist in my database 🤔".format(member.display_name), color=color))
     except Exception as e:
         await ctx.send(str(e))
 
@@ -1984,7 +1998,7 @@ async def check_user_bdays_and_wish(ctx):
         for j in announcement_channels:
             if i.name == j:
                 send_to = i.name = j
-                channel = discord.utils.get(ctx.guild.channels, name=send_to)
+                channel = nextcord.utils.get(ctx.guild.channels, name=send_to)
 
     for bday in bdays:  # bday[0]   bday[1]  bday[2]
         if datetime.datetime.today().month == bday[1]and datetime.datetime.today().day == bday[2]:
@@ -1995,13 +2009,13 @@ async def check_user_bdays_and_wish(ctx):
                 f"✨ Happy Birthday {name} ✨",
                 f"🎇 Happy Birthday {name} 🎇",
             ]
-            embed = discord.Embed(title=random.choice(wishes), description=random.choice(descriptions), color=color)
+            embed = nextcord.Embed(title=random.choice(wishes), description=random.choice(descriptions), color=color)
             embed.set_image(url=random.choice(url_bdays_spiderman))
-            embed.set_thumbnail(url=bot.get_user(int(bday[0])).avatar_url)
+            embed.set_thumbnail(url=bot.get_user(int(bday[0])).avatar.url)
             await channel.send(f"<@{bot.get_user(int(bday[0])).id}>")
             message = await channel.send(embed=embed)
 
-            await ctx.send(embed=discord.Embed(description="Wish Sent 🥳", color=color))
+            await ctx.send(embed=nextcord.Embed(description="Wish Sent 🥳", color=color))
             await message.add_reaction("🎁")
             await message.add_reaction("🎈")
             await message.add_reaction("🎂")
@@ -2010,6 +2024,6 @@ async def check_user_bdays_and_wish(ctx):
             toggle = 1
 
     if toggle == 0:
-        await ctx.send(embed=discord.Embed(description=random.choice(none_today), color=color))
+        await ctx.send(embed=nextcord.Embed(description=random.choice(none_today), color=color))
 
 # ------------------------------------------------------------------------------------------------------------------------------

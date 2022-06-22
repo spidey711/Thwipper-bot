@@ -36,7 +36,7 @@ bot = commands.Bot(
     intents=intents,
     case_insensitive=True,
 )
-color = nextcord.Color.from_rgb(68, 123, 190)
+color = nextcord.Color.from_rgb(223, 31, 45)
 bot.remove_command("help")
 
 # Enviroment Variables
@@ -1220,7 +1220,6 @@ async def queue_song(ctx, *, name=None):
                 link = str(link).replace("(", "").replace(",)", "").replace("'", "")
                 check_list.append(link)
 
-                # need to use enumerate over here
             if url in check_list:
                 def song_position():
                     for position in range(len(check_list)):
@@ -1294,9 +1293,7 @@ async def play_music(ctx, *, char):
 
     voice = nextcord.utils.get(bot.voice_clients, guild=ctx.guild)
     try:
-
         if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
-
             try:
 
                 if char.isdigit() == False:

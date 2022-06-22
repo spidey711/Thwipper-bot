@@ -1246,7 +1246,7 @@ async def queue_song(ctx, *, name=None):
                     # queue display showed no songs due to server_index > number of songs
                     server_index[str(ctx.guild.id)] = len(songs) - 1
                 else:
-                    try:
+                    try: 
                         string = ""
                         if server_index[str(ctx.guild.id)] > 7:
                             start = server_index[str(ctx.guild.id)] - 7

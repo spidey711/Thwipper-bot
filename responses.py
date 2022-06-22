@@ -16,6 +16,8 @@ default_index = ["Use prefix `index` from queue to set a current song 🤔","You
 empty_queue = ["Hey, it looks like your queue is empty 🤔", "You might wanna queue some songs, this playlist lookin' empty.", "It seems you haven't queued any songs 🎼","This server's queue is empty. Queue some songs maybe? 😃","Uh oh...We have ourselves an empty queue, how about we queue some songs? 🎶"]
 already_queued = ["Hey buddy, it looks like this song is already in your queue 🤔","Song is already in queue 🎼","Hey, I remember you playing this one a while back, it seems its already queued 🎸"]
 description_embed_errors = ["Looks like the video's description is too big for this embed 🤔","Sorry, I won't be able to show description as it is too big for this embed 🙁"]
+no_song_at_index = ["Looks like there's no song at this position 🤔", "No song is saved at this index 💭"]
+
 
 # Shells
 denied = ["exit()","token", "sql_pass", 'eval("token")', "eval('token')",'eval("sql_pass")',"key","cipher","eval('cipher')",'eval("cipher")',"eval('key')",'eval("key")',"reddit_client_id","eval('reddit_client_id')",'eval("reddit_client_id")',"reddit_client_secret","eval('reddit_client_secret')",'eval("reddit_client_secret")',"reddit_user_agent","eval('reddit_user_agent')",'eval("reddit_user_agent")',"reddit_client_id","eval('reddit_client_id')",'eval ("reddit_client_id")',"reddit_user_pass","eval('reddit_user_pass')",'eval("reddit_user_pass")',"reddit_client_id","eval('reddit_client_id')",'eval("reddit_client_id")',"10**10**10","import","exec"]

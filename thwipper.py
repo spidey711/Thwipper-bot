@@ -356,9 +356,10 @@ async def on_reaction_add(reaction, user):
         pause = reaction.message.guild.voice_client.is_paused()
 
         # SERVER QUEUE
-        operation_view = f"SELECT * FROM music_queue WHERE server={str(reaction.message.guild.id)}"
+        operation_view = f"SELECT song_name, song_url FROM music_queue WHERE server={str(reaction.message.guild.id)}"
         cursor.execute(operation_view)
-        server_queue = cursor.fetchall()
+            # due to enumerate() in below line, some reactions may stop working, I'll fix them soon
+        server_queue = list(enumerate(cursor.fetchall(), start=0)) #song[0] is counter, song[1] is (name, url)
         members_in_vc = [str(names) for names in reaction.message.guild.voice_client.channel.members]
         string = ""
 
@@ -384,66 +385,19 @@ async def on_reaction_add(reaction, user):
                     await reaction.message.edit(embed=embed)
 
 
+        # under works
         if reaction.emoji == "🔼":
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
                 await reaction.remove(user)
-                try:
-                    index = server_index[str(reaction.message.guild.id)] - 20    
-                    if server_index[str(reaction.message.guild.id)] > 10:
-                        for song in server_queue[index: index - 20]:
-                            string += ( str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " "))
-                            index += 1
-                        embed = nextcord.Embed(description=string, color=color)
-                        embed.set_author(name=f"{reaction.message.guild.name}'s Playlist", icon_url=url_author_music)
-                        embed.set_thumbnail(url=random.choice(url_thumbnail_music))
-                        embed.set_footer(text=f"Number Of Songs: {len(server_queue)}")
-                        await reaction.message.edit(embed=embed)
-                    else:
-                        index = server_index[str(reaction.message.guild.id)]
-                        for song in server_queue[index: index + 20]:
-                            string += (str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " "))
-                            index += 1
-                        embed = nextcord.Embed(description=string, color=color)
-                        embed.set_author(name=f"{reaction.message.guild.name}'s Playlist", icon_url=url_author_music)
-                        embed.set_thumbnail(url=random.choice(url_thumbnail_music))
-                        embed.set_footer(text=f"Number Of Songs: {len(server_queue)}")
-                        await reaction.message.edit(embed=embed)
-                except KeyError:
-                    embed = nextcord.Embed(description=random.choice(default_index), color=color )
-                    embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
-                    await reaction.message.edit(embed=embed)
-
-
+                
+    
+        # under works
         if reaction.emoji == "🔽":
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
                 await reaction.remove(user)
-                try:
-                    index = server_index[str(reaction.message.guild.id)] - 10
-                    if server_index[str(reaction.message.guild.id)] > 10:
-                        for song in server_queue[index: index + 20]:
-                            string += ( str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " "))
-                            index += 1
-                        embed = nextcord.Embed(description=string, color=color)
-                        embed.set_author(name=f"{reaction.message.guild.name}'s Playlist", icon_url=url_author_music)
-                        embed.set_thumbnail(url=random.choice(url_thumbnail_music))
-                        embed.set_footer(text=f"Number Of Songs: {len(server_queue)}")
-                        await reaction.message.edit(embed=embed)
-                    else:
-                        index = server_index[str(reaction.message.guild.id)]
-                        for song in server_queue[index: index + 20]:
-                            string += (str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " "))
-                            index += 1
-                        embed = nextcord.Embed(description=string, color=color)
-                        embed.set_author(name=f"{reaction.message.guild.name}'s Playlist", icon_url=url_author_music)
-                        embed.set_thumbnail(url=random.choice(url_thumbnail_music))
-                        embed.set_footer(text=f"Number Of Songs: {len(server_queue)}")
-                        await reaction.message.edit(embed=embed)
-                except KeyError:
-                    embed = nextcord.Embed(description=random.choice(default_index), color=color )
-                    embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
-                    await reaction.message.edit(embed=embed)
 
-                        
+
+        # under works                        
         if reaction.emoji == "🔠":
             if str(user) != str(bot.user) and reaction.message.author == bot.user:
                 await reaction.remove(user)
@@ -468,26 +422,20 @@ async def on_reaction_add(reaction, user):
                             else:
                                 if playing == True:
                                     embed = nextcord.Embed(description="Song is not paused 🤔", color=color)
-                                    embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
-                                    embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
-                                    await reaction.message.edit(embed=embed)
                                 else:
                                     embed = nextcord.Embed(description="Nothing is playing right now ❗", color=color)
-                                    embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
-                                    embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
-                                    await reaction.message.edit(embed=embed)
+                                embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
+                                embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
+                                await reaction.message.edit(embed=embed)
                         else:
                             if playing != True:
                                 voice_client.resume()
                                 embed = nextcord.Embed(description="Song has resumed playing ▶", color=color)
-                                embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
-                                embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
-                                await reaction.message.edit(embed=embed)
                             else:
                                 embed = nextcord.Embed(description="Song is already playing 🎸", color=color)
-                                embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
-                                embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
-                                await reaction.message.edit(embed=embed)
+                            embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
+                            embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
+                            await reaction.message.edit(embed=embed)
                     except Exception as e:
                         embed = nextcord.Embed(description=str(e), color=color)
                         embed.set_author(name="Error", icon_url=url_author_music)
@@ -512,14 +460,11 @@ async def on_reaction_add(reaction, user):
                         else:
                             if pause == True:
                                 embed = nextcord.Embed(description="Song is already paused ⏸", color=color)
-                                embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
-                                embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
-                                await reaction.message.edit(embed=embed)
                             else:
                                 embed = nextcord.Embed(description="No song playing currently ❗", color=color)
-                                embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
-                                embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
-                                await reaction.message.edit(embed=embed)
+                            embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
+                            embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
+                            await reaction.message.edit(embed=embed)
                     except Exception as e:
                         embed = nextcord.Embed(description=str(e), color=color)
                         embed.set_author(name="Error", icon_url=url_author_music)
@@ -538,24 +483,18 @@ async def on_reaction_add(reaction, user):
                     try:
                         URL_queue = youtube_download(reaction.message, server_queue[server_index[str(reaction.message.guild.id)]][1])
                         if playing != True:
-                            embed = nextcord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)],).replace(" - YouTube", " "), color=color,)
-                            embed.set_author(name="Now playing", icon_url=url_author_music)
-                            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
-                            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
-                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
-                            embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
-                            await reaction.message.edit(embed=embed)
-                            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                            pass
                         else:
                             voice.stop()
-                            embed = nextcord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)]).replace(" - YouTube", " "), color=color)
-                            embed.set_author(name="Now playing", icon_url=url_author_music)
-                            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
-                            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
-                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
-                            embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
-                            await reaction.message.edit(embed=embed)
-                            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                        embed = nextcord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)],).replace(" - YouTube", " "), color=color,)
+                        embed.set_author(name="Now playing", icon_url=url_author_music)
+                        embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
+                        embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
+                        embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
+                        embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
+                        await reaction.message.edit(embed=embed)
+                        voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                        
                     except IndexError:
                         embed = nextcord.Embed(description="Looks like there is no song at this index", color=color)
                         embed.set_author(name="Oops...", icon_url=url_author_music)
@@ -574,28 +513,22 @@ async def on_reaction_add(reaction, user):
                     try:
                         URL_queue = youtube_download(reaction.message, server_queue[server_index[str(reaction.message.guild.id)]][1])
                         if playing != True:
-                            embed = nextcord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(
-                                a=server_queue[server_index[str(reaction.message.guild.id)]][0], 
-                                b=server_index[str(reaction.message.guild.id)]).replace(" - YouTube", " "), 
-                                color=color
-                            )
-                            embed.set_author(name="Now Playing", icon_url=url_author_music)
-                            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
-                            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
-                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
-                            embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
-                            await reaction.message.edit(embed=embed)
-                            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                            pass
                         else:
                             voice.stop()
-                            embed = nextcord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[server_index[str(reaction.message.guild.id)]][0], b=server_index[str(reaction.message.guild.id)]).replace(" - YouTube", " "), color=color)
-                            embed.set_author(name="Now Playing", icon_url=url_author_music)
-                            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
-                            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
-                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
-                            embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
-                            await reaction.message.edit(embed=embed)
-                            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                        embed = nextcord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(
+                            a=server_queue[server_index[str(reaction.message.guild.id)]][0], 
+                            b=server_index[str(reaction.message.guild.id)]).replace(" - YouTube", " "), 
+                            color=color
+                        )
+                        embed.set_author(name="Now Playing", icon_url=url_author_music)
+                        embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
+                        embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
+                        embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
+                        embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
+                        await reaction.message.edit(embed=embed)
+                        voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+
                     except IndexError:
                         embed = nextcord.Embed(description="Looks like there is no song at this index", color=color)
                         embed.set_author(name="Oops...", icon_url=url_author_music)
@@ -614,14 +547,11 @@ async def on_reaction_add(reaction, user):
                         if playing == True or pause == True:
                             voice_client.stop()
                             embed = nextcord.Embed(description="Song has been stopped ⏹", color=color)
-                            embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
-                            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
-                            await reaction.message.edit(embed=embed)
                         else:
                             embed = nextcord.Embed(description="Nothing is playing at the moment❗", color=color)
-                            embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
-                            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
-                            await reaction.message.edit(embed=embed)
+                        embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
+                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                        await reaction.message.edit(embed=embed)
                     except Exception as e:
                         embed = nextcord.Embed(description=str(e), color=color)
                         embed.set_author(name="Error", icon_url=url_author_music)
@@ -680,24 +610,18 @@ async def on_reaction_add(reaction, user):
                     try:
                         URL_queue = youtube_download(reaction.message, server_queue[server_index[str(reaction.message.guild.id)]][1])
                         if reaction.message.guild.voice_client.is_playing() != True:
-                            embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(reaction.message.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-                            embed.set_author(name="Repeating Song", icon_url=url_author_music)
-                            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
-                            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
-                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
-                            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
-                            await reaction.message.edit(embed=embed)
-                            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                            pass
                         else:
                             voice.stop()
-                            embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(reaction.message.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-                            embed.set_author(name="Repeating Song", icon_url=url_author_music)
-                            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
-                            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
-                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
-                            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
-                            await reaction.message.edit(embed=embed)
-                            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                        embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(reaction.message.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+                        embed.set_author(name="Repeating Song", icon_url=url_author_music)
+                        embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).thumbnail_url)
+                        embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).author, inline=True)
+                        embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(reaction.message.guild.id)]][1]).length), inline=True)
+                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(reaction.message.guild.voice_client.channel.bitrate/1000))
+                        await reaction.message.edit(embed=embed)
+                        voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                    
                     except Exception as e:
                         embed = nextcord.Embed(description=str(e), color=color)
                         embed.set_author(name="Error", icon_url=url_author_music)
@@ -722,25 +646,19 @@ async def on_reaction_add(reaction, user):
                     # setting server index to new randomly chosen index
                     server_index[str(reaction.message.guild.id)] = queue_index
                     URL_shuffle = youtube_download(reaction.message, random_song[1])
-                    if reaction.message.guild.voice_client.is_playing() == False:
-                        embed = nextcord.Embed(description=f"**Song: **{random_song[0]}\n**Queue Index: **{queue_index}".replace(" - YouTube", " "), color=color)
-                        embed.set_author(name="Shuffle Play", icon_url=url_author_music)
-                        embed.set_thumbnail(url=pytube.YouTube(url=random_song[1]).thumbnail_url)
-                        embed.add_field(name="Uploader", value=pytube.YouTube(url=random_song[1]).author, inline=True)
-                        embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=random_song[1]).length), inline=True)
-                        embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
-                        await reaction.message.edit(embed=embed)
-                        voice.play(nextcord.FFmpegPCMAudio(URL_shuffle, **FFMPEG_OPTS))
+                    if reaction.message.guild.voice_client.is_playing() != True:
+                        pass
                     else:
                         voice.stop()
-                        embed = nextcord.Embed(description=f"**Song: **{random_song[0]}\n**Queue Index: **{queue_index}".replace(" - YouTube", " "), color=color)
-                        embed.set_author(name="Shuffle Play", icon_url=url_author_music)
-                        embed.set_thumbnail(url=pytube.YouTube(url=random_song[1]).thumbnail_url)
-                        embed.add_field(name="Uploader", value=pytube.YouTube(url=random_song[1]).author, inline=True)
-                        embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=random_song[1]).length), inline=True)
-                        embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
-                        await reaction.message.edit(embed=embed)
-                        voice.play(nextcord.FFmpegPCMAudio(URL_shuffle, **FFMPEG_OPTS))
+                    embed = nextcord.Embed(description=f"**Song: **{random_song[0]}\n**Queue Index: **{queue_index}".replace(" - YouTube", " "), color=color)
+                    embed.set_author(name="Shuffle Play", icon_url=url_author_music)
+                    embed.set_thumbnail(url=pytube.YouTube(url=random_song[1]).thumbnail_url)
+                    embed.add_field(name="Uploader", value=pytube.YouTube(url=random_song[1]).author, inline=True)
+                    embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=random_song[1]).length), inline=True)
+                    embed.set_footer(text=f"Voice Channel Bitrate: {reaction.message.guild.voice_client.channel.bitrate/1000} kbps")
+                    await reaction.message.edit(embed=embed)
+                    voice.play(nextcord.FFmpegPCMAudio(URL_shuffle, **FFMPEG_OPTS))
+                
                 else:
                     embed = nextcord.Embed(description=f"Connect to a voice channel first 🔊", color=color)
                     embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
@@ -871,7 +789,6 @@ async def wikipedia_results(ctx, *, thing_to_search):
     number_of_requests()
 
     try:
-    
         try:
             title = wikipedia.page(thing_to_search)
             embed = nextcord.Embed(description=wikipedia.summary(thing_to_search), color=color)
@@ -926,7 +843,8 @@ async def stop_program(ctx):
         conn.commit()
         try:
             await voice_client.disconnect()
-        except: pass
+        except: 
+            pass
         await ctx.send("Alright, see ya!")
         exit()
     else:
@@ -1278,7 +1196,7 @@ async def queue_song(ctx, *, name=None):
     number_of_requests()
 
     if ctx.author.id not in ([member.id for member in ctx.guild.voice_client.channel.members] if ctx.guild.voice_client else []):
-        embed = nextcord.Embed(description="{}, buddy, connect to a voice channel first 🔊".format(ctx.author.name), color=color)
+        embed = nextcord.Embed(description="Either I am not connected or you're not 🔊", color=color)
         embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
         await ctx.send(embed=embed)
 
@@ -1297,11 +1215,12 @@ async def queue_song(ctx, *, name=None):
             # check if song is already queued
             operation_check = (f"SELECT song_url FROM music_queue WHERE server={str(ctx.guild.id)}")
             cursor.execute(operation_check)
-            index, check_list, links = None, [], cursor.fetchall()
+            check_list, links = [], cursor.fetchall()
             for link in links:
                 link = str(link).replace("(", "").replace(",)", "").replace("'", "")
                 check_list.append(link)
 
+                # need to use enumerate over here
             if url in check_list:
                 def song_position():
                     for position in range(len(check_list)):
@@ -1320,62 +1239,37 @@ async def queue_song(ctx, *, name=None):
         else:
             operation_view = ("SELECT song_name, song_url FROM music_queue WHERE server={}".format(str(ctx.guild.id)))
             cursor.execute(operation_view)
-            songs = cursor.fetchall()
+            songs = (list(enumerate(cursor.fetchall(), start=0))) #song[0] is counter, song[1] is (name, url)
 
             if len(songs) > 0:
                 try:
                     string = ""
-
-                    if server_index[str(ctx.guild.id)] > 10:
-                        index = server_index[str(ctx.guild.id)] - 10
-
-                        for song in songs[index: index + 20]:
-                            string += (str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " "))
-                            index += 1
-
-                        embed = nextcord.Embed(description=string, color=color)
-                        embed.set_author(name=f"{ctx.guild.name}'s Playlist", icon_url=url_author_music)
-                        embed.set_thumbnail(url=random.choice(url_thumbnail_music))
-                        embed.set_footer(text=f"Number Of Songs: {len(songs)}")
-                        player = await ctx.send(embed=embed)
-
-                        await player.add_reaction("⏮")  # previous track
-                        await player.add_reaction("▶")  # resume
-                        await player.add_reaction("⏸")  # pause
-                        await player.add_reaction("⏭")  # next
-                        await player.add_reaction("🔂")  # repeat
-                        await player.add_reaction("⏹")  # stop
-                        await player.add_reaction("🔀")  # shuffle
-                        await player.add_reaction("*️⃣")  # current song
-                        await player.add_reaction("🔠")  # display queue
-                        await player.add_reaction("🔼")  # scroll
-                        await player.add_reaction("🔽")  # scroll
-                        await player.add_reaction("🔇") # disconnect
-
+                    if server_index[str(ctx.guild.id)] > 7:
+                        start = server_index[str(ctx.guild.id)] - 7
+                        stop = server_index[str(ctx.guild.id)] + 7
                     else:
-                        index = server_index[str(ctx.guild.id)]
-                        for song in songs[index:]:
-                            string += (str(index) + ") " + f"{song[0]}\n".replace(" - YouTube", " "))
-                            index += 1
+                        start, stop = 0, 14
+                    for song in songs[start:stop]: 
+                        string += (str(song[0]) + ") " + f"{song[1][0]}\n".replace(" - YouTube", " ").replace("&quot;", '"'))
 
-                        embed = nextcord.Embed(description=string, color=color)
-                        embed.set_author(name=f"{ctx.guild.name}'s Playlist", icon_url=url_author_music)
-                        embed.set_thumbnail(url=random.choice(url_thumbnail_music))
-                        embed.set_footer(text=f"Number Of Songs: {len(songs)}")
-                        player = await ctx.send(embed=embed)
+                    embed = nextcord.Embed(description=string, color=color)
+                    embed.set_author(name=f"{ctx.guild.name}'s Playlist", icon_url=url_author_music)
+                    embed.set_thumbnail(url=random.choice(url_thumbnail_music))
+                    embed.set_footer(text=f"Number Of Songs: {len(songs)}")
+                    player = await ctx.send(embed=embed)
 
-                        await player.add_reaction("⏮")  # previous track
-                        await player.add_reaction("▶")  # resume
-                        await player.add_reaction("⏸")  # pause
-                        await player.add_reaction("⏭")  # next
-                        await player.add_reaction("🔂")  # repeat
-                        await player.add_reaction("⏹")  # stop
-                        await player.add_reaction("🔀")  # shuffle
-                        await player.add_reaction("*️⃣")  # current song
-                        await player.add_reaction("🔠")  # lyrics
-                        await player.add_reaction("🔼")  # scroll
-                        await player.add_reaction("🔽")  # scroll
-                        await player.add_reaction("🔇") # disconnect
+                    await player.add_reaction("⏮")  # previous track
+                    await player.add_reaction("▶")  # resume
+                    await player.add_reaction("⏸")  # pause
+                    await player.add_reaction("⏭")  # next
+                    await player.add_reaction("🔂")  # repeat
+                    await player.add_reaction("⏹")  # stop
+                    await player.add_reaction("🔀")  # shuffle
+                    await player.add_reaction("*️⃣")  # current song
+                    await player.add_reaction("🔠")  # display queue
+                    await player.add_reaction("🔼")  # scroll
+                    await player.add_reaction("🔽")  # scroll
+                    await player.add_reaction("🔇") # disconnect
 
                 except KeyError:
                     embed = nextcord.Embed(description=random.choice(default_index), color=color)
@@ -1422,35 +1316,23 @@ async def play_music(ctx, *, char):
                     URL_direct = youtube_download(ctx, url)
 
                     if ctx.voice_client.is_playing() != True:
-                        embed = nextcord.Embed(description="**Song: **{}".format(name_of_the_song).replace(" - YouTube", " "), color=color)
-                        embed.set_author(name="Now playing", url=url, icon_url=url_author_music)
-                        embed.set_thumbnail(url=pytube.YouTube(url=url).thumbnail_url)
-                        embed.add_field(name="Uploader", value=pytube.YouTube(url=url).author, inline=True)
-                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
-                        embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=url).length), inline=True)
-                        player = await ctx.send(embed=embed)
-                        voice.play(nextcord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
-
-                        await player.add_reaction("▶")  # resume
-                        await player.add_reaction("⏸")  # pause
-                        await player.add_reaction("⏹")  # stop
-                        await player.add_reaction("🔇") # disconnect
-
+                        pass
                     else:
                         voice.stop()
-                        embed = nextcord.Embed(description="**Song: **{}".format(name_of_the_song).replace( " - YouTube", " "), color=color)
-                        embed.set_author(name="Now playing", url=url, icon_url=url_author_music)
-                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
-                        embed.set_thumbnail(url=pytube.YouTube(url=url).thumbnail_url)
-                        embed.add_field(name="Uploader", value=pytube.YouTube(url=url).author, inline=True)
-                        embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=url).length), inline=True)
-                        player = await ctx.send(embed=embed)
-                        voice.play(nextcord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
+                    embed = nextcord.Embed(description="**Song: **{}".format(name_of_the_song).replace(" - YouTube", " "), color=color)
+                    embed.set_author(name="Now playing", url=url, icon_url=url_author_music)
+                    embed.set_thumbnail(url=pytube.YouTube(url=url).thumbnail_url)
+                    embed.add_field(name="Uploader", value=pytube.YouTube(url=url).author, inline=True)
+                    embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
+                    embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=url).length), inline=True)
+                    player = await ctx.send(embed=embed)
+                    voice.play(nextcord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
 
-                        await player.add_reaction("▶")  # resume
-                        await player.add_reaction("⏸")  # pause
-                        await player.add_reaction("⏹")  # stop
-                        await player.add_reaction("🔇") # disconnect
+                    await player.add_reaction("▶")  # resume
+                    await player.add_reaction("⏸")  # pause
+                    await player.add_reaction("⏹")  # stop
+                    await player.add_reaction("🔇") # disconnect
+
 
                 if char.isdigit() == True:
                     # Server Specific Queue
@@ -1467,56 +1349,31 @@ async def play_music(ctx, *, char):
                         URL_queue = youtube_download(ctx, server_queue[int(char)][1])
 
                         if ctx.voice_client.is_playing() != True:
-                            embed = nextcord.Embed(
-                                description="**Song: **{a}\n**Queue Index: **{b}".format(
-                                    a=server_queue[int(char)][0], 
-                                    b=char
-                            ).replace(" - YouTube", " "), color=color)
-                            embed.set_author(name="Now playing", icon_url=url_author_music)
-                            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[int(char)][1]).thumbnail_url)
-                            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
-                            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[int(char)][1]).author, inline=True)
-                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length), inline=True)
-                            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
-                            player = await ctx.send(embed=embed)
-
-                            await player.add_reaction("⏮")  # previous track
-                            await player.add_reaction("▶")  # resume
-                            await player.add_reaction("⏸")  # pause
-                            await player.add_reaction("⏭")  # next
-                            await player.add_reaction("🔂")  # repeat
-                            await player.add_reaction("⏹")  # stop
-                            await player.add_reaction("🔀")  # shuffle
-                            await player.add_reaction("*️⃣")  # current song
-                            await player.add_reaction("🔠")  # display queue
-                            await player.add_reaction("🔼")  # scroll
-                            await player.add_reaction("🔽")  # scroll
-                            await player.add_reaction("🔇") # disconnect
-
+                            pass
                         else:
                             voice.stop()
-                            embed = nextcord.Embed(description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[int(char)][0], b=char).replace(" - YouTube", " "), color=color)
-                            embed.set_author(name="Now playing", icon_url=url_author_music)
-                            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[int(char)][1]).thumbnail_url)
-                            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
-                            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[int(char)][1]).author, inline=True)
-                            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length), inline=True)
-                            player = await ctx.send(embed=embed)
-                            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                        embed = nextcord.Embed(
+                            description="**Song: **{a}\n**Queue Index: **{b}".format(a=server_queue[int(char)][0], b=char).replace(" - YouTube", " "), color=color)
+                        embed.set_author(name="Now playing", icon_url=url_author_music)
+                        embed.set_thumbnail(url=pytube.YouTube(url=server_queue[int(char)][1]).thumbnail_url)
+                        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
+                        embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[int(char)][1]).author, inline=True)
+                        embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[int(char)][1]).length), inline=True)
+                        voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                        player = await ctx.send(embed=embed)
 
-                            # previous track
-                            await player.add_reaction("⏮")
-                            await player.add_reaction("▶")  # resume
-                            await player.add_reaction("⏸")  # pause
-                            await player.add_reaction("⏭")  # next
-                            await player.add_reaction("🔂")  # repeat
-                            await player.add_reaction("⏹")  # stop
-                            await player.add_reaction("🔀")  # shuffle
-                            await player.add_reaction("*️⃣")  # current song
-                            await player.add_reaction("🔠")  # lyrics
-                            await player.add_reaction("🔼")  # scroll
-                            await player.add_reaction("🔽")  # scroll
-                            await player.add_reaction("🔇") # disconnect
+                        await player.add_reaction("⏮")  # previous track
+                        await player.add_reaction("▶")  # resume
+                        await player.add_reaction("⏸")  # pause
+                        await player.add_reaction("⏭")  # next
+                        await player.add_reaction("🔂")  # repeat
+                        await player.add_reaction("⏹")  # stop
+                        await player.add_reaction("🔀")  # shuffle
+                        await player.add_reaction("*️⃣")  # current song
+                        await player.add_reaction("🔠")  # display queue
+                        await player.add_reaction("🔼")  # scroll
+                        await player.add_reaction("🔽")  # scroll
+                        await player.add_reaction("🔇") # disconnect
 
                     except IndexError:
                         embed = nextcord.Embed(description="Looks like there is no song at this index", color=color)
@@ -1603,51 +1460,31 @@ async def previous_song(ctx):
             URL_queue = youtube_download(ctx, server_queue[server_index[str(ctx.guild.id)]][1])
 
             if ctx.voice_client.is_playing() != True:
-                embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-                embed.set_author(name="Now playing", icon_url=url_author_music)
-                embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
-                embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
-                embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
-                embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
-                player = await ctx.send(embed=embed)
-                voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
-
-                await player.add_reaction("⏮")  # previous track
-                await player.add_reaction("▶")  # resume
-                await player.add_reaction("⏸")  # pause
-                await player.add_reaction("⏭")  # next
-                await player.add_reaction("🔂")  # repeat
-                await player.add_reaction("⏹")  # stop
-                await player.add_reaction("🔀")  # shuffle
-                await player.add_reaction("*️⃣")  # current song
-                await player.add_reaction("🔠")  # lyrics
-                await player.add_reaction("🔼")  # scroll
-                await player.add_reaction("🔽")  # scroll
-                await player.add_reaction("🔇") # disconnect
-
+                pass
             else:
                 voice.stop()
-                embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-                embed.set_author(name="Now playing", icon_url=url_author_music)
-                embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
-                embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
-                embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
-                embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
-                player = await ctx.send(embed=embed)
-                voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+                
+            embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+            embed.set_author(name="Now playing", icon_url=url_author_music)
+            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
+            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
+            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
+            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
+            player = await ctx.send(embed=embed)
+            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
 
-                await player.add_reaction("⏮")  # previous track
-                await player.add_reaction("▶")  # resume
-                await player.add_reaction("⏸")  # pause
-                await player.add_reaction("⏭")  # next
-                await player.add_reaction("🔂")  # repeat
-                await player.add_reaction("⏹")  # stop
-                await player.add_reaction("🔀")  # shuffle
-                await player.add_reaction("*️⃣")  # current song
-                await player.add_reaction("🔠")  # lyrics
-                await player.add_reaction("🔼")  # scroll
-                await player.add_reaction("🔽")  # scroll
-                await player.add_reaction("🔇") # disconnect
+            await player.add_reaction("⏮")  # previous track
+            await player.add_reaction("▶")  # resume
+            await player.add_reaction("⏸")  # pause
+            await player.add_reaction("⏭")  # next
+            await player.add_reaction("🔂")  # repeat
+            await player.add_reaction("⏹")  # stop
+            await player.add_reaction("🔀")  # shuffle
+            await player.add_reaction("*️⃣")  # current song
+            await player.add_reaction("🔠")  # lyrics
+            await player.add_reaction("🔼")  # scroll
+            await player.add_reaction("🔽")  # scroll
+            await player.add_reaction("🔇") # disconnect
 
         except IndexError:
             embed = nextcord.Embed(description="Looks like there is no song at this index", color=color)
@@ -1674,51 +1511,30 @@ async def repeat_song(ctx):
         URL_queue = youtube_download(ctx, server_queue[server_index[str(ctx.guild.id)]][1])
 
         if ctx.voice_client.is_playing() != True:
-            embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-            embed.set_author(name="Repeating Song", icon_url=url_author_music)
-            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
-            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
-            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
-            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
-            player = await ctx.send(embed=embed)
-            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS), after=lambda e: play_music(voice, URL_queue))
-
-            await player.add_reaction("⏮")  # previous track
-            await player.add_reaction("▶")  # resume
-            await player.add_reaction("⏸")  # pause
-            await player.add_reaction("⏭")  # next
-            await player.add_reaction("🔂")  # repeat
-            await player.add_reaction("⏹")  # stop
-            await player.add_reaction("🔀")  # shuffle
-            await player.add_reaction("*️⃣")  # current song
-            await player.add_reaction("🔠")  # lyrics
-            await player.add_reaction("🔼")  # scroll
-            await player.add_reaction("🔽")  # scroll
-            await player.add_reaction("🔇") # disconnect
-
+            pass
         else:
             voice.stop()
-            embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-            embed.set_author(name="Repeating Song", icon_url=url_author_music)
-            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
-            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
-            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
-            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
-            player = await ctx.send(embed=embed)
-            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS), after=lambda e: play_music(voice, URL_queue))
+        embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+        embed.set_author(name="Repeating Song", icon_url=url_author_music)
+        embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
+        embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
+        embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
+        embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
+        player = await ctx.send(embed=embed)
+        voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS), after=lambda e: play_music(voice, URL_queue))
 
-            await player.add_reaction("⏮")  # previous track
-            await player.add_reaction("▶")  # resume
-            await player.add_reaction("⏸")  # pause
-            await player.add_reaction("⏭")  # next
-            await player.add_reaction("🔂")  # repeat
-            await player.add_reaction("⏹")  # stop
-            await player.add_reaction("🔀")  # shuffle
-            await player.add_reaction("*️⃣")  # current song
-            await player.add_reaction("🔠")  # lyrics
-            await player.add_reaction("🔼")  # scroll
-            await player.add_reaction("🔽")  # scroll
-            await player.add_reaction("🔇") # disconnect
+        await player.add_reaction("⏮")  # previous track
+        await player.add_reaction("▶")  # resume
+        await player.add_reaction("⏸")  # pause
+        await player.add_reaction("⏭")  # next
+        await player.add_reaction("🔂")  # repeat
+        await player.add_reaction("⏹")  # stop
+        await player.add_reaction("🔀")  # shuffle
+        await player.add_reaction("*️⃣")  # current song
+        await player.add_reaction("🔠")  # lyrics
+        await player.add_reaction("🔼")  # scroll
+        await player.add_reaction("🔽")  # scroll
+        await player.add_reaction("🔇") # disconnect
 
     except Exception as e:
         embed = nextcord.Embed(description=str(e), color=color)
@@ -1742,52 +1558,31 @@ async def skip_song(ctx):
             URL_queue = youtube_download(ctx, server_queue[server_index[str(ctx.guild.id)]][1])
 
             if ctx.voice_client.is_playing() != True:
-                embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-                embed.set_author(name="Now Playing", icon_url=url_author_music)
-                embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
-                embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
-                embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
-                embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
-                player = await ctx.send(embed=embed)
-                voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
-                
-                await player.add_reaction("⏮")  # previous track
-                await player.add_reaction("▶")  # resume
-                await player.add_reaction("⏸")  # pause
-                await player.add_reaction("⏭")  # next
-                await player.add_reaction("🔂")  # repeat
-                await player.add_reaction("⏹")  # stop
-                await player.add_reaction("🔀")  # shuffle
-                await player.add_reaction("*️⃣")  # current song
-                await player.add_reaction("🔠")  # lyrics
-                await player.add_reaction("🔼")  # scroll
-                await player.add_reaction("🔽")  # scroll
-                await player.add_reaction("🔇") # disconnect
-            
+                pass
             else:
                 voice.stop()
-                embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
-                embed.set_author(name="Now playing", icon_url=url_author_music)
-                embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
-                embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
-                embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
-                embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
-                player = await ctx.send(embed=embed)
-                voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
-
-                await player.add_reaction("⏮")  # previous track
-                await player.add_reaction("▶")  # resume
-                await player.add_reaction("⏸")  # pause
-                await player.add_reaction("⏭")  # next
-                await player.add_reaction("🔂")  # repeat
-                await player.add_reaction("⏹")  # stop
-                await player.add_reaction("🔀")  # shuffle
-                await player.add_reaction("*️⃣")  # current song
-                await player.add_reaction("🔠")  # lyrics
-                await player.add_reaction("🔼")  # scroll
-                await player.add_reaction("🔽")  # scroll
-                await player.add_reaction("🔇") # disconnect
-
+            embed = nextcord.Embed(description="**Song: **{}".format(server_queue[server_index[str(ctx.guild.id)]][0]).replace(" - YouTube", " "), color=color)
+            embed.set_author(name="Now Playing", icon_url=url_author_music)
+            embed.set_thumbnail(url=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).thumbnail_url)
+            embed.add_field(name="Uploader", value=pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).author, inline=True)
+            embed.add_field(name="Duration", value=time_converter(pytube.YouTube(url=server_queue[server_index[str(ctx.guild.id)]][1]).length), inline=True)
+            embed.set_footer(text="Voice Channel Bitrate: {} kbps".format(ctx.guild.voice_client.channel.bitrate/1000))
+            player = await ctx.send(embed=embed)
+            voice.play(nextcord.FFmpegPCMAudio(URL_queue, **FFMPEG_OPTS))
+            
+            await player.add_reaction("⏮")  # previous track
+            await player.add_reaction("▶")  # resume
+            await player.add_reaction("⏸")  # pause
+            await player.add_reaction("⏭")  # next
+            await player.add_reaction("🔂")  # repeat
+            await player.add_reaction("⏹")  # stop
+            await player.add_reaction("🔀")  # shuffle
+            await player.add_reaction("*️⃣")  # current song
+            await player.add_reaction("🔠")  # lyrics
+            await player.add_reaction("🔼")  # scroll
+            await player.add_reaction("🔽")  # scroll
+            await player.add_reaction("🔇") # disconnect
+            
         except IndexError:
             embed = nextcord.Embed(description="Looks like there is no song at this index", color=color)
             embed.set_author(name="Oops...", icon_url=url_author_music)

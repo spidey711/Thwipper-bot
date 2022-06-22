@@ -1232,7 +1232,7 @@ async def queue_song(ctx, *, name=None):
             else:
                 operation_add_song = f"""INSERT INTO music_queue(song_name, song_url, server)VALUES("{name_of_the_song}","{url}","{str(ctx.guild.id)}")"""
                 cursor.execute(operation_add_song)
-                embed = nextcord.Embed(description=f"{name_of_the_song}".replace(" - YouTube", " "), color=color)
+                embed = nextcord.Embed(description=f"{name_of_the_song}".replace(" - YouTube", " ").replace("&quot;", '"'), color=color)
                 embed.set_author(name="Song added", icon_url=url_author_music)
                 await ctx.send(embed=embed)
 
@@ -1242,39 +1242,43 @@ async def queue_song(ctx, *, name=None):
             songs = (list(enumerate(cursor.fetchall(), start=0))) #song[0] is counter, song[1] is (name, url)
 
             if len(songs) > 0:
-                try:
-                    string = ""
-                    if server_index[str(ctx.guild.id)] > 7:
-                        start = server_index[str(ctx.guild.id)] - 7
-                        stop = server_index[str(ctx.guild.id)] + 7
-                    else:
-                        start, stop = 0, 14
-                    for song in songs[start:stop]: 
-                        string += (str(song[0]) + ") " + f"{song[1][0]}\n".replace(" - YouTube", " ").replace("&quot;", '"'))
+                if server_index[str(ctx.guild.id)] > len(songs):
+                    # queue display showed no songs due to server_index > number of songs
+                    server_index[str(ctx.guild.id)] = len(songs) - 1
+                else:
+                    try:
+                        string = ""
+                        if server_index[str(ctx.guild.id)] > 7:
+                            start = server_index[str(ctx.guild.id)] - 7
+                            stop = server_index[str(ctx.guild.id)] + 7
+                        else:
+                            start, stop = 0, 14
+                        for song in songs[start:stop]: 
+                            string += (str(song[0]) + ") " + f"{song[1][0]}\n".replace(" - YouTube", " ").replace("&quot;", '"'))
 
-                    embed = nextcord.Embed(description=string, color=color)
-                    embed.set_author(name=f"{ctx.guild.name}'s Playlist", icon_url=url_author_music)
-                    embed.set_thumbnail(url=random.choice(url_thumbnail_music))
-                    embed.set_footer(text=f"Number Of Songs: {len(songs)}")
-                    player = await ctx.send(embed=embed)
+                        embed = nextcord.Embed(description=string, color=color)
+                        embed.set_author(name=f"{ctx.guild.name}'s Playlist", icon_url=url_author_music)
+                        embed.set_thumbnail(url=random.choice(url_thumbnail_music))
+                        embed.set_footer(text=f"Number Of Songs: {len(songs)}")
+                        player = await ctx.send(embed=embed)
 
-                    await player.add_reaction("⏮")  # previous track
-                    await player.add_reaction("▶")  # resume
-                    await player.add_reaction("⏸")  # pause
-                    await player.add_reaction("⏭")  # next
-                    await player.add_reaction("🔂")  # repeat
-                    await player.add_reaction("⏹")  # stop
-                    await player.add_reaction("🔀")  # shuffle
-                    await player.add_reaction("*️⃣")  # current song
-                    await player.add_reaction("🔠")  # display queue
-                    await player.add_reaction("🔼")  # scroll
-                    await player.add_reaction("🔽")  # scroll
-                    await player.add_reaction("🔇") # disconnect
+                        await player.add_reaction("⏮")  # previous track
+                        await player.add_reaction("▶")  # resume
+                        await player.add_reaction("⏸")  # pause
+                        await player.add_reaction("⏭")  # next
+                        await player.add_reaction("🔂")  # repeat
+                        await player.add_reaction("⏹")  # stop
+                        await player.add_reaction("🔀")  # shuffle
+                        await player.add_reaction("*️⃣")  # current song
+                        await player.add_reaction("🔠")  # display queue
+                        await player.add_reaction("🔼")  # scroll
+                        await player.add_reaction("🔽")  # scroll
+                        await player.add_reaction("🔇") # disconnect
 
-                except KeyError:
-                    embed = nextcord.Embed(description=random.choice(default_index), color=color)
-                    embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
-                    await ctx.send(embed=embed)
+                    except KeyError:
+                        embed = nextcord.Embed(description=random.choice(default_index), color=color)
+                        embed.set_author(name="Spider-Punk Radio™", icon_url=url_author_music)
+                        await ctx.send(embed=embed)
 
             else:
                 embed = nextcord.Embed(description=random.choice(empty_queue), color=color)
@@ -1376,7 +1380,7 @@ async def play_music(ctx, *, char):
                         await player.add_reaction("🔇") # disconnect
 
                     except IndexError:
-                        embed = nextcord.Embed(description="Looks like there is no song at this index", color=color)
+                        embed = nextcord.Embed(description=random.choice(no_song_at_index), color=color)
                         embed.set_author(name="Oops...", icon_url=url_author_music)
                         await ctx.send(embed=embed)
 
@@ -1707,11 +1711,16 @@ async def remove_song(ctx, index):
     operation_view = 'SELECT * FROM music_queue WHERE server="{}"'.format(str(ctx.guild.id))
     cursor.execute(operation_view)
     songs = cursor.fetchall()
-    embed = nextcord.Embed(description="{}".format(songs[int(index)][0]), color=color)
-    embed.set_author(name="Song removed", icon_url=url_author_music)
-    await ctx.send(embed=embed)
-    operation_remove = ("DELETE FROM music_queue WHERE song_url = '{a}' AND server='{b}'".format(a=songs[int(index)][1], b=str(ctx.guild.id)))
-    cursor.execute(operation_remove)
+    try:
+        embed = nextcord.Embed(description="{}".format(songs[int(index)][0]), color=color)
+        embed.set_author(name="Song removed", icon_url=url_author_music)
+        await ctx.send(embed=embed)
+        operation_remove = ("DELETE FROM music_queue WHERE song_url = '{a}' AND server='{b}'".format(a=songs[int(index)][1], b=str(ctx.guild.id)))
+        cursor.execute(operation_remove)
+    except IndexError:
+        embed = nextcord.Embed(description=random.choice(no_song_at_index), color=color)
+        embed.set_author(name="Uh oh...", icon_url=url_author_music)
+        await ctx.send(embed=embed)
 
 
 @bot.command(aliases=["clear_queue", "cq"])

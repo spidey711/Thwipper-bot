@@ -6,6 +6,7 @@ try:
     from responses import *
     from dotenv import load_dotenv
     import mysql.connector
+    import steam
     import os
     import random
     import calendar
@@ -180,7 +181,6 @@ def help_menu():
         embed_help_menu.set_image(url=help_page6)
     return embed_help_menu
 
-
 def time_converter(seconds):
     mins, secs = divmod(seconds, 60)
     hours, mins = divmod(mins, 60)
@@ -191,19 +191,16 @@ def time_converter(seconds):
             secs = "0" + str(secs)
             return "%d hrs %02d mins %02d secs" % (hours, mins, secs)
 
-
 def youtube_download(ctx, url):
     if True:
         with youtube_dl.YoutubeDL(ydl_op) as ydl:
             URL = ydl.extract_info(url, download=False)["formats"][0]["url"]
     return URL
 
-
 def requests_query():
     global cursor
     operation = "INSERT INTO requests(number)VALUES({})".format(num)
     cursor.execute(operation)
-
 
 def number_of_requests():
     global num  # num = 0
@@ -671,9 +668,6 @@ async def greet_bot(ctx):
     number_of_requests()
 
     greetings = [f"Hey {ctx.author.name}!", f"Hi {ctx.author.name}!", f"How's it going {ctx.author.name}?", f"What can I do for you {ctx.author.name}?", f"What's up {ctx.author.name}?", f"Hello {ctx.author.name}!", f"So {ctx.author.name}, how's your day going?"]
-    embed = nextcord.Embed(color=color)
-    embed.set_author(name=random.choice(greetings), icon_url=ctx.author.avatar.url)
-    embed.set_image(url=random.choice(hello_urls))
     await ctx.send(random.choice(greetings))
 
 
@@ -780,8 +774,13 @@ async def reddit_memes(ctx, *, topic):
 
 
 @bot.command(aliases=["steam"])
-async def steam_games_info(ctx, *, game=None):
-    await ctx.send("Feature under work...")
+async def steam_games_info(ctx, *, game):
+    try:
+        await ctx.send(
+            steam_games_info(context=True, game=game)
+        )
+    except Exception as error:
+        await ctx.send(error)
 
 
 @bot.command(aliases=["wiki", "w"])
@@ -819,7 +818,7 @@ async def google_results(ctx, *, thing_to_search):
 
     await ctx.send("Search results for: **{}**".format(thing_to_search))
     await ctx.send(results)
-    print("Results for google search sent...")
+    print("Results for google search sent.")
 
 # ------------------------------------------------- UTILITY -------------------------------------------------
 
@@ -982,13 +981,12 @@ async def server_information(ctx):
     num_mem = str(ctx.guild.member_count)
     icon = str(ctx.guild.icon.url if ctx.guild.icon else None)
     role_count = len(ctx.guild.roles)
-    # bots_list = [bot.mention for bot in ctx.guild.members if bot.bot]
 
     embed = nextcord.Embed(title=f"📚 {name} 📚", color=color)
     embed.add_field(name="Owner", value=f"`{owner}`", inline=True)
     embed.add_field(name="Member Count", value=f"`{num_mem}`", inline=True)
     embed.add_field(name="Role Count", value=f"`{role_count}`", inline=True)
-    # embed.add_field(name="Region", value=f"`{region}`", inline=True)
+    embed.add_field(name="Region", value=f"`{region}`", inline=True)
     embed.add_field(name="Server ID", value=f"`{ID}`", inline=False)
     embed.add_field(name="Description", value=f"```{description}```", inline=False)
     embed.set_footer(text=f"Created on {ctx.guild.created_at.__format__('%A, %B %d, %Y @ %H:%M:%S')}", icon_url=ctx.author.avatar.url)
@@ -1241,12 +1239,19 @@ async def queue_song(ctx, *, name=None):
             songs = (list(enumerate(cursor.fetchall(), start=0))) #song[0] is counter, song[1] is (name, url)
 
             if len(songs) > 0:
+                # bot will still show queue regardless if server's counter is present or not
+                try:
+                    if server_index[str(ctx.guild.id)] == None: 
+                        server_index[str(ctx.guild.id)] = 0
+                except KeyError:
+                    server_index[str(ctx.guild.id)] = 0
                 if server_index[str(ctx.guild.id)] > len(songs):
-                    # queue display showed no songs due to server_index > number of songs
+                        # if user enters a song position which doesn't exist, .: song position shouldn't be more than number of songs
                     server_index[str(ctx.guild.id)] = len(songs) - 1
                 else:
                     try: 
                         string = ""
+                        # queue display for songs
                         if server_index[str(ctx.guild.id)] > 7:
                             start = server_index[str(ctx.guild.id)] - 7
                             stop = server_index[str(ctx.guild.id)] + 7

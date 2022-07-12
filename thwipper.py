@@ -271,7 +271,7 @@ async def on_ready():
         num = int(req2)
         conn.commit()
     updation.start()
-
+ 
 @bot.event
 async def on_message(message):
     if f"<@{bot.user.id}>" == message.content:
@@ -823,15 +823,11 @@ async def google_results(ctx, *, thing_to_search):
 # ------------------------------------------------- UTILITY -------------------------------------------------
 
 @bot.command(aliases=["delete", "del"])
-async def clear(ctx, text, num=10000000000000):
-
+async def clear(ctx, num=10000000000000):
     number_of_requests()
-    await ctx.channel.purge(limit=1)
 
-    if str(text) == "WEB":
-        await ctx.channel.purge(limit=num)
-    else:
-        await ctx.send("Incorrect Password")
+    await ctx.channel.purge(limit=1)
+    await ctx.channel.purge(limit=num)
 
 
 @bot.command(aliases=["[X]"])

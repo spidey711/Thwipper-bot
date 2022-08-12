@@ -8,8 +8,7 @@ from nextcord.ext import commands, tasks
 
 load_dotenv()
 
-
-
+config_color: dict = {}
 
 prefixes = ["t!", "_"]
 intents = nextcord.Intents.default()
@@ -21,5 +20,6 @@ bot = commands.Bot(
     case_insensitive=True,
 )
 DEFAULT_COLOR = nextcord.Color.from_rgb(223, 31, 45)
+bot.color = lambda g: config_color.get(g.id, DEFAULT_COLOR.id)
 
 bot.run(os.getenv("token"))

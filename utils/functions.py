@@ -14,7 +14,7 @@ def create_embed(
     footer=None,
     author: Union[nextcord.Member, bool, dict] = False,
     fields=None,
-    image=None,
+    image=None, 
     button: Union[dict, nextcord.ui.Button] = None,
     **kwargs,
 ) -> nextcord.Embed:

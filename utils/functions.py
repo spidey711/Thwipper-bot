@@ -1,11 +1,11 @@
 import nextcord
-from typing import Union
+from typing import List, Union
 
 def dict2fields(d: dict, inline: bool=True):
     # put multiple fields in the embed with a single command
     return [{"name": i, "value": d[i], "inline": inline} for i in d]
 
-def create_embed(
+def embed(
     title=None,
     description=None,
     thumbnail=None,
@@ -15,7 +15,7 @@ def create_embed(
     author: Union[nextcord.Member, bool, dict] = False,
     fields=None,
     image=None, 
-    button: Union[dict, nextcord.ui.Button] = None,
+    button: List[Union[dict, nextcord.ui.Button]] = None,
     **kwargs,
 ) -> nextcord.Embed:
     embed = nextcord.Embed()
@@ -59,7 +59,7 @@ def create_embed(
         elif isinstance(author, dict):
             embed.set_author(**author)
         elif isinstance(author, (nextcord.member.Member, nextcord.user.ClientUser)):
-            embed.set_author(name=author.name, icon_url=safe_pfp(author))
+            embed.set_author(name=author.name, icon_url=author.avatar)
 
     if button:
         view = nextcord.ui.View(timeout=None)

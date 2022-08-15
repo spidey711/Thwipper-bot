@@ -11,12 +11,17 @@ class Mod(commands.Cog):
         self.DELETED_MESSAGE: dict = {}
 
     @commands.Cog.listener()
+    async def on_bulk_message_delete(self, messages):
+        for message in messages:
+            await self.on_message_delete(message)
+
+    @commands.Cog.listener()
     async def on_message_delete(self, message: MESSAGE):
         if not message.author.bot:
             if self.DELETED_MESSAGE.get(message.channel.id, False):
-                self.DELETED_MESSAGE[message.channel.id].append((message.author, message.content))                
+                self.DELETED_MESSAGE[message.channel.id].append((str(message.author), message.content))                
             else:
-                self.DELETED_MESSAGE[message.channel.id] = [(message.author, message.content)]
+                self.DELETED_MESSAGE[message.channel.id] = [(str(message.author), message.content)]
 
     @commands.command(aliases=["delete", "del"])
     async def clear(self, ctx: CONTEXT, num: int = 10):
@@ -26,6 +31,7 @@ class Mod(commands.Cog):
     @commands.command()
     async def snipe(self, ctx: CONTEXT):
         l = self.DELETED_MESSAGE.get(ctx.channel.id)
+        print(l)
         if not l:
             await ctx.send(
                 embed=embed(
@@ -41,11 +47,17 @@ class Mod(commands.Cog):
                 )
             )
             return
-        fields, count, embeds = [dict()], 0, []
+        fields, count, embeds = [[]], 0, []
         for user, message in l:
-            if count%5==0:
-                fields.append({})
-            fields[-1].update({str(user): message[:250]})
+            if count%5 == 0 and count:
+                fields.append([])
+            fields[-1].append(
+                {
+                    'name': user,
+                    'value': message[:250],
+                    'inline': False
+                }
+            )
         frame_embed = lambda field: embed(
             title="Snipe",
             description="All of this will be deleted if the bot restarts",
@@ -57,6 +69,7 @@ class Mod(commands.Cog):
             color=self.bot.color(ctx.guild),
             fields = field
         )
+        print(fields)
         embeds = [frame_embed(i) for i in fields]
         await pages(ctx, embeds, start = 0)
 

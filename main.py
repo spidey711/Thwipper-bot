@@ -2,7 +2,7 @@
 
 import nextcord
 import os
-import regex
+import re
 import utils.assets as assets
 from utils.functions import embed
 from dotenv import load_dotenv
@@ -25,7 +25,7 @@ bot = commands.Bot(
     case_insensitive=True,
 )
 DEFAULT_COLOR = nextcord.Color.from_rgb(223, 31, 45)
-bot.color = lambda g: config_color.get(g.id, DEFAULT_COLOR.id)
+bot.color = lambda g: config_color.get(g.id, DEFAULT_COLOR)
 
 @bot.event
 async def on_ready():
@@ -47,6 +47,8 @@ async def on_message(message):
         )
         await message.reply(embed=embed)
 
-# RUN BOT
+for i in os.listdir("cogs/"):
+    if i.endswith(".py"): bot.load_extension("cogs."+i[:-3])
 
+# RUN BOT
 bot.run(os.getenv("token"))

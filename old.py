@@ -2,7 +2,7 @@
 try:
     import nextcord
     from nextcord.ext import commands, tasks
-    from links import *
+    from utils.links import *
     from utils.responses import *
     from dotenv import load_dotenv
     import os

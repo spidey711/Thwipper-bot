@@ -5,6 +5,7 @@ from nextcord.ext import commands
 class Mod(commands.Cog):
     CONTEXT = commands.context.Context
     MESSAGE = nextcord.message.Message
+    INTERACTION = nextcord.Interaction
 
     def __init__(self, bot: commands.Bot):
         self.bot: commands.Bot = bot
@@ -31,7 +32,6 @@ class Mod(commands.Cog):
     @commands.command()
     async def snipe(self, ctx: CONTEXT):
         l = self.DELETED_MESSAGE.get(ctx.channel.id)
-        print(l)
         if not l:
             await ctx.send(
                 embed=embed(
@@ -58,6 +58,7 @@ class Mod(commands.Cog):
                     'inline': False
                 }
             )
+            count+=1
         frame_embed = lambda field: embed(
             title="Snipe",
             description="All of this will be deleted if the bot restarts",
@@ -69,9 +70,34 @@ class Mod(commands.Cog):
             color=self.bot.color(ctx.guild),
             fields = field
         )
-        print(fields)
         embeds = [frame_embed(i) for i in fields]
         await pages(ctx, embeds, start = 0)
+    
+    @nextcord.slash_command(name="color", description="Set your color")
+    async def color(self, inter: INTERACTION, color: str = None):
+        if not (color.startswith("0x") or color.startswith("#")):
+            await inter.response.send_message(
+                "Sorry we only support hex, start with `0x` or `#`",
+                ephemeral=True
+            )
+            return
+        if color is None:
+            await inter.response.send_message(
+                "Current color is {}".format(hex(self.bot.color(inter.guild))),
+                ephemeral=True
+            )
+            return
+        color = int(color.replace("#", "0x"), base=16)
+        self.bot.config_color[inter.guild.id] = color
+        await inter.send(
+            embed=embed(
+                title="Done",
+                description="Set server color as {}".format(hex(self.bot.color(inter.guild))),
+                color=color,
+                thumbnail=getattr(inter.guild, "icon"),
+                author=inter.user,
+            )
+        )
 
 def setup(bot, *args):
     bot.add_cog(Mod(bot, *args))

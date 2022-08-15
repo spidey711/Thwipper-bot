@@ -27,6 +27,9 @@ bot = commands.Bot(
 DEFAULT_COLOR = nextcord.Color.from_rgb(223, 31, 45)
 bot.color = lambda g: config_color.get(g.id, DEFAULT_COLOR)
 
+# BOT VARIABLES
+bot.config_color: dict = config_color
+
 @bot.event
 async def on_ready():
     print("READY")

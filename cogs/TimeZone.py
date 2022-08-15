@@ -36,7 +36,9 @@ class TimeZone(commands.Cog):
                     'Time': "%s:%s:%s" % (dt.hour, dt.minute, dt.second)
 
                 },
-                color=self.bot.color(inter.guild)
+                color=self.bot.color(inter.guild),
+                author=inter.user,
+                thumbnail=self.bot.user.avatar
             )
         )
 

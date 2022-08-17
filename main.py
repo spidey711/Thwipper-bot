@@ -38,8 +38,8 @@ async def on_message(message):
     await bot.process_commands(message)
     if f"<@{bot.user.id}>" == message.content:
         embed = embed(
-            title="Your friendly neighborhood spider-bot!",
-            description=f"Hi {message.author.name}!\nI am `Thwipper`. My name comes from the onomatopoeia of Spider-Man's Webshooters. Pretty slick, eh? I have lots of cool features that you may find interesting. Check them out with `_help` command. As always, more exciting features are always in the works. Stay tuned and have fun with them.\n_Excelsior!_",
+            title="Your friendly serverhood spider-bot!",
+            description=f"Hi {message.author.name}!\nI am **Thwipper**. My name comes from the onomatopoeia of Spider-Man's Webshooters. Pretty slick, eh? I have lots of cool features that you may find interesting. Check them out with `_help` command. As always, more exciting features are always in the works. Stay tuned and have fun with them.\n_Excelsior!_",
             color=bot.color(message.guild),
             thumbnail=bot.user.avatar,
             fields={

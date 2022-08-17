@@ -1,3 +1,5 @@
+# This file contains all functions related to server and its members information.
+
 import nextcord
 import random
 from utils.responses import compliments
@@ -64,6 +66,7 @@ class Information(commands.Cog):
                 image=ctx.guild.banner
             )
         )
+
     @commands.command(aliases=["ping"], description="Bot Ping")
     async def get_ping(self, ctx):
 

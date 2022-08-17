@@ -23,7 +23,7 @@ bot = commands.Bot(
     intents=intents,
     case_insensitive=True,
 )
-DEFAULT_COLOR = nextcord.Color.from_rgb(223, 31, 45)
+DEFAULT_COLOR = nextcord.Color.from_rgb(223, 31, 45).value
 bot.color = lambda g: config_color.get(g.id, DEFAULT_COLOR)
 
 # BOT VARIABLES

@@ -60,7 +60,6 @@ class TimeZone(commands.Cog):
             e.set_author(name="Calendar", icon_url=url_dtc)
             await inter.send(embed=e)
 
-        
 
 def setup(bot, *args):
     bot.add_cog(TimeZone(bot, *args))

@@ -35,12 +35,12 @@ class Mod(commands.Cog):
         if not l:
             await ctx.send(
                 embed=embed(
-                    title="I see nothing",
-                    description="I do not see any deleted messages here, if you're expecting a deleted message from a bot....",
+                    title="No deleted messages found",
+                    description="Looks like no one's deleted any messages in a while 🤔",
                     image="https://c.tenor.com/fBvQV_5Lp6UAAAAC/we-dont-do-that-here-black-panther.gif",
                     color=self.bot.color(ctx.guild),
-                    footer={
-                        'text': 'We also have another issue where the bot could restart, Since we\'re not allowed to keep messages permanently, we will have to clear it everyonce in a while',
+                    footer={ 
+                        'text': "Deleted messages will be cleared every once in a while, I can't keep 'em permanently 🕸️",
                         'icon_url': self.bot.user.avatar,
                     },
                     author=getattr(ctx, 'author', getattr(ctx, 'user', None))
@@ -49,7 +49,7 @@ class Mod(commands.Cog):
             return
         fields, count, embeds = [[]], 0, []
         for user, message in l:
-            if count%5 == 0 and count:
+            if count % 5 == 0 and count:
                 fields.append([])
             fields[-1].append(
                 {

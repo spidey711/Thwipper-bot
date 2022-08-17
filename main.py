@@ -24,10 +24,11 @@ bot = commands.Bot(
     case_insensitive=True,
 )
 DEFAULT_COLOR = nextcord.Color.from_rgb(223, 31, 45).value
-bot.color = lambda g: config_color.get(g.id, DEFAULT_COLOR)
-
 # BOT VARIABLES
+bot.remove_command("help") # remove auto gen help menu
+bot.color = lambda g: config_color.get(g.id, DEFAULT_COLOR)
 bot.config_color: dict = config_color
+
 
 @bot.event
 async def on_ready():

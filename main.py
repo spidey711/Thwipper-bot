@@ -1,5 +1,4 @@
 # IMPORTS
-
 import nextcord
 import os
 import re
@@ -32,14 +31,14 @@ bot.config_color: dict = config_color
 
 @bot.event
 async def on_ready():
-    print("READY")
+    print("Thwipper is now online.")
 
 @bot.event
 async def on_message(message):
     await bot.process_commands(message)
     if f"<@{bot.user.id}>" == message.content:
         embed = embed(
-            title="Your friendly neighborhood spider-bot",
+            title="Your friendly neighborhood spider-bot!",
             description=f"Hi {message.author.name}!\nI am `Thwipper`. My name comes from the onomatopoeia of Spider-Man's Webshooters. Pretty slick, eh? I have lots of cool features that you may find interesting. Check them out with `_help` command. As always, more exciting features are always in the works. Stay tuned and have fun with them.\n_Excelsior!_",
             color=bot.color(message.guild),
             thumbnail=bot.user.avatar,
@@ -50,8 +49,10 @@ async def on_message(message):
         )
         await message.reply(embed=embed)
 
+# LOAD COGS
 for i in os.listdir("cogs/"):
-    if i.endswith(".py"): bot.load_extension("cogs."+i[:-3])
+    if i.endswith(".py"): 
+        bot.load_extension("cogs."+i[:-3])
 
 # RUN BOT
 bot.run(os.getenv("token"))

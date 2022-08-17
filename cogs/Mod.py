@@ -1,3 +1,5 @@
+# This file contains functions built for moderators (more or less).
+
 import nextcord
 from utils.functions import embed, pages
 from nextcord.ext import commands

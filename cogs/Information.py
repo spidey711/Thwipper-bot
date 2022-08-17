@@ -2,13 +2,17 @@
 
 import nextcord
 import random
+
 from utils.responses import compliments
 from nextcord.ext import commands
-from utils.functions import embed, dict2fields
+from utils.functions import embed, dict2fields, pages
+from utils.assets import get_help_embeds
 
 class Information(commands.Cog):
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+
 
     @commands.command(aliases=["pfp"], description="Get user pfp")
     async def user_pfp(self, ctx, member: nextcord.Member = None):
@@ -26,16 +30,19 @@ class Information(commands.Cog):
                 }
             )
         )
+
     
     @nextcord.slash_command(name="pfp")
     async def pfp(self, inter, member: nextcord.Member = None):
         await self.user_pfp(inter, member=member)
 
+
     @nextcord.user_command(name="pfp")
     async def pfp_app(self, inter, member: nextcord.Member):
         await self.user_pfp(inter, member)
 
-    @commands.command(description="Get information about this server", aliases=["serverinfo", "si"])
+
+    @commands.command(aliases=["serverinfo", "si"], description="Get information about a server.")
     async def server_information(self, ctx):
         name = str(ctx.guild.name)
         ID = str(ctx.guild.id)
@@ -67,6 +74,7 @@ class Information(commands.Cog):
             )
         )
 
+
     @commands.command(aliases=["ping"], description="Bot Ping")
     async def get_ping(self, ctx):
 
@@ -74,7 +82,7 @@ class Information(commands.Cog):
         c1 = "🟢"
         c2 = "🟡"
         c3 = "🔴"
-        color = self.color.bot(ctx.guild)
+        color = self.bot.color(ctx.guild)
         
         if ping >= 350:
             e = embed(description=f"{c3} {ping} ms", color=color)
@@ -87,6 +95,12 @@ class Information(commands.Cog):
         elif ping > 320 and ping < 350:
             e = embed(description=f"{c2} {ping} ms", color=color)
             await ctx.send(embed=e)
+
+
+    @commands.command(aliases=["help"], description="Thwipper's Help Menu")
+    async def display_help_menu(self, ctx):
+        await pages(ctx, get_help_embeds(self.bot.color(ctx.guild), ctx)) 
+
 
 def setup(bot, *args):
     bot.add_cog(Information(bot, *args))

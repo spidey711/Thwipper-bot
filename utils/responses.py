@@ -1,9 +1,9 @@
 # QUIPS
 titles = ["Quip Incoming","Here you go!","A quip coming right up!"]
-footers = ["Really interesting if I do say so myself.","Gotta say, this still holds up to today's standards.","Damn, I remember this like it was yesterday.","Holy shit, that was a good!","These quips are, in fact, fairly rad!","Did I mention I was present during that time?"]
+footers = ["Really interesting if I do say so myself.","Gotta say, this still holds up to today's standards.","Damn, I remember this like it was yesterday.","Holy shit, that was sp good!","These quips are, in fact, fairly rad!","Did I mention I was present during that time?"]
 
 # Profile Picture
-compliments = ["Man, the daily bugle would pay a lot for this 🤩", "This is a nice one! I like it 😎", "Oh Boy! JJJ is gonna be real happy 😃", "The profile picture is fire 🔥","Great Profile Picture, if I do say so myself 🤔","Damn, where'd you get this? 💙" ,"Beautiful 🌃", "Solid 9/10 😎", "I will consider this an exception and give you 10/10 😎","Your FBI Agent will be proud of this profile picture 👌🏻", "You got a great choice, I tell ya 👌🏻", ""]
+compliments = ["Man, the daily bugle would pay a lot for this 🤩", "This is a nice one! I like it 😎", "Oh Boy! JJJ is gonna be real happy 😃", "The profile picture is fire 🔥","Great Profile Picture, if I do say so myself 🤔","Damn, where'd you get this? 💙" ,"Beautiful 🌃", "Solid 9/10 😎", "I will consider this an exception and give you 10/10 😎","Your FBI Agent will be proud of this profile picture 👌🏻", "You got a great choice, I tell ya 👌🏻", "Holy shit, where did you get this?? 👀"]
 
 # Channels
 poll_channels = ['polls','poll','🔺-polls-🔻']
@@ -11,7 +11,7 @@ announcement_channels = ['announcements','bot-announcement','📢-announcements'
 
 # Music 
 connections = ["Ready to rock 'n roll, let's go 🎸","Alright then, time to vibe 🌃","So, what do you want to play? 🤔","Man, I am so down for some music right now 🎼","I like trap beats at night and heavy rock 'n roll during the day 🎤", "Is it just me or does LoFi sometimes gets you drowsy? 😴"]
-disconnections = ["Well, that was fun 👍🏻","Aight fam, catch you later 👊🏻","Gotta say, very solid song collection 🌟","This has been quite an experience 🎇","Oh hell yeah, that was dope. We should do this more often 😃","Holy Shit, you do have a good taste in music 🥁"]
+disconnections = ["Well, that was fun 👍🏻","Aight fam, catch you later 👊🏻","Gotta say, very solid song collection 🌟","This has been quite an experience 🎇","Oh hell yeah, that was dope. We should do this more often 😃","Holy shit, you do have a good taste in music 🥁"]
 default_index = ["Use prefix `index` from queue to set a current song 🤔","You have not set a current song, play a song from the queue 🎶","It seems that there is no current song set. Play something from the queue 🎼"]
 empty_queue = ["Hey, it looks like your queue is empty 🤔", "You might wanna queue some songs, this playlist lookin' empty.", "It seems you haven't queued any songs 🎼","This server's queue is empty. Queue some songs maybe? 😃","Uh oh...We have ourselves an empty queue, how about we queue some songs? 🎶"]
 already_queued = ["Hey buddy, it looks like this song is already in your queue 🤔","Song is already in queue 🎼","Hey, I remember you playing this one a while back, it seems its already queued 🎸"]

@@ -105,13 +105,13 @@ class ButtonPages(View):
             return True
         return False
 
-    @button(label="Previous", emoji="⬅️", style=style)
+    @button(label="Previous", style=style) # emoji="⬅️"
     async def previous(self, _, inter: INTERACTION):
         if self.current - 1 >= 0 and self.author_check(inter):
             self.current -= 1
             await self.edit_page(inter)
 
-    @button(label="Next", emoji="➡️", style=style)
+    @button(label="Next", style=style) # emoji="➡️"
     async def next(self, _, inter: INTERACTION):
         if self.current + 1 < len(self.PAGES) and self.author_check(inter):
             self.current += 1

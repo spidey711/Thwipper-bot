@@ -29,17 +29,18 @@ def get_help_embeds(color: int, main: Union[CONTEXT, INTERACTION]):
     return [
         embed(
             title="⚙️ Utility ⚙️",
-            description="Well, these features have their own category.",
+            description="These are pretty standard bot features. Have a look :)",
             color=color,
             author=author,
             thumbnail=bot.user.avatar,
             fields={
                 "`_ping`": "Get bot's latency.",
+                "`_web`": "Web up those deleted messages before they get away. (Snipe)",
                 "`_serverinfo`": "Get information about your server.",
                 "`_pfp @user`": "See yours and your friends' profile picture.",
                 "`_polls`": "Shows a guide on how to do polls.",
                 "`/dt timezone`": "Gives date and time of mentioned timezone.",
-                "`/calendar year month`": "See the days and their dates of mentioned month."
+                "`/calendar year month`": "See the days and their dates of mentioned month.",
             }
         ),
         embed(

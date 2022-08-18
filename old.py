@@ -119,7 +119,7 @@ def help_menu():
             value="`_hush en text`to encrypt message\n`_hush dec text` to decrypt message\n",
             inline=False,
         )
-        embed_help_menu.set_image(url=help_page3)
+        # embed_help_menu.set_image(url=help_page3)
     if help_toggle == 4:
         embed_help_menu.add_field(
             name="Spider-Punk Radio™\n\nVoice Controls",

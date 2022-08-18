@@ -31,21 +31,24 @@ class Mod(commands.Cog):
         await ctx.message.delete()
         await ctx.channel.purge(limit=num)
 
+    @commands.command(aliases=["[x]"], description="Stop bot.")
+    async def stop_bot(self, ctx):
+        exit()
+
     @commands.command()
     async def snipe(self, ctx: CONTEXT):
         l = self.DELETED_MESSAGE.get(ctx.channel.id)
         if not l:
             await ctx.send(
                 embed=embed(
-                    title="No deleted messages found",
-                    description="Looks like no one's deleted any messages in a while 🤔",
-                    image="https://c.tenor.com/fBvQV_5Lp6UAAAAC/we-dont-do-that-here-black-panther.gif",
+                    title="No messages found",
+                    description="No one's regretted what they have typed and sent so far 🤔",
                     color=self.bot.color(ctx.guild),
-                    footer={ 
-                        'text': "Deleted messages will be cleared every once in a while, I can't keep 'em permanently 🕸️",
-                        'icon_url': self.bot.user.avatar,
+                    footer={
+                        "text": "Deleted messages will be cleared from time to time 🕸️",
+                        "icon_url": self.bot.user.avatar
                     },
-                    author=getattr(ctx, 'author', getattr(ctx, 'user', None))
+                    # author=getattr(ctx, 'author', getattr(ctx, 'user', None))
                 )
             )
             return
@@ -62,13 +65,8 @@ class Mod(commands.Cog):
             )
             count+=1
         frame_embed = lambda field: embed(
-            title="Snipe",
-            description="All of this will be deleted if the bot restarts",
-            footer={
-                'text': 'Snipe',
-                'icon_url': self.bot.user.avatar,
-            },
-            author=getattr(ctx, 'author', getattr(ctx, 'user', None)),
+            title="Catch the thieves, just like flies, look out! 🕸️",
+            # author=getattr(ctx, 'author', getattr(ctx, 'user', None)),
             color=self.bot.color(ctx.guild),
             fields = field
         )

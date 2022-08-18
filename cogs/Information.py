@@ -14,16 +14,15 @@ class Information(commands.Cog):
         self.bot = bot
 
 
-    @commands.command(aliases=["pfp"], description="Get user pfp")
+    @commands.command(aliases=["pfp"], ddescription="See a member's profile picture.")
     async def user_pfp(self, ctx, member: nextcord.Member = None):
         if not member:
             member = getattr(ctx, 'user', getattr(ctx, 'author', None))
         await ctx.send(
             embed=embed(
-                title="Profile Picture: {}".format(member.name),
                 image=member.avatar,
                 color=self.bot.color(ctx.guild),
-                author=member,
+                author=f"Profile Picture: {member}", # author = member
                 footer={
                     'text': random.choice(compliments),
                     'icon_url': self.bot.user.avatar
@@ -32,7 +31,7 @@ class Information(commands.Cog):
         )
 
     
-    @nextcord.slash_command(name="pfp")
+    @nextcord.slash_command(name="pfp", description="See a member's profile picture.")
     async def pfp(self, inter, member: nextcord.Member = None):
         await self.user_pfp(inter, member=member)
 

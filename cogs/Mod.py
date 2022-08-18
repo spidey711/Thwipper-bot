@@ -13,10 +13,12 @@ class Mod(commands.Cog):
         self.bot: commands.Bot = bot
         self.DELETED_MESSAGE: dict = {}
 
+
     @commands.Cog.listener()
     async def on_bulk_message_delete(self, messages):
         for message in messages:
             await self.on_message_delete(message)
+
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: MESSAGE):
@@ -26,17 +28,20 @@ class Mod(commands.Cog):
             else:
                 self.DELETED_MESSAGE[message.channel.id] = [(str(message.author), message.content)]
 
+
     @commands.command(aliases=["delete", "del"])
     async def clear(self, ctx: CONTEXT, num: int = 10):
         await ctx.message.delete()
         await ctx.channel.purge(limit=num)
 
+
     @commands.command(aliases=["[x]"], description="Stop bot.")
     async def stop_bot(self, ctx):
         exit()
 
-    @commands.command()
-    async def snipe(self, ctx: CONTEXT):
+
+    @commands.command(aliases=["web", "snipe"], description="Get deleted messages.")
+    async def snipe_messages(self, ctx: CONTEXT):
         l = self.DELETED_MESSAGE.get(ctx.channel.id)
         if not l:
             await ctx.send(
@@ -48,7 +53,7 @@ class Mod(commands.Cog):
                         "text": "Deleted messages will be cleared from time to time 🕸️",
                         "icon_url": self.bot.user.avatar
                     },
-                    # author=getattr(ctx, 'author', getattr(ctx, 'user', None))
+                    author=getattr(ctx, 'author', getattr(ctx, 'user', None))
                 )
             )
             return
@@ -65,19 +70,21 @@ class Mod(commands.Cog):
             )
             count+=1
         frame_embed = lambda field: embed(
-            title="Catch the thieves, just like flies, look out! 🕸️",
+            title="Thwip! 🕸️",
             # author=getattr(ctx, 'author', getattr(ctx, 'user', None)),
             color=self.bot.color(ctx.guild),
+            footer="Catch the thieves, just like flies, look out! 😎",
             fields = field
         )
         embeds = [frame_embed(i) for i in fields]
         await pages(ctx, embeds, start = 0)
+
     
     @nextcord.slash_command(name="color", description="Set your color")
     async def color(self, inter: INTERACTION, color: str = None):
         if not (color.startswith("0x") or color.startswith("#")):
             await inter.response.send_message(
-                "Sorry we only support hex, start with `0x` or `#`",
+                "Sorry, I only support hex code, start with `0x` or `#`",
                 ephemeral=True
             )
             return

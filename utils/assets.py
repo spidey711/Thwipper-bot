@@ -2,6 +2,7 @@ import random
 
 from .functions import embed, CONTEXT, INTERACTION, Union
 from .responses import connections
+from .links import thumbnails
 
 YDL_OP = {
     "format": "bestaudio/best",
@@ -27,21 +28,54 @@ def get_help_embeds(color: int, main: Union[CONTEXT, INTERACTION]):
 
     return [
         embed(
-            title="Music", 
+            title="⚙️ Utility ⚙️",
+            description="Well, these features have their own category.",
+            color=color,
+            author=author,
+            thumbnail=bot.user.avatar,
+            fields={
+                "`_ping`": "Get bot's latency.",
+                "`_serverinfo`": "Get information about your server.",
+                "`_pfp @user`": "See yours and your friends' profile picture.",
+                "`_polls`": "Shows a guide on how to do polls.",
+                "`/dt timezone`": "Gives date and time of mentioned timezone.",
+                "`/calendar year month`": "See the days and their dates of mentioned month."
+            }
+        ),
+        embed(
+            title="🌎 World Wide Web 🌎",
+            description="Get info about movies, see memes etc.",
+            color=color,
+            author=author,
+            thumbnail=thumbnails[0],
+            fields={
+                "`_wiki topic`": "Get information about a topic/subject from wikipedia.",
+                "`_g topic`": "See search result links of searched topic.",
+                "`_imdb movie`": "View all details about a movie, including summary.",
+                "`_reddit topic`": "Have a laugh at 'em funny memes from reddit."
+            }
+        ),
+        embed(
+            title="🎵 Music 🎵", 
             description="Thwipper's got its very own radio. **Spider-Punk Radio™**", 
             color=color, 
             author=author, 
-            thumbnail=bot.user.avatar,
+            thumbnail=thumbnails[1],
             fields={
                 "Voice Controls":"🔉 `_cn` to get the bot to join voice channel\n🔇 `_dc` to remove bot from voice channel",
                 "Player Controls":"🎶 `_p name/index` to play songs\n▶ `_res` to resume a song\n⏸ `_pause` to pause a song\n⏹ `_st` to stop a song\n🔂 `_rep` to repeat song\n⏭ `_skip` to skip song\n⏮ `_prev` for previous song",
                 "Queue Controls":"🔼 `_q` scroll queue `up`\n🔽 `_q` scroll queue `down`\n🔠 `_lyrics name` to display current song's lyrics\n*️⃣ `_songinfo` to get current song's info\n✅ `_q name` to add a song to the queue\n❌ `_rem index` to remove song from queue\n💥 `_cq` to clear queue"
-            },
-            footer=random.choice(connections),
-            image={
-                
             }
-        )
-        
-        
+        ),
+        embed(
+            title="🔐 Cipher 🔐",
+            description="You already know where this is going.",
+            color=color,
+            author=author,
+            thumbnail=thumbnails[2],
+            fields={
+                "`_hush en text`": "'en' -> Encrypt message",
+                "`_hush dec text`": "'dec' -> Decrypt message"
+            }
+        ),
     ]

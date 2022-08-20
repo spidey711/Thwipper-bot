@@ -44,7 +44,7 @@ def get_help_embeds(color: int, main: Union[CONTEXT, INTERACTION]):
             }
         ),
         embed(
-            title="🌎 World Wide Web 🌎",
+            title="🌎 Internet 🌎",
             description="Get info about movies, see memes etc.",
             color=color,
             author=author,
@@ -53,7 +53,8 @@ def get_help_embeds(color: int, main: Union[CONTEXT, INTERACTION]):
                 "`_wiki topic`": "Get information about a topic/subject from wikipedia.",
                 "`_g topic`": "See search result links of searched topic.",
                 "`_imdb movie`": "View all details about a movie, including summary.",
-                "`_reddit topic`": "Have a laugh at 'em funny memes from reddit."
+                "`_reddit topic`": "Have a laugh at 'em funny memes from reddit.",
+                "`/api chemistry element`": "Get base level info about all known elements."
             }
         ),
         embed(

@@ -1,8 +1,8 @@
 # IMPORTS
 import nextcord
 import os
-import re
-import utils.assets as assets
+
+from utils.assets import DEFAULT_COLOR
 from utils.functions import embed
 from dotenv import load_dotenv
 from nextcord.ext import commands, tasks
@@ -12,6 +12,7 @@ load_dotenv()
 
 # VARIABLES
 config_color: dict = {}
+queue_song: dict = {}
 
 # CONFIGURING BOT
 prefixes = ["t!", "_"]
@@ -23,9 +24,10 @@ bot = commands.Bot(
     intents=intents,
     case_insensitive=True,
 )
-DEFAULT_COLOR = nextcord.Color.from_rgb(223, 31, 45).value
-# BOT VARIABLES
 bot.remove_command("help") # remove auto gen help menu
+
+# BOT VARIABLES
+
 bot.color = lambda g: config_color.get(g.id, DEFAULT_COLOR)
 bot.config_color: dict = config_color
 

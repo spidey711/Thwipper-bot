@@ -1,5 +1,6 @@
 # This file contains functions which will be used in a lot of other files.
 
+import youtube_dl
 import nextcord
 import aiohttp
 import aiofiles
@@ -9,6 +10,9 @@ from nextcord.ext import commands
 from typing import List, Union
 from nextcord.ui import button, View
 from io import BytesIO
+from utils.Storage import Variables
+
+from utils.assets import YDL_OP
 
 CONTEXT = commands.context.Context
 INTERACTION = nextcord.Interaction
@@ -169,3 +173,52 @@ async def post_async(api: str, header: dict = {}, json: dict = {}):
             if resp.headers["Content-Type"] != "application/json":
                 return await resp.read()
             return await resp.json()
+
+class SongCache:
+    def __init__(self):
+        self.cache = {
+            'songs': {}
+        }
+        self.var = Variables("utils/__pycache__/YoutubeCache")
+        if data := self.var.show_data():
+            self.cache = data
+        else:
+            self.var.pass_all(**self.cache)
+        self.var.save()
+
+    def update(self, url: str, info):
+        self.cache["songs"][url] = info
+        self.var.edit(**self.cache)
+        self.var.save()
+
+
+class Music:
+    '''
+    Do not initliase multiple times
+    Includes Cache
+    '''
+    def __init__(self, bot):
+        self.bot = bot
+        self.cache = SongCache()
+
+    def info(self, url: str):
+        with youtube_dl.YoutubeDL(YDL_OP) as ydl:
+            Data = ydl.extract_info(url, download=False)
+        return Data
+
+    def extract_valuable_data(self, data: dict):
+        return {
+            "title": data.get("title"),
+            "duration": data.get("duration"),
+            "url": data.get("url")
+        }
+
+    def download(self, data: dict):
+        self.cache.update(
+            data.get("url"), 
+            self.extract_valuable_data(data=data)
+        )
+        return data["formats"][0]["url"]
+    
+
+    

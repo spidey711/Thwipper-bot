@@ -1,6 +1,9 @@
-# QUIPS
+# Quips
 titles = ["Quip Incoming","Here you go!","A quip coming right up!"]
 footers = ["Really interesting if I do say so myself.","Gotta say, this still holds up to today's standards.","Damn, I remember this like it was yesterday.","Holy shit, that was sp good!","These quips are, in fact, fairly rad!","Did I mention I was present during that time?"]
+
+# Greet
+greetings = ["So, how's your day going? 😎", "How you doin'? 😏", "How're things going? 😄", "All good? How's life? 🕸️"]
 
 # Profile Picture
 compliments = ["Man, the daily bugle would pay a lot for this 🤩", "This is a nice one! I like it 😎", "Oh Boy! JJJ is gonna be real happy 😃", "The profile picture is fire 🔥","Great Profile Picture, if I do say so myself 🤔","Damn, where'd you get this? 💙" ,"Beautiful 🌃", "Solid 9/10 😎", "I will consider this an exception and give you 10/10 😎","Your FBI Agent will be proud of this profile picture 👌🏻", "You got a great choice, I tell ya 👌🏻", "Holy shit, where did you get this?? 👀"]

@@ -1,3 +1,5 @@
+# This file contains functions which will be used in a lot of other files.
+
 import nextcord
 import aiohttp
 import aiofiles
@@ -92,7 +94,6 @@ def embed(
                 )
             view.add_item(b)
         return embed, view
-
     return embed
 
 class ButtonPages(View):

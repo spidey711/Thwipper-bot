@@ -93,6 +93,18 @@ class API(commands.Cog):
     @api.subcommand(name="imdb", description="Get IMDB movie")
     async def imdb(self, inter: INTERACTION, movie: str):
         await inter.response.defer()
+        data = await self.cache.cache_request(
+            "imdb", movie,
+            "https://api.popcat.xyz/imdb?q={}".format(convert_to_url(movie)),
+            kind="json"
+        )
+        await inter.send(
+            embed=embed(
+                title="{} [ {} ]".format(data.get("title"), data.get("year")),
+                color=self.bot.color(inter.guild),
+                description=data.get("plot")
+            )
+        )
         
         
 def setup(bot: commands.Bot, *args):

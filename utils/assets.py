@@ -1,4 +1,5 @@
 import random
+import nextcord
 
 from .functions import embed, CONTEXT, INTERACTION, Union
 from .responses import connections
@@ -16,6 +17,7 @@ YDL_OP = {
 }
 
 help_embeds = []
+DEFAULT_COLOR = nextcord.Color.from_rgb(223, 31, 45).value
 
 def get_help_embeds(color: int, main: Union[CONTEXT, INTERACTION]):
 

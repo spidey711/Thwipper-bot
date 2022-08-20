@@ -1,3 +1,5 @@
+# This file contains all API-related functions.
+
 import nextcord
 import os
 
@@ -35,7 +37,9 @@ class PERMANENT_CACHE:
         self.var.save()
         return self.CACHE_[command][keyword]
 
+
 class API(commands.Cog):
+    
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.cache = PERMANENT_CACHE()
@@ -44,7 +48,13 @@ class API(commands.Cog):
     async def api(self, inter: INTERACTION):
         print(inter.user)
 
-    @api.subcommand(name="chemistry", description="Search for periodic table")
+
+    # @commands.Cog.listener()
+    # async def on_message(self, message):
+    #     await get_async("https://apiQ.popcat.xyz/chatbot?msg=who+made+you&owner=Zero+Two&botname=Pop+Cat", kind="json")
+
+    
+    @api.subcommand(name="chemistry", description="Get info about all elements of the periodic table.")
     async def chem(self, inter: INTERACTION, element: str = "Hydrogen"):
         await inter.response.defer()
         RAW = await self.cache.cache_request(
@@ -89,6 +99,7 @@ class API(commands.Cog):
             ),
             file=nextcord.File(fp=f, filename="thumbnail.png")
         )
+
 
     @api.subcommand(name="imdb", description="Get IMDB movie")
     async def imdb(self, inter: INTERACTION, movie: str):

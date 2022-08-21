@@ -1,6 +1,7 @@
 # This file contains assets.
 
 import random
+import nextcord
 
 from .functions import embed, CONTEXT, INTERACTION, Union
 from .responses import connections
@@ -34,6 +35,7 @@ FFMPEG_OPTS = {
 
 # Help Menu
 help_embeds = []
+DEFAULT_COLOR = nextcord.Color.from_rgb(223, 31, 45).value
 
 def get_help_embeds(color: int, main: Union[CONTEXT, INTERACTION]):
 

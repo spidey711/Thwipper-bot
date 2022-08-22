@@ -12,10 +12,26 @@ from nextcord.ui import button, View
 from io import BytesIO
 from utils.Storage import Variables
 
-from utils.assets import YDL_OP
+# Music
+YDL_OP = {
+    "format": "bestaudio/best",
+    "postprocessors": [
+        {
+            "key": "FFmpegExtractAudio",
+            "preferredcodec": "mp3",
+            "preferredquality": "128",
+        }
+    ],
+}
+FFMPEG_OPTS = {
+    "before_options": "-reconnect 1 -reconnect_streamed 1 - reconnected_delay_max 2",
+    "options": "-vn"
+}
 
+# TYPES
 CONTEXT = commands.context.Context
 INTERACTION = nextcord.Interaction
+VOICECLIENT = nextcord.voice_client.VoiceClient
 
 def convert_to_url(name: str):
     name = urllib.parse.quote(name)
@@ -186,10 +202,11 @@ class SongCache:
             self.var.pass_all(**self.cache)
         self.var.save()
 
-    def update(self, url: str, info):
+    def update(self, url: str, info: dict):
         self.cache["songs"][url] = info
         self.var.edit(**self.cache)
         self.var.save()
+        print(self.var.show_data())
 
 
 class Music:
@@ -209,16 +226,31 @@ class Music:
     def extract_valuable_data(self, data: dict):
         return {
             "title": data.get("title"),
-            "duration": data.get("duration"),
-            "url": data.get("url")
+            "duration": data.get("duration")
         }
 
     def download(self, data: dict):
         self.cache.update(
-            data.get("url"), 
+            "https://www.youtube.com/watch?v=" + data.get("id"),
             self.extract_valuable_data(data=data)
         )
         return data["formats"][0]["url"]
+
+    def play(self, voice: VOICECLIENT, URL: str):
+        voice.play(nextcord.FFmpegPCMAudio(URL, **FFMPEG_OPTS))
+
+    def checkvoice(self, ctx: Union[CONTEXT, INTERACTION]) -> bool:
+        user = getattr(ctx, 'author', getattr(ctx, 'user', None))
+        if not ctx.guild.voice_client:
+            return False
+        return user.id in map(lambda user: user.id, ctx.voice_client.channel.members)
     
 
-    
+# Time
+def time_converter(seconds: int):
+    mins, secs = divmod(seconds, 60)
+    hours, mins = divmod(mins, 60)
+    if hours == 0:
+        return "%02d mins %02d secs" % (mins, secs)
+    else:
+        return "%d hrs %02d mins %02d secs" % (hours, mins, secs)

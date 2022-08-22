@@ -4,6 +4,7 @@ import os
 
 from utils.assets import DEFAULT_COLOR
 from utils.functions import embed
+from utils.Storage import Variables
 from dotenv import load_dotenv
 from nextcord.ext import commands, tasks
 
@@ -11,8 +12,14 @@ from nextcord.ext import commands, tasks
 load_dotenv()
 
 # VARIABLES
-config_color: dict = {}
-queue_song: dict = {}
+var = Variables("storage")
+if var.show_data() == {}:
+    var.pass_all(
+        config_color = {},
+        queue_song = {}
+    )
+    var.save()
+
 
 # CONFIGURING BOT
 prefixes = ["t!", "_"]
@@ -27,9 +34,10 @@ bot = commands.Bot(
 bot.remove_command("help") # remove auto gen help menu
 
 # BOT VARIABLES
-
-bot.color = lambda g: config_color.get(g.id, DEFAULT_COLOR)
-bot.config_color: dict = config_color
+RAW_DATA = var.show_data()
+bot.config_color: dict = RAW_DATA.get("config_color", {})
+bot.queue_song: dict = RAW_DATA.get("queue_song", {})
+bot.color = lambda g: bot.config_color.get(g.id, DEFAULT_COLOR)
 
 
 @bot.event
@@ -51,6 +59,14 @@ async def on_message(message):
             }
         )
         await message.reply(embed=embed)
+
+@tasks.loop(minutes=1)
+async def loop():
+    var.edit(
+        config_color = bot.config_color,
+        queue_song = bot.queue_song
+    )
+    var.save()
 
 # LOAD COGS
 for i in os.listdir("cogs/"):

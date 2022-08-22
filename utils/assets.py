@@ -7,31 +7,6 @@ from .functions import embed, CONTEXT, INTERACTION, Union
 from .responses import connections
 from .links import thumbnails
 
-# Time
-def time_converter(seconds):
-    mins, secs = divmod(seconds, 60)
-    hours, mins = divmod(mins, 60)
-    if hours == 0:
-        return "%02d mins %02d secs" % (mins, secs)
-    else:
-        return "%d hrs %02d mins %02d secs" % (hours, mins, secs)
-
-# Music
-YDL_OP = {
-    "format": "bestaudio/best",
-    "postprocessors": [
-        {
-            "key": "FFmpegExtractAudio",
-            "preferredcodec": "mp3",
-            "preferredquality": "128",
-        }
-    ],
-}
-FFMPEG_OPTS = {
-    "before_options": "-reconnect 1 -reconnect_streamed 1 - reconnected_delay_max 2",
-    "options": "-vn"
-}
-
 
 # Help Menu
 help_embeds = []

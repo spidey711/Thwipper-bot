@@ -4,26 +4,18 @@ import nextcord
 import random
 import urllib
 import regex
-import youtube_dl
-import pytube
 
 from utils.responses import connections, disconnections
-from utils.functions import embed
+from utils.functions import CONTEXT, convert_to_url, embed, Music as msc, get_async, time_converter
 from utils.links import url_author_music
-from utils.assets import YDL_OP, FFMPEG_OPTS, time_converter
 from nextcord.ext import commands
 
 class Music(commands.Cog):
     
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        
-    @staticmethod
-    def youtube_download(ctx, url):
-        if True:
-            with youtube_dl.YoutubeDL(YDL_OP) as ydl:
-                URL = ydl.extract_info(url, download=False)["formats"][0]["url"]
-        return URL
+        self.msc = msc(self.bot) 
+    
         
     # voice channel
     @commands.command(aliases=["cn", "join"], description="Bot joins the voice channel.")
@@ -88,11 +80,10 @@ class Music(commands.Cog):
 
 
     @commands.command(aliases=["dc", "leave"], description="Bot will leave voice channel.")
-    async def leave_vc(self, ctx):
-        
+    async def leave_vc(self, ctx):        
         try:
-            if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
-                voice_client = ctx.message.guild.voice_client  
+            if self.msc.checkvoice(ctx):
+                voice_client = ctx.guild.voice_client  
                 try:
                     if voice_client.is_connected():
                         await ctx.send(
@@ -146,47 +137,43 @@ class Music(commands.Cog):
 
     # play music (playing from queue will be implemented eventually, right now it's just direct play.)
     @commands.command(aliases=["play", "p"], description="Play music.")
-    async def play_music(self, ctx, *, char):
+    async def play_music(self, ctx: CONTEXT, *, char):
+
+        user: nextcord.Member = getattr(ctx, 'author', getattr(ctx, 'user', None))
+        if (not ctx.guild.voice_client) and user.voice and user.voice.channel:
+            await self.join_vc(ctx)
         
-        voice = nextcord.utils.get(self.bot.voice_clients, guild=ctx.guild)
-        
-        if ctx.author.id in [member.id for member in ctx.voice_client.channel.members]:
+        if self.msc.checkvoice(ctx):
             # web scrape
             try:
-                char = char.replace(" ", "+")
-                markup = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + char)
-                vid = regex.findall(r"watch\?v=(\S{11})", markup.read().decode())
+                voice = ctx.guild.voice_client
+                markup = await get_async(
+                    "https://www.youtube.com/results?search_query={}".format(convert_to_url(char))
+                )
+                vid = regex.findall(r"watch\?v=(\S{11})", markup)
                 url = "https://www.youtube.com/watch?v=" + vid[0]
-                markup_code = str(urllib.request.urlopen(url).read().decode())
-                starting = markup_code.find("<title>") + len("<title>")
-                ending = markup_code.find("</title>")
-                song_name = {
-                    markup_code[starting:ending]
-                    .replace("&#39", "'")
-                    .replace("&amp", "&")
-                    .replace(" - YouTube", "")
-                }
-                URL_direct = Music.youtube_download(ctx, url)
+                INFO = self.msc.info(url=url)
+                URL_direct = self.msc.download(INFO)
 
-                if ctx.voice_client.is_playing(): pass
-                else: voice.stop()
+                if not ctx.guild.voice_client.is_playing(): 
+                    voice.stop()
         
                 await ctx.send(
                     embed=embed(
-                        description=f"**Now playing: **{song_name}",
+                        description=f"**Now playing: **{INFO.get('title')}",
                         color=self.bot.color(ctx.guild),
                         author={
                             "name": "Spider-Punk Radio™",
                             "icon_url": url_author_music
                         },
-                        thumbnail=pytube.YouTube(url=url).thumbnail_url,
+                        thumbnail=INFO.get("thumbnail", None),
                         fields={
-                            "Uploader": pytube.YouTube(url=url).author,
-                            "Duration": time_converter(pytube.YouTube(url=url).length)
+                            "Uploader": INFO.get("uploader", "Unavailable"),
+                            "Duration": time_converter(INFO.get("duration", 10))
                         }
                     )
                 )
-                voice.play(nextcord.FFmpegPCMAudio(URL_direct, **FFMPEG_OPTS))
+                self.msc.play(voice, URL=URL_direct)
             except AttributeError:
                 await ctx.send(
                     embed=embed(

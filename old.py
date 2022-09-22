@@ -3,10 +3,8 @@ try:
     import nextcord
     from nextcord.ext import commands, tasks
     from links import *
-    from responses import *
+    from utils.responses import *
     from dotenv import load_dotenv
-    import mysql.connector
-    import steam
     import os
     import random
     import calendar
@@ -44,26 +42,6 @@ bot.remove_command("help")
 global auth
 load_dotenv(".env")
 
-# Database
-try:
-    conn = mysql.connector.connect(
-        user="root",
-        host="localhost",
-        password=os.getenv("sql_pass"),
-        database="discord"
-    )
-    cursor = conn.cursor()
-        # test database for sql shell
-    conn_test = mysql.connector.connect(
-        user="root",
-        host="localhost",
-        passwd=os.getenv("sql_pass"),
-        database="discord_sql_func"   
-    )
-    cursor_test = conn_test.cursor()
-    print("Connection to discord databases established.")
-except Exception as error:
-    print(error)
 
 # Audio
 server_index = {}
@@ -772,16 +750,6 @@ async def reddit_memes(ctx, *, topic):
         embed = nextcord.Embed(description="Looks like the subreddit is either banned or does not exist 🤔", color=color)
         embed.set_author(name="Subreddit Not Found", icon_url=url_reddit_author)
         await ctx.send(embed=embed)
-
-
-@bot.command(aliases=["steam"])
-async def steam_games_info(ctx, *, game):
-    try:
-        await ctx.send(
-            steam_games_info(context=True, game=game)
-        )
-    except Exception as error:
-        await ctx.send(error)
 
 
 @bot.command(aliases=["wiki", "w"])

@@ -5,7 +5,7 @@ try:
     from links import *
     from responses import *
     from dotenv import load_dotenv
-    # import _mysql_connector as ms
+    import _mysql_connector
     import os
     import random
     import calendar
@@ -15,7 +15,6 @@ try:
     import regex
     # import praw
     import pytube
-    import pyodbc
     import imdb
     import requests
     import urllib.request
@@ -63,7 +62,12 @@ ydl_op = {
 
 # SQL Connection
 try:
-    conn = pyodbc.connect(os.getenv("conn_str"))
+    conn = _mysql_connector.connect(
+        host = "localhost",
+        user = "root",
+        passwd = os.getenv("sql_pass"),
+        database = "discord"
+    )
     cursor = conn.cursor()
     print("Connection to Main DB established.")
 except Exception as exception:
@@ -71,7 +75,12 @@ except Exception as exception:
 
 # SQL Connection (Feature)
 try:
-    conn_test = pyodbc.connect(os.getenv("conn_test_str"))
+    conn_test = _mysql_connector.connect(
+        host = "localhost",
+        user = "root",
+        passwd = os.getenv("sql_pass"),
+        database = "discord_sql_func"   
+    )
     cursor_test = conn_test.cursor()
     print("Connection to Feature DB established.")
 except Exception as exception: print(exception)
